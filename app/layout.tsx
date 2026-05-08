@@ -22,6 +22,7 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://hygge.emre.zip"),
   title: "hygge — Danish café in Leuven",
   description:
     "A Danish café in the heart of Leuven. Specialty coffee, smørrebrød, and pastry on Naamsestraat 55P.",
@@ -30,6 +31,23 @@ export const metadata: Metadata = {
     description:
       "Specialty coffee, smørrebrød, and pastry. Naamsestraat 55P, Leuven.",
     type: "website",
+    url: "https://hygge.emre.zip",
+    siteName: "hygge",
+    images: [
+      {
+        url: "/assets/og.png",
+        width: 1200,
+        height: 630,
+        alt: "hygge — Danish café in Leuven",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "hygge — Danish café in Leuven",
+    description:
+      "Specialty coffee, smørrebrød, and pastry. Naamsestraat 55P, Leuven.",
+    images: ["/assets/og.png"],
   },
 };
 
