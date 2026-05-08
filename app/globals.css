@@ -669,17 +669,31 @@ nav.top-nav a:hover::after {
 
 .story-photo {
   position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
+  min-height: 520px;
 }
 
 .story-photo .photo {
-  width: 78%;
-  max-width: 460px;
+  position: absolute;
   height: auto;
   display: block;
-  filter: drop-shadow(0 16px 28px rgba(21, 17, 14, 0.18));
+}
+
+.story-photo .photo.illu {
+  /* the chair vignette — main visual, anchored top-right */
+  top: 0;
+  right: 0;
+  width: 92%;
+  max-width: 540px;
+  filter: drop-shadow(0 20px 36px rgba(21, 17, 14, 0.18));
+}
+
+.story-photo .photo.cup {
+  /* the small coffee cup — accent, bottom-left, partially overlaps */
+  bottom: 0;
+  left: 0;
+  width: 38%;
+  max-width: 200px;
+  filter: drop-shadow(0 14px 22px rgba(21, 17, 14, 0.18));
 }
 
 /* ──────────────────────────────────────────────
