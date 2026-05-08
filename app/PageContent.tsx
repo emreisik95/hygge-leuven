@@ -249,8 +249,17 @@ export default function PageContent({
             {Array.from({ length: 2 }).map((_, dup) => (
               <div className="marquee-item" key={dup}>
                 {t.marquee.map((item, i) => (
-                  <span key={`${dup}-${i}`} style={{ display: "inline-flex", alignItems: "center", gap: 56 }}>
-                    <span>{item}</span>
+                  <span
+                    key={`${dup}-${i}`}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 56,
+                    }}
+                  >
+                    <span className={i % 2 === 1 ? "clay" : undefined}>
+                      {item}
+                    </span>
                     <span className="marquee-dot" />
                   </span>
                 ))}
@@ -277,10 +286,10 @@ export default function PageContent({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 className="photo illu"
-                src="/assets/illu-chair-v2.png"
-                alt="an empty bistro chair beside a side table with a steaming cup, an open invitation"
-                width={1200}
-                height={1200}
+                src="/assets/illu-hygge-still.png"
+                alt="a cozy still-life — coffee cup, book, candles, lantern, croissant, and a smørrebrød plate"
+                width={1536}
+                height={1024}
                 loading="lazy"
               />
             </div>
@@ -309,11 +318,11 @@ export default function PageContent({
               {t.pillars.items.map((item, i) => {
                 const src =
                   i === 0
-                    ? "/assets/coffee.png"
+                    ? "/assets/illu-bean.png"
                     : i === 1
                     ? "/assets/illu-smorrebrod.png"
-                    : "/assets/bun-photo.png";
-                const w = i === 0 ? 1200 : i === 1 ? 1395 : 800;
+                    : "/assets/illu-pastry.png";
+                const dim = { w: 1536, h: 1024 };
                 return (
                   <article className="pillar" key={i}>
                     <div className="num numeral">{item.eyebrow}</div>
@@ -322,8 +331,8 @@ export default function PageContent({
                       <img
                         src={src}
                         alt=""
-                        width={w}
-                        height={w}
+                        width={dim.w}
+                        height={dim.h}
                         loading="lazy"
                       />
                     </div>

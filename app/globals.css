@@ -591,6 +591,10 @@ nav.top-nav a:hover::after {
   font-style: italic;
 }
 
+.marquee-item .clay {
+  color: var(--clay);
+}
+
 .marquee-dot {
   width: 8px;
   height: 8px;
@@ -669,31 +673,21 @@ nav.top-nav a:hover::after {
 
 .story-photo {
   position: relative;
-  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .story-photo .photo {
-  position: absolute;
+  width: 100%;
   height: auto;
   display: block;
 }
 
 .story-photo .photo.illu {
-  /* the chair vignette — main visual, anchored top-right */
-  top: 0;
-  right: 0;
-  width: 92%;
-  max-width: 540px;
+  width: 100%;
+  max-width: 820px;
   filter: drop-shadow(0 20px 36px rgba(21, 17, 14, 0.18));
-}
-
-.story-photo .photo.cup {
-  /* the small coffee cup — accent, bottom-left, partially overlaps */
-  bottom: 0;
-  left: 0;
-  width: 38%;
-  max-width: 200px;
-  filter: drop-shadow(0 14px 22px rgba(21, 17, 14, 0.18));
 }
 
 /* ──────────────────────────────────────────────
