@@ -52,6 +52,35 @@ function Asterisk({ className }: { className?: string }) {
   );
 }
 
+function HandUnderline({
+  width = 220,
+  align = "left",
+}: {
+  width?: number;
+  align?: "left" | "center";
+}) {
+  return (
+    <svg
+      className={`hand-underline${align === "center" ? " is-center" : ""}`}
+      width={width}
+      height="14"
+      viewBox={`0 0 ${width} 14`}
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d={`M 4 8 C ${width * 0.25} 3, ${width * 0.5} 12, ${
+          width * 0.75
+        } 6 S ${width - 4} 9, ${width - 4} 8`}
+        stroke="currentColor"
+        strokeWidth="2.6"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </svg>
+  );
+}
+
 function InstagramIcon() {
   return (
     <svg
@@ -231,6 +260,7 @@ export default function Home() {
             <h2>
               what is <em>hygge?</em>
             </h2>
+            <HandUnderline width={260} />
             <p className="lead">
               Hygge — pronounced &ldquo;hyü‑ge&rdquo; — is a Danish word for
               coziness. Slowing down, enjoying the simple moments, feeling at
@@ -271,6 +301,7 @@ export default function Home() {
               <h2>
                 small things, <em>made slowly.</em>
               </h2>
+              <HandUnderline width={300} />
             </div>
             <p className="aside">
               <Asterisk /> menu rotates with the seasons — follow the feed for
@@ -346,6 +377,7 @@ export default function Home() {
             <h2>
               find us on <em>Naamsestraat.</em>
             </h2>
+            <HandUnderline width={340} />
             <p className="address">
               Naamsestraat 55P
               <br />
@@ -432,6 +464,7 @@ export default function Home() {
           <div className="feed-intro">
             <div className="numeral">IV. — feed</div>
             <h2>follow along on instagram.</h2>
+            <HandUnderline width={320} />
             <p>
               daily bake, the lunch board, the new beans, the corner table on a
               quiet wednesday. small things, made slowly, posted slowly.
