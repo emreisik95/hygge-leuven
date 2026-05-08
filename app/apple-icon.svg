@@ -1,6 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
-  <rect width="180" height="180" fill="#e2d2b3"/>
-  <text x="90" y="138" text-anchor="middle"
-        font-family="'DM Serif Display', Georgia, 'Times New Roman', serif"
-        font-size="156" font-weight="400" fill="#15110e">h</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180"><rect width="180" height="180" fill="#e2d2b3"/><text x="90" y="138" fill="#15110e" font-family="'DM Serif Display', Georgia, 'Times New Roman', serif" font-size="156" font-weight="400" text-anchor="middle">h</text></svg>
