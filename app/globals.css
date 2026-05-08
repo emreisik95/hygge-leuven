@@ -755,6 +755,16 @@ nav.top-nav a:hover::after {
   filter: grayscale(0.85) sepia(0.45) hue-rotate(-12deg) saturate(0.85)
     contrast(1.04) brightness(0.98);
   mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* full-frame click target opens the real map in a new tab */
+.map-frame .map-link {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: block;
+  cursor: pointer;
 }
 
 .map-frame::after {

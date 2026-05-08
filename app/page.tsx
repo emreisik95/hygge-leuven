@@ -415,6 +415,13 @@ export default function Home() {
               <span className="dot" />
               <span className="label">hygge · Naamsestraat 55P</span>
             </span>
+            <a
+              className="map-link"
+              href={MAPS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Hygge in Google Maps"
+            />
           </div>
         </div>
       </section>
