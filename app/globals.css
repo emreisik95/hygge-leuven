@@ -254,6 +254,41 @@ nav.top-nav a:hover::after {
   transform: scaleX(1);
 }
 
+.bar-end {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans), sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.lang-switch a {
+  opacity: 0.55;
+  transition: opacity 0.25s var(--ease-soft), color 0.25s var(--ease-soft);
+}
+
+.lang-switch a:hover {
+  opacity: 1;
+}
+
+.lang-switch a.active {
+  opacity: 1;
+  color: var(--clay);
+}
+
+.lang-switch .sep {
+  opacity: 0.4;
+}
+
 .pill {
   display: inline-flex;
   align-items: center;
@@ -395,7 +430,7 @@ nav.top-nav a:hover::after {
 }
 
 .pron {
-  margin-top: 26px;
+  margin-top: 88px;
   font-family: var(--font-serif), serif;
   font-size: 22px;
   line-height: 1.5;
