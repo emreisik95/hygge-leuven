@@ -85,7 +85,7 @@ export default function Home() {
         <div className="bar">
           <a href="#top" className="mark reveal d-1">
             <span className="word">
-              hy<em>gg</em>e
+              hygge
             </span>
             <span className="sub">Danish café · Leuven</span>
           </a>
@@ -131,7 +131,7 @@ export default function Home() {
               or hold a cup.
             </p>
             <h1 className="wordmark reveal d-2">
-              hy<em>gg</em>e
+              hygge
             </h1>
             <span className="marginalia opened">
               now open
@@ -477,7 +477,7 @@ export default function Home() {
             <div className="ig-grid">
               <div className="ig-tile word">
                 <span className="word-mark">
-                  hy<em>gg</em>e
+                  hygge
                 </span>
                 <span className="pron-mini">Danish [hyü‑ge] noun</span>
               </div>
@@ -544,7 +544,7 @@ export default function Home() {
         <div className="foot-grid">
           <div className="foot-mark">
             <span className="word">
-              hy<em>gg</em>e
+              hygge
             </span>
             <p>
               a Danish café in the heart of Leuven. specialty coffee, smørrebrød,
