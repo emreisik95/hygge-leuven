@@ -311,9 +311,9 @@ export default function PageContent({
                   i === 0
                     ? "/assets/coffee.png"
                     : i === 1
-                    ? "/assets/smorrebrod-photo.png"
+                    ? "/assets/illu-smorrebrod.png"
                     : "/assets/bun-photo.png";
-                const w = i === 0 ? 1200 : 800;
+                const w = i === 0 ? 1200 : i === 1 ? 1395 : 800;
                 return (
                   <article className="pillar" key={i}>
                     <div className="num numeral">{item.eyebrow}</div>
