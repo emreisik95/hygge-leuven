@@ -381,11 +381,13 @@ nav.top-nav a:hover::after {
 .wordmark {
   font-family: var(--font-serif), serif;
   font-weight: 400;
-  font-size: clamp(160px, 18vw, 280px);
+  font-size: clamp(96px, 22vw, 280px);
   line-height: 0.84;
   letter-spacing: -0.035em;
   margin: 0;
   position: relative;
+  word-break: keep-all;
+  overflow-wrap: normal;
 }
 
 .wordmark em {
@@ -623,7 +625,6 @@ nav.top-nav a:hover::after {
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
-  min-height: 380px;
 }
 
 .story-photo .photo {
@@ -1351,12 +1352,17 @@ footer.foot {
   }
   .story {
     grid-template-columns: 1fr;
+    gap: 32px;
   }
   .story-photo {
-    max-width: 480px;
+    max-width: 320px;
     margin: 0 auto;
     width: 100%;
     justify-content: center;
+  }
+  .story-photo .photo {
+    width: 60%;
+    max-width: 220px;
   }
   .pillars-grid {
     grid-template-columns: 1fr;
