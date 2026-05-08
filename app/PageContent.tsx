@@ -277,17 +277,8 @@ export default function PageContent({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 className="photo illu"
-                src="/assets/illu-chair.png"
+                src="/assets/illu-chair-v2.png"
                 alt="an empty bistro chair beside a side table with a steaming cup, an open invitation"
-                width={1200}
-                height={1200}
-                loading="lazy"
-              />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                className="photo cup"
-                src="/assets/coffee.png"
-                alt="a top-down cup of black coffee"
                 width={1200}
                 height={1200}
                 loading="lazy"
