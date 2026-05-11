@@ -46,8 +46,7 @@ export type SiteTextField = keyof typeof TEXT_NAMESPACES;
 const SITE_TEXT_DEFAULTS: Record<SiteTextField, string> = {
   brandName: "hygge",
   definitionLabel: "Danish [hyü-ge] noun",
-  definitionBody:
-    "A feeling of warmth, comfort, and coziness when you feel at peace and able to enjoy simple pleasures and being in the moment.",
+  definitionBody: "a feeling of cozy contentment.",
   tagline: "• specialty coffee • pastry • danish lunch",
   inviteLine: "Slow down a little.",
   inviteSub: "A quiet corner is waiting.",
