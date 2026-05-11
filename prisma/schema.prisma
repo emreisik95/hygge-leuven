@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model SiteContent {
+  id              Int      @id @default(1)
+  brandName       String   @default("hygge")
+  definitionLine1 String   @default("Danish [hyü-ge] noun")
+  definitionLine2 String   @default("a feeling of cozy contentment.")
+  heroLine        String   @default("come on in,\nthe kettle's already on.")
+  subtitle        String   @default("specialty coffee, danish lunch, and small soft moments.")
+  statusLabel     String   @default("NOW OPEN")
+  statusSub       String   @default("SEVEN DAYS A WEEK")
+  isOpen          Boolean  @default(true)
+  addressLine1    String   @default("NAAMSESTRAAT 55P")
+  addressLine2    String   @default("LEUVEN 3000")
+  hoursToday      String   @default("TODAY 8:00 – 18:00")
+  hoursWeekend    String   @default("WEEKEND 9:00 – 19:00")
+  findUsLabel     String   @default("FIND US")
+  findUsUrl       String   @default("https://www.google.com/maps?q=Naamsestraat+55P,+3000+Leuven,+Belgium")
+  instagramHandle String   @default("@hygge.leuven")
+  instagramUrl    String   @default("https://www.instagram.com/hygge.leuven/")
+  bgImagePath     String   @default("/assets/bg.png")
+  peopleImagePath String   @default("/assets/people.png")
+  metaTitle       String   @default("hygge — Danish café in Leuven")
+  metaDescription String   @default("Specialty coffee, smørrebrød, and pastry. Naamsestraat 55P, Leuven.")
+  updatedAt       DateTime @updatedAt
+}
