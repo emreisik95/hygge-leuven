@@ -190,11 +190,15 @@ export function Landing({
         <div className="hero">
           <div className="card">
             <h1 className="brand">{c.brandName}</h1>
-            <p className="def-label">{c.definitionLabel}</p>
-            <p className="def-body">{c.definitionBody}</p>
-            <p className="tagline">{c.tagline}</p>
+            {c.showDefinition ? (
+              <>
+                <p className="def-label">{c.definitionLabel}</p>
+                <p className="def-body">{c.definitionBody}</p>
+              </>
+            ) : null}
+            {c.showTagline ? <p className="tagline">{c.tagline}</p> : null}
             <img src="/assets/people.png" alt="" aria-hidden="true" className="people" />
-            {c.inviteLine || c.inviteSub ? (
+            {c.showInvite && (c.inviteLine || c.inviteSub) ? (
               <div className="invite">
                 {c.inviteLine ? <p className="invite-line">{c.inviteLine}</p> : null}
                 {c.inviteSub ? <p className="invite-sub">{c.inviteSub}</p> : null}
@@ -207,29 +211,37 @@ export function Landing({
         </div>
 
         <footer className="foot">
-          <div className="meta">
-            <div className="meta-item">
-              <span role="img" aria-label={dotAriaLabel} className={`dot ${status.isOpen ? "" : "closed"}`} />
-              <div>
-                <div className="label">{statusLabel}</div>
-                {statusSub ? <div className="sub">{statusSub}</div> : null}
-              </div>
+          {c.showStatus || c.showAddress || c.showHours ? (
+            <div className="meta">
+              {c.showStatus ? (
+                <div className="meta-item">
+                  <span role="img" aria-label={dotAriaLabel} className={`dot ${status.isOpen ? "" : "closed"}`} />
+                  <div>
+                    <div className="label">{statusLabel}</div>
+                    {statusSub ? <div className="sub">{statusSub}</div> : null}
+                  </div>
+                </div>
+              ) : null}
+              {c.showAddress ? (
+                <div className="meta-item">
+                  <PinIcon />
+                  <div>
+                    <div className="label">{c.addressLine1}</div>
+                    <div className="sub">{c.addressLine2}</div>
+                  </div>
+                </div>
+              ) : null}
+              {c.showHours ? (
+                <div className="meta-item">
+                  <ClockIcon />
+                  <div>
+                    <div className="label">{hoursTodayLine}</div>
+                    {hoursWeekendLine ? <div className="sub">{hoursWeekendLine}</div> : null}
+                  </div>
+                </div>
+              ) : null}
             </div>
-            <div className="meta-item">
-              <PinIcon />
-              <div>
-                <div className="label">{c.addressLine1}</div>
-                <div className="sub">{c.addressLine2}</div>
-              </div>
-            </div>
-            <div className="meta-item">
-              <ClockIcon />
-              <div>
-                <div className="label">{hoursTodayLine}</div>
-                {hoursWeekendLine ? <div className="sub">{hoursWeekendLine}</div> : null}
-              </div>
-            </div>
-          </div>
+          ) : null}
 
           <div className="actions">
             {hasMenu ? (

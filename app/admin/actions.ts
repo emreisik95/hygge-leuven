@@ -33,6 +33,14 @@ async function requireAdmin() {
 const SITE_SCALAR_FIELDS = ["addressLine1", "addressLine2", "findUsUrl", "instagramUrl"] as const;
 const NUMBER_FIELDS = ["mapLat", "mapLng", "mapZoom"] as const;
 const INT_FIELDS = new Set<string>(["mapZoom"]);
+const BOOL_FIELDS = [
+  "showDefinition",
+  "showTagline",
+  "showInvite",
+  "showStatus",
+  "showAddress",
+  "showHours",
+] as const;
 
 function pickScalars(formData: FormData): SiteDraft["scalars"] {
   const out: Record<string, string | number | boolean> = {};
@@ -45,6 +53,14 @@ function pickScalars(formData: FormData): SiteDraft["scalars"] {
     if (typeof v === "string" && v.trim() !== "") {
       const n = INT_FIELDS.has(k) ? parseInt(v, 10) : parseFloat(v);
       if (Number.isFinite(n)) out[k] = n;
+    }
+  }
+  // Visibility booleans only included when the form actually rendered them
+  // (sentinel `_visibilityForm=1` so we don't clobber values from forms that
+  // omit these fields).
+  if (formData.get("_visibilityForm") === "1") {
+    for (const k of BOOL_FIELDS) {
+      out[k] = formData.get(k) === "on";
     }
   }
   return out as SiteDraft["scalars"];

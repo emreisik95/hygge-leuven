@@ -22,6 +22,12 @@ model SiteContent {
   mapLat          Float    @default(50.876568)
   mapLng          Float    @default(4.700649)
   mapZoom         Int      @default(16)
+  showDefinition  Boolean  @default(true)
+  showTagline     Boolean  @default(true)
+  showInvite      Boolean  @default(true)
+  showStatus      Boolean  @default(true)
+  showAddress     Boolean  @default(true)
+  showHours       Boolean  @default(true)
   publishedAt     DateTime?
   draftJson       String?
   updatedAt       DateTime @updatedAt

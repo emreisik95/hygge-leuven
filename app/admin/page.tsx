@@ -63,6 +63,24 @@ export default async function AdminPage({
       ) : null}
 
       <form action={updateContent} aria-label="Site content editor">
+        <input type="hidden" name="_visibilityForm" value="1" />
+
+        <section className="section">
+          <h2>Visibility</h2>
+          <p className="hint">
+            Hide individual landing-page sections without deleting their content. Toggles take
+            effect after publish.
+          </p>
+          <div className="visibility-grid">
+            <Toggle name="showDefinition" label="Definition (label + body)" defaultChecked={c.showDefinition} />
+            <Toggle name="showTagline" label="Tagline (bullet line)" defaultChecked={c.showTagline} />
+            <Toggle name="showInvite" label="Invite (line + sub)" defaultChecked={c.showInvite} />
+            <Toggle name="showStatus" label="Status row (open/closed)" defaultChecked={c.showStatus} />
+            <Toggle name="showAddress" label="Address row" defaultChecked={c.showAddress} />
+            <Toggle name="showHours" label="Hours row" defaultChecked={c.showHours} />
+          </div>
+        </section>
+
         <section className="section">
           <h2>Hero</h2>
           <Field name="brandName" label="Brand name" defaultValue={c.brandName} />
@@ -237,4 +255,15 @@ function Textarea({
 
 function FieldRow({ children }: { children: React.ReactNode }) {
   return <div className="field-row">{children}</div>;
+}
+
+function Toggle({
+  name, label, defaultChecked,
+}: { name: string; label: string; defaultChecked: boolean }) {
+  return (
+    <label className="toggle" htmlFor={name}>
+      <input id={name} name={name} type="checkbox" defaultChecked={defaultChecked} />
+      <span>{label}</span>
+    </label>
+  );
 }

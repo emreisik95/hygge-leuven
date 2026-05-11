@@ -348,29 +348,29 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 @media (max-width: 720px) {
   .pane-landing { height: auto; max-height: none; min-height: 100dvh; overflow: visible; }
-  .hero { padding: 56px 24px 8px; gap: 14px; min-height: auto; overflow: visible; }
-  .card { gap: 12px; max-width: 440px; }
-  .brand { font-size: clamp(76px, 20vw, 120px); margin-bottom: 0; }
-  .def-label { margin-top: 16px; font-size: 14px; letter-spacing: 0.02em; }
-  .def-body { font-size: 16px; max-width: 32ch; line-height: 1.45; }
+  .hero { padding: 44px 24px 4px; gap: 8px; min-height: auto; overflow: visible; }
+  .card { gap: 8px; max-width: 440px; }
+  .brand { font-size: clamp(60px, 16vw, 96px); margin-bottom: 0; }
+  .def-label { margin-top: 8px; font-size: 13px; letter-spacing: 0.02em; }
+  .def-body { font-size: 14px; max-width: 32ch; line-height: 1.4; }
   .tagline { display: none; }
   .people {
     display: block;
-    width: clamp(200px, 64vw, 300px);
+    width: clamp(120px, 36vw, 180px);
     height: auto;
-    margin: 12px auto 4px;
+    margin: 4px auto 0;
     opacity: 1;
     object-fit: contain;
   }
-  .invite { margin-top: 4px; gap: 8px; }
-  .invite-line { font-size: clamp(24px, 6.4vw, 34px); line-height: 1.15; max-width: 22ch; margin: 0 auto; }
-  .invite-sub { font-size: 14px; max-width: 30ch; margin: 0 auto; }
+  .invite { margin-top: 2px; gap: 4px; }
+  .invite-line { font-size: clamp(20px, 5.4vw, 28px); line-height: 1.15; max-width: 22ch; margin: 0 auto; }
+  .invite-sub { font-size: 13px; max-width: 30ch; margin: 0 auto; }
   .scroll-cue { display: none; }
   .foot {
     border-top: none;
     background: none;
-    padding: 8px 24px max(24px, env(safe-area-inset-bottom));
-    gap: 14px;
+    padding: 4px 24px max(16px, env(safe-area-inset-bottom));
+    gap: 10px;
   }
   .meta {
     display: flex;
@@ -387,7 +387,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     justify-content: flex-start;
     align-items: center;
     width: 100%;
-    padding: 14px 4px;
+    padding: 10px 4px;
     border-top: 1px solid var(--rule);
     gap: 14px;
   }
@@ -396,8 +396,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .meta-item .label { font-weight: 500; font-size: 13px; letter-spacing: 0; }
   .meta-item .sub { font-size: 12px; opacity: 0.7; letter-spacing: 0; }
   .dot { margin-top: 0; }
-  .actions { gap: 10px; max-width: 440px; padding-top: 4px; }
-  .actions .btn { font-size: 12px; letter-spacing: 0.16em; padding: 14px 18px; }
+  .actions { gap: 8px; max-width: 440px; padding-top: 2px; }
+  .actions .btn { font-size: 12px; letter-spacing: 0.16em; padding: 12px 18px; min-height: 44px; }
 }
 
 .scroll-cue {
@@ -839,6 +839,29 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 .checkbox-row { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
 .checkbox-row input { width: 16px; height: 16px; accent-color: var(--tan); }
+
+.visibility-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+@media (min-width: 640px) { .visibility-grid { grid-template-columns: 1fr 1fr; } }
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+  user-select: none;
+  min-height: 44px;
+}
+.toggle input { width: 18px; height: 18px; accent-color: var(--tan); flex-shrink: 0; }
+.toggle:hover { background: rgba(255,255,255,0.04); }
 
 .thumb {
   display: block;

@@ -111,7 +111,20 @@ async function getBackgroundPath(): Promise<string> {
 export type SiteDraft = {
   scalars?: Partial<Pick<
     Awaited<ReturnType<typeof getSiteRow>>,
-    "isOpen" | "addressLine1" | "addressLine2" | "findUsUrl" | "instagramUrl" | "mapLat" | "mapLng" | "mapZoom"
+    | "isOpen"
+    | "addressLine1"
+    | "addressLine2"
+    | "findUsUrl"
+    | "instagramUrl"
+    | "mapLat"
+    | "mapLng"
+    | "mapZoom"
+    | "showDefinition"
+    | "showTagline"
+    | "showInvite"
+    | "showStatus"
+    | "showAddress"
+    | "showHours"
   >>;
   // texts: { "site.brandName": { EN: "hygge", NL: "hygge" } }
   texts?: Record<string, Partial<Record<Locale, string>>>;
@@ -152,6 +165,12 @@ export async function getContentForLocale(
     mapLat: row.mapLat,
     mapLng: row.mapLng,
     mapZoom: row.mapZoom,
+    showDefinition: row.showDefinition,
+    showTagline: row.showTagline,
+    showInvite: row.showInvite,
+    showStatus: row.showStatus,
+    showAddress: row.showAddress,
+    showHours: row.showHours,
   };
   let textOverlay = texts;
 
