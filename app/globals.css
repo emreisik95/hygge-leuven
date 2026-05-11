@@ -170,12 +170,13 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   font-family: var(--font-serif), "Didot LT Pro", Didot, "Bodoni 72", serif;
   color: var(--tan);
   font-weight: 700;
-  font-size: clamp(48px, min(14vw, 14dvh), 128px);
-  line-height: 0.95;
+  font-size: clamp(56px, min(13vw, 10dvh), 120px);
+  line-height: 1;
   letter-spacing: -0.02em;
   margin-bottom: 4px;
   max-width: 100%;
   word-break: keep-all;
+  flex-shrink: 0;
 }
 
 .def-label {
@@ -211,12 +212,17 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 .people {
-  display: block;
-  width: clamp(96px, 28vw, 160px);
-  height: auto;
-  margin-top: clamp(16px, 4vh, 56px);
-  opacity: 0.9;
-  object-fit: contain;
+  display: none;
+}
+@media (min-width: 720px) and (min-height: 800px) {
+  .people {
+    display: block;
+    width: clamp(120px, 18vw, 200px);
+    height: auto;
+    margin-top: clamp(16px, 4vh, 40px);
+    opacity: 0.9;
+    object-fit: contain;
+  }
 }
 
 .invite {
@@ -288,19 +294,19 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .dot.closed { background: #b04a2c; box-shadow: 0 0 0 4px rgba(176, 74, 44, 0.18); }
 
 .actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
   width: 100%;
-  max-width: 520px;
+  max-width: 360px;
 }
 .actions .btn {
+  width: 100%;
   min-height: 44px;
-  padding: 10px 14px;
+  padding: 12px 18px;
   font-size: 12px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
 }
-.actions .btn-primary { grid-column: 1 / -1; }
 
 .btn {
   display: inline-flex;
@@ -333,10 +339,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .foot { padding: 28px 56px 36px; gap: 16px; }
   .meta { grid-template-columns: repeat(3, 1fr); gap: 28px; font-size: 12px; max-width: none; }
   .meta-item:first-child { grid-column: auto; justify-content: flex-start; }
-  .actions { display: flex; flex-wrap: nowrap; justify-content: center; gap: 14px; max-width: none; }
-  .actions .btn { flex: 0 0 auto; min-width: 200px; padding: 14px 22px; font-size: 13px; letter-spacing: 0.12em; }
-  .actions .btn-primary { grid-column: auto; }
-  .people { width: clamp(160px, 22vw, 220px); max-height: none; }
+  .actions { flex-direction: row; flex-wrap: nowrap; justify-content: center; gap: 14px; max-width: none; }
+  .actions .btn { width: auto; flex: 0 0 auto; min-width: 200px; padding: 14px 22px; font-size: 13px; letter-spacing: 0.12em; }
 }
 
 .scroll-cue {
