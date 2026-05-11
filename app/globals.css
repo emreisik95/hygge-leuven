@@ -283,22 +283,19 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .dot.closed { background: #b04a2c; box-shadow: 0 0 0 4px rgba(176, 74, 44, 0.18); }
 
 .actions {
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
-  justify-content: center;
-  align-items: stretch;
   width: 100%;
   max-width: 520px;
 }
 .actions .btn {
-  flex: 1 1 auto;
-  min-width: 110px;
   min-height: 44px;
   padding: 10px 14px;
   font-size: 12px;
   letter-spacing: 0.1em;
 }
+.actions .btn-primary { grid-column: 1 / -1; }
 
 .btn {
   display: inline-flex;
@@ -331,8 +328,9 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .foot { padding: 28px 56px 36px; gap: 16px; }
   .meta { grid-template-columns: repeat(3, 1fr); gap: 28px; font-size: 12px; max-width: none; }
   .meta-item:first-child { grid-column: auto; justify-content: flex-start; }
-  .actions { flex-wrap: nowrap; gap: 14px; max-width: none; }
+  .actions { display: flex; flex-wrap: nowrap; justify-content: center; gap: 14px; max-width: none; }
   .actions .btn { flex: 0 0 auto; min-width: 200px; padding: 14px 22px; font-size: 13px; letter-spacing: 0.12em; }
+  .actions .btn-primary { grid-column: auto; }
   .people { width: clamp(160px, 22vw, 220px); max-height: none; }
 }
 
@@ -1037,9 +1035,6 @@ textarea[aria-invalid="true"] {
   padding: clamp(40px, 8vw, 56px) clamp(16px, 5vw, 28px) max(32px, env(safe-area-inset-bottom));
   align-items: center;
   justify-content: flex-start;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
 }
 .menu-wrap {
   width: 100%;
