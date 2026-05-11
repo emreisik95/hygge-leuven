@@ -1,7 +1,7 @@
 "use client";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { mapStyle } from "./map-style";
 import { createMarkerElement } from "./MapMarker";
@@ -12,6 +12,7 @@ type Props = { lat: number; lng: number; zoom: number; label?: string };
 export default function Map({ lat, lng, zoom, label }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
+  const [debugMsg, setDebugMsg] = useState<string>("init");
 
   useEffect(() => {
     if (!ref.current || mapRef.current) return;
@@ -22,8 +23,13 @@ export default function Map({ lat, lng, zoom, label }: Props) {
     let intersectionObserver: IntersectionObserver | undefined;
     let teardownInteractions: (() => void) | void;
 
+    setDebugMsg("effect-fired");
+
     (async () => {
+      try {
+      setDebugMsg("importing maplibre");
       const maplibregl = (await import("maplibre-gl")).default;
+      setDebugMsg("imported");
 
       if (cancelled || !ref.current || mapRef.current) return;
 
@@ -66,8 +72,13 @@ export default function Map({ lat, lng, zoom, label }: Props) {
         "bottom-right",
       );
 
+      setDebugMsg("constructed");
+      map.on("error", (e) => {
+        setDebugMsg(`maperr: ${(e as { error?: { message?: string } }).error?.message ?? "unknown"}`);
+      });
       map.on("load", () => {
         if (cancelled) return;
+        setDebugMsg("loaded");
         new maplibregl.Marker({ element: createMarkerElement(label) })
           .setLngLat([lng, lat])
           .addTo(map);
@@ -99,6 +110,9 @@ export default function Map({ lat, lng, zoom, label }: Props) {
         );
         intersectionObserver.observe(container);
       }
+      } catch (err) {
+        setDebugMsg(`thrown: ${err instanceof Error ? err.message : String(err)}`);
+      }
     })();
 
     return () => {
@@ -113,5 +127,26 @@ export default function Map({ lat, lng, zoom, label }: Props) {
     };
   }, [lat, lng, zoom, label]);
 
-  return <div ref={ref} className="map-canvas" />;
+  return (
+    <>
+      <div ref={ref} className="map-canvas" />
+      <div
+        style={{
+          position: "absolute",
+          top: 8,
+          left: 8,
+          padding: "4px 8px",
+          background: "rgba(0,0,0,0.8)",
+          color: "#fff",
+          fontFamily: "monospace",
+          fontSize: 11,
+          zIndex: 9999,
+          borderRadius: 4,
+          pointerEvents: "none",
+        }}
+      >
+        map: {debugMsg}
+      </div>
+    </>
+  );
 }
