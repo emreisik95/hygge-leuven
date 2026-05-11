@@ -415,6 +415,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .insta-feed { min-height: 280px; }
 }
 .insta-feed > div { width: 100%; }
+.behold-feed { display: block; width: 100%; }
 
 .insta-grid {
   list-style: none;

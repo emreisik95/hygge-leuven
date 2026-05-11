@@ -39,6 +39,7 @@ export default async function PreviewPage() {
       locale={locale}
       prismaLocale={prismaLocale}
       preview
+      beholdFeedId={process.env.BEHOLD_FEED_ID ?? ""}
     />
   );
 }

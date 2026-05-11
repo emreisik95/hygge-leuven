@@ -37,6 +37,7 @@ export default async function Home() {
       menu={menu}
       locale={locale}
       prismaLocale={prismaLocale}
+      beholdFeedId={process.env.BEHOLD_FEED_ID ?? ""}
     />
   );
 }

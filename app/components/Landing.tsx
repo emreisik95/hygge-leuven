@@ -11,6 +11,7 @@ import {
 } from "@/lib/hours";
 import Map from "./MapClient";
 import { LocaleSwitcher } from "./LocaleSwitcher";
+import { BeholdWidget } from "./BeholdWidget";
 
 const CAFE_TZ = "Europe/Brussels";
 
@@ -35,6 +36,7 @@ export type LandingProps = {
   locale: LocaleCode;
   prismaLocale: Locale;
   preview?: boolean;
+  beholdFeedId?: string;
 };
 
 function PinIcon() {
@@ -123,6 +125,7 @@ export function Landing({
   locale,
   prismaLocale,
   preview,
+  beholdFeedId,
 }: LandingProps) {
   const hasMenu = menu.some((cat) => cat.items.length > 0);
   const bgLayers = bgPaths.length > 0 ? bgPaths : [c.bgImagePath];
@@ -252,7 +255,9 @@ export function Landing({
           </header>
 
           <div className="insta-feed">
-            {instaPosts.length > 0 ? (
+            {beholdFeedId ? (
+              <BeholdWidget feedId={beholdFeedId} />
+            ) : instaPosts.length > 0 ? (
               <ul className="insta-grid" role="list">
                 {instaPosts.map((p) => {
                   const alt = p.caption ? truncate(p.caption, 80) : "Instagram post";
