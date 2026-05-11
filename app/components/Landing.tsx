@@ -9,7 +9,7 @@ import {
   isTomorrow,
   tmpl,
 } from "@/lib/hours";
-import Map from "./MapClient";
+import { OsmMap } from "./OsmMap";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { BeholdWidget } from "./BeholdWidget";
 
@@ -354,7 +354,7 @@ export function Landing({
 
       <section className="pane pane-map" id="map" aria-labelledby="map-heading">
         <a href="#landing" className="skip-link">Skip map</a>
-        <Map lat={c.mapLat} lng={c.mapLng} zoom={c.mapZoom} label={c.brandName} />
+        <OsmMap lat={c.mapLat} lng={c.mapLng} zoom={c.mapZoom} label={c.brandName} />
         <div className="map-overlay">
           <div className="map-card">
             <h2 className="map-heading" id="map-heading">{c.mapHeading}</h2>
