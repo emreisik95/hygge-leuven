@@ -178,6 +178,9 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   word-break: keep-all;
   flex-shrink: 0;
 }
+@media (max-height: 480px) {
+  .brand { font-size: clamp(36px, 8dvh, 64px); margin-bottom: 2px; }
+}
 
 .def-label {
   font-family: var(--font-editorial), serif;
