@@ -56,6 +56,15 @@ export default function Map({ lat, lng, zoom, label }: Props) {
 
       mapRef.current = map;
 
+      const w0 = container.clientWidth;
+      const h0 = container.clientHeight;
+      setDebugMsg(`pre-resize ${w0}×${h0}`);
+      requestAnimationFrame(() => {
+        if (cancelled) return;
+        map.resize();
+        setDebugMsg(`resized ${container.clientWidth}×${container.clientHeight}`);
+      });
+
       map.addControl(
         new maplibregl.AttributionControl({
           compact: true,
