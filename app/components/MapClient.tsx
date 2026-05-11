@@ -32,7 +32,7 @@ export default function MapClient(props: Props) {
           }
         }
       },
-      { rootMargin: "100% 0px 100% 0px" },
+      { rootMargin: "200% 0px 200% 0px" },
     );
     io.observe(node);
     return () => io.disconnect();
