@@ -2,8 +2,10 @@
 set -e
 
 mkdir -p /data/uploads
+chown -R nextjs:nodejs /data
 
 echo "→ running prisma migrate deploy"
-node ./node_modules/prisma/build/index.js migrate deploy
+su-exec nextjs:nodejs node ./node_modules/prisma/build/index.js migrate deploy
 
-exec "$@"
+echo "→ starting app as nextjs"
+exec su-exec nextjs:nodejs "$@"

@@ -30,6 +30,7 @@ ENV DATABASE_URL="file:/data/db.sqlite"
 ENV UPLOAD_DIR="/data/uploads"
 
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
+RUN apk add --no-cache su-exec
 
 # standalone output
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
@@ -53,7 +54,6 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 RUN mkdir -p /data && chown -R nextjs:nodejs /data
 VOLUME ["/data"]
 
-USER nextjs
 EXPOSE 3000
 
 ENTRYPOINT ["docker-entrypoint.sh"]
