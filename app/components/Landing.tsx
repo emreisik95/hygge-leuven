@@ -183,6 +183,7 @@ export function Landing({
       </div>
 
       <section className="pane pane-landing" id="landing">
+        <LocaleSwitcher current={locale} />
         <div className="hero">
           <div className="card">
             <h1 className="brand">{c.brandName}</h1>
@@ -240,8 +241,6 @@ export function Landing({
               <InstagramIcon /> {c.instagramHandle}
             </a>
           </div>
-
-          <LocaleSwitcher current={locale} />
         </footer>
       </section>
 

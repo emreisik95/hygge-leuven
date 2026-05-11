@@ -942,10 +942,17 @@ textarea[aria-invalid="true"] {
 .locale-switcher {
   display: inline-flex;
   gap: 4px;
-  margin-top: 4px;
   padding: 4px;
   background: var(--pill-bg);
   border-radius: 999px;
+}
+.pane-landing > .locale-switcher {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 12px);
+  left: calc(env(safe-area-inset-left) + 12px);
+  z-index: 5;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .locale-pill {
   display: inline-flex;
@@ -962,7 +969,10 @@ textarea[aria-invalid="true"] {
   text-transform: uppercase;
 }
 @media (min-width: 720px) {
-  .locale-switcher { margin-top: 12px; }
+  .pane-landing > .locale-switcher {
+    top: calc(env(safe-area-inset-top) + 20px);
+    left: calc(env(safe-area-inset-left) + 24px);
+  }
 }
 .locale-pill.is-active {
   background: var(--ink);
