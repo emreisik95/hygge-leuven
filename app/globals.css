@@ -346,6 +346,60 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .actions .btn { width: auto; flex: 0 0 auto; min-width: 200px; padding: 14px 22px; font-size: 13px; letter-spacing: 0.12em; }
 }
 
+@media (max-width: 720px) {
+  .pane-landing { height: auto; max-height: none; min-height: 100dvh; overflow: visible; }
+  .hero { padding: 56px 24px 8px; gap: 14px; min-height: auto; overflow: visible; }
+  .card { gap: 12px; max-width: 440px; }
+  .brand { font-size: clamp(76px, 20vw, 120px); margin-bottom: 0; }
+  .def-label { margin-top: 16px; font-size: 14px; letter-spacing: 0.02em; }
+  .def-body { font-size: 16px; max-width: 32ch; line-height: 1.45; }
+  .tagline { display: none; }
+  .people {
+    display: block;
+    width: clamp(200px, 64vw, 300px);
+    height: auto;
+    margin: 12px auto 4px;
+    opacity: 1;
+    object-fit: contain;
+  }
+  .invite { margin-top: 4px; gap: 8px; }
+  .invite-line { font-size: clamp(24px, 6.4vw, 34px); line-height: 1.15; max-width: 22ch; margin: 0 auto; }
+  .invite-sub { font-size: 14px; max-width: 30ch; margin: 0 auto; }
+  .scroll-cue { display: none; }
+  .foot {
+    border-top: none;
+    background: none;
+    padding: 8px 24px max(24px, env(safe-area-inset-bottom));
+    gap: 14px;
+  }
+  .meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 440px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
+  .meta-item,
+  .meta-item:first-child {
+    grid-column: auto;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    padding: 14px 4px;
+    border-top: 1px solid var(--rule);
+    gap: 14px;
+  }
+  .meta-item:last-child { border-bottom: 1px solid var(--rule); }
+  .meta-item .icon { width: 18px; height: 18px; margin-top: 0; opacity: 0.85; }
+  .meta-item .label { font-weight: 500; font-size: 13px; letter-spacing: 0; }
+  .meta-item .sub { font-size: 12px; opacity: 0.7; letter-spacing: 0; }
+  .dot { margin-top: 0; }
+  .actions { gap: 10px; max-width: 440px; padding-top: 4px; }
+  .actions .btn { font-size: 12px; letter-spacing: 0.16em; padding: 14px 18px; }
+}
+
 .scroll-cue {
   display: inline-flex;
   align-items: center;
