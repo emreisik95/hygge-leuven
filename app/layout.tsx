@@ -1,13 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Serif_Display, Outfit, Fraunces } from "next/font/google";
+import { cookies } from "next/headers";
+import { GFS_Didot, Outfit, Fraunces } from "next/font/google";
 import "./globals.css";
-import { getContent } from "@/lib/db";
+import { getContentForLocale } from "@/lib/db";
+import { LOCALE_COOKIE, parseLocale, toPrismaLocale } from "@/lib/locale";
 
-const dmSerif = DM_Serif_Display({
+const gfsDidot = GFS_Didot({
   variable: "--font-serif",
-  subsets: ["latin"],
+  subsets: ["greek", "latin"],
   weight: ["400"],
-  style: ["normal", "italic"],
 });
 
 const outfit = Outfit({
@@ -23,7 +24,9 @@ const fraunces = Fraunces({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const c = await getContent();
+  const store = await cookies();
+  const locale = parseLocale(store.get(LOCALE_COOKIE)?.value);
+  const c = await getContentForLocale(toPrismaLocale(locale));
   return {
     title: c.metaTitle,
     description: c.metaDescription,
@@ -32,6 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: c.metaDescription,
       type: "website",
       siteName: c.brandName,
+      locale: locale.toLowerCase(),
     },
   };
 }
@@ -40,18 +44,22 @@ export const viewport: Viewport = {
   themeColor: "#3a2a1f",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const store = await cookies();
+  const locale = parseLocale(store.get(LOCALE_COOKIE)?.value);
   return (
     <html
-      lang="en"
-      className={`${dmSerif.variable} ${outfit.variable} ${fraunces.variable}`}
+      lang={locale.toLowerCase()}
+      className={`${gfsDidot.variable} ${outfit.variable} ${fraunces.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <a href="#landing" className="skip-link">Skip to content</a>
+        {children}
+      </body>
     </html>
   );
 }

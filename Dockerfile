@@ -17,6 +17,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # placeholder URL for build-time prisma generate (build uses no DB)
 ENV DATABASE_URL="file:/tmp/build.db"
 RUN npx prisma generate
+RUN npx prisma migrate deploy
 RUN npm run build
 
 # ───── runner ─────
