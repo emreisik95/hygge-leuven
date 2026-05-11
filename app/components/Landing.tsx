@@ -260,7 +260,7 @@ export function Landing({
                   return (
                     <li key={p.id} className="insta-grid-item">
                       <a href={p.permalink} target="_blank" rel="noreferrer" className="insta-grid-link">
-                        <img src={p.mediaUrl} alt={alt} loading="lazy" />
+                        <img src={p.mediaUrl} alt={alt} loading="lazy" decoding="async" width={320} height={320} />
                         <span className="sr-only"> (opens in new tab)</span>
                       </a>
                     </li>

@@ -46,9 +46,8 @@ export default async function LoginPage({
   }
 
   return (
-    <div className="admin-shell">
-      <div className="admin-wrap">
-        <div className="login-card">
+    <div className="admin-shell login-shell">
+      <div className="login-card">
           <h1>admin</h1>
           {error ? (
             <div id="login-error" className="flash err" role="alert" aria-live="assertive">
@@ -82,7 +81,6 @@ export default async function LoginPage({
             <button type="submit" className="btn-save">Sign in</button>
           </form>
         </div>
-      </div>
     </div>
   );
 }

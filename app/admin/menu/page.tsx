@@ -32,16 +32,7 @@ export default async function AdminMenuPage({
 
   return (
     <>
-      <h1
-        style={{
-          fontFamily: "var(--font-serif), serif",
-          fontSize: 28,
-          color: "var(--tan)",
-          marginBottom: 24,
-        }}
-      >
-        menu
-      </h1>
+      <h1 className="admin-page-heading">menu</h1>
 
       {params.undo && params.undoMsg ? (
         <UndoFlash

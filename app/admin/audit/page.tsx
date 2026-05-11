@@ -115,7 +115,7 @@ export default async function AuditPage({
                   {row.diff ? (
                     <details>
                       <summary>view</summary>
-                      <pre style={{ background: "#f4f1ec", padding: 8, borderRadius: 4, overflowX: "auto", fontSize: 12, whiteSpace: "pre-wrap" }}>
+                      <pre style={{ background: "rgba(0,0,0,0.25)", color: "var(--ink)", padding: 8, borderRadius: 4, overflowX: "auto", fontSize: 12, whiteSpace: "pre-wrap", wordBreak: "break-word", maxWidth: "100%" }}>
                         {formatDiff(row.diff)}
                       </pre>
                     </details>

@@ -173,35 +173,25 @@ function DraftBanner({
   discardAction: () => Promise<void>;
 }) {
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      style={{
-        background: "#fff7d6",
-        border: "1px solid #e8c95b",
-        padding: "12px 16px",
-        borderRadius: 6,
-        marginBottom: 18,
-      }}
-    >
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap", alignItems: "center" }}>
+    <div role="status" aria-live="polite" className="admin-draft-banner">
+      <div className="admin-draft-banner-row">
         <strong>Draft has unpublished changes ({summary.length}).</strong>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div className="admin-draft-banner-actions">
           <Link href="/admin/preview" className="admin-nav-link">Preview</Link>
-          <form action={publishAction} style={{ display: "inline" }}>
+          <form action={publishAction}>
             <button type="submit" className="btn-save">Publish</button>
           </form>
-          <form action={discardAction} style={{ display: "inline" }}>
-            <button type="submit" className="btn-save" style={{ background: "#b33", color: "#fff" }}>
+          <form action={discardAction}>
+            <button type="submit" className="btn-save btn-danger-solid">
               Discard draft
             </button>
           </form>
         </div>
       </div>
       {summary.length > 0 ? (
-        <details style={{ marginTop: 8 }}>
+        <details>
           <summary>What changed</summary>
-          <ul style={{ paddingLeft: 18, lineHeight: 1.5, marginTop: 6, fontSize: 13 }}>
+          <ul>
             {summary.map((entry) => (
               <li key={entry.field}>
                 <code>{entry.field}</code>: <s>{entry.from || "(empty)"}</s> → <strong>{entry.to || "(empty)"}</strong>
