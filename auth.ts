@@ -20,15 +20,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const email = String(creds?.email ?? "").trim().toLowerCase();
         const password = String(creds?.password ?? "");
         if (!email || !password) return null;
-        if (email !== ADMIN_EMAIL.toLowerCase()) return null;
-        let ok = false;
-        if (ADMIN_PASSWORD_HASH) {
-          ok = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
-        } else if (ADMIN_PASSWORD) {
-          ok = password === ADMIN_PASSWORD;
+
+        // 1. Bootstrap admin from env — always available so an operator can
+        //    never be locked out, even if the AdminUser table is empty.
+        if (email === ADMIN_EMAIL.toLowerCase()) {
+          let ok = false;
+          if (ADMIN_PASSWORD_HASH) {
+            ok = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
+          } else if (ADMIN_PASSWORD) {
+            ok = password === ADMIN_PASSWORD;
+          }
+          if (ok) return { id: "admin", email: ADMIN_EMAIL, name: "Admin" };
         }
-        if (!ok) return null;
-        return { id: "admin", email: ADMIN_EMAIL, name: "Admin" };
+
+        // 2. DB-backed admins. Dynamic import keeps prisma (Node-only
+        //    better-sqlite3) out of the proxy/edge bundle — authorize only
+        //    runs in the Node auth route, never in the proxy.
+        const { verifyAdminCredentials } = await import("@/lib/admin-users");
+        return await verifyAdminCredentials(email, password);
       },
     }),
   ],

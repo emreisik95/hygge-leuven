@@ -130,6 +130,19 @@ model Setting {
   updatedAt DateTime @updatedAt
 }
 
+// DB-backed admin accounts that can sign in to the panel, alongside the single
+// bootstrap admin defined via ADMIN_EMAIL/ADMIN_PASSWORD(_HASH) env vars (which
+// always works so an operator can never be locked out). Passwords are stored as
+// bcrypt hashes only. Managed from /admin/users.
+model AdminUser {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
 // Newsletter opt-ins captured by the (flag-gated) signup form.
 model Subscriber {
   id        Int      @id @default(autoincrement())

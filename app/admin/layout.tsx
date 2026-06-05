@@ -12,6 +12,7 @@ const NAV_LINKS: AdminNavLink[] = [
   { label: "Hours", href: "/admin/hours" },
   { label: "Instagram", href: "/admin/instagram" },
   { label: "Features", href: "/admin/features" },
+  { label: "Admins", href: "/admin/users" },
   { label: "Audit", href: "/admin/audit" },
   { label: "Preview", href: "/admin/preview" },
 ];

@@ -817,6 +817,59 @@
   gap: 6px;
 }
 
+/* ── admin users (people with panel access) ─────────────────────────────────── */
+.admin-shell .admin-user-list {
+  list-style: none;
+  margin: var(--a-s3) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s2);
+}
+.admin-shell .admin-user-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--a-s3);
+  padding: var(--a-s3) var(--a-s4);
+  border: 1px solid var(--a-line);
+  border-radius: var(--a-r-sm);
+  background: var(--a-surface-2);
+}
+.admin-shell .admin-user-row-bootstrap {
+  border-style: dashed;
+  background: var(--a-input);
+}
+.admin-shell .admin-user-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.admin-shell .admin-user-email {
+  font-size: 14px;
+  font-weight: 600;
+  word-break: break-all;
+}
+.admin-shell .admin-user-name {
+  font-size: 12px;
+  color: var(--a-text-dim);
+}
+.admin-shell .admin-user-tag {
+  flex: 0 0 auto;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--a-text-dim);
+}
+.admin-shell .admin-user-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s3);
+  max-width: 420px;
+  margin-top: var(--a-s3);
+}
+
 /* ── misc ─────────────────────────────────────────────────────────────────── */
 .admin-shell pre {
   background: var(--a-input);
