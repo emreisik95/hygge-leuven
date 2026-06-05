@@ -12,6 +12,11 @@ const RULES: { code: string; label: string; words: RegExp }[] = [
   { code: "df", label: "Dairy-free", words: /\b(dairy[\s-]?free|oat milk|lactose[\s-]?free)\b/i },
 ];
 
+// The full set of tags we can infer, in registry order — used by the optional
+// allergen legend so the key shown to visitors always matches what dietaryTags
+// can actually produce.
+export const DIETARY_LEGEND: DietaryTag[] = RULES.map(({ code, label }) => ({ code, label }));
+
 export function dietaryTags(name: string, description: string): DietaryTag[] {
   const hay = `${name} ${description}`;
   const out: DietaryTag[] = [];

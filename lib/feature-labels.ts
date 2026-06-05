@@ -118,4 +118,30 @@ export const FEATURE_LABELS = {
     dismiss: "Dismiss drink suggestion",
   },
   whatsapp: { label: "Chat with us on WhatsApp" },
+  hoursCountdown: {
+    opensIn: "Opens in {t}",
+    closesIn: "Closes in {t}",
+  },
+  menuQuickNav: { label: "Jump to a menu section" },
+  allergen: {
+    heading: "Dietary key",
+    note: "A guide only — please tell us about allergies before you order.",
+  },
+  menuFavorites: {
+    add: "Save to favourites",
+    remove: "Saved — tap to remove",
+    summaryOne: "1 favourite saved on this device",
+    summaryMany: "{n} favourites saved on this device",
+    clear: "Clear",
+  },
+  printMenu: { label: "Print menu" },
+  groupBooking: { label: "Group booking", subject: "Group booking enquiry" },
+  takeaway: { label: "Order takeaway", subject: "Takeaway order" },
+  feedback: {
+    heading: "How was your visit?",
+    body: "We read every note. Tell us what made your morning — or what we could do better.",
+    button: "Share a little feedback",
+    subject: "Feedback for hygge",
+    dismiss: "Dismiss feedback prompt",
+  },
 } as const;

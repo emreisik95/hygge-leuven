@@ -49,6 +49,14 @@ export const FLAG_KEYS = [
   "valuesStrip",
   "openingTimeline",
   "neighbourhoodGuide",
+  "hoursCountdown",
+  "menuQuickNav",
+  "allergenLegend",
+  "menuFavorites",
+  "printMenu",
+  "groupBookingCta",
+  "takeawayCta",
+  "feedbackPrompt",
 ] as const;
 
 export type FlagKey = (typeof FLAG_KEYS)[number];
@@ -342,6 +350,70 @@ export const FLAG_REGISTRY: FlagMeta[] = [
     description:
       "Lists a few nearby Leuven spots — a square, a park, a bookshop, a museum — each with a short note and a walk time.",
     group: "Content",
+    default: false,
+  },
+  {
+    key: "hoursCountdown",
+    label: "Hours countdown",
+    description:
+      "Shows a live 'opens in / closes in' countdown next to the open/closed status on the landing card.",
+    group: "Engagement",
+    default: false,
+  },
+  {
+    key: "menuQuickNav",
+    label: "Menu quick-nav",
+    description:
+      "A row of chips at the top of the menu that jump to each category and highlight the one in view.",
+    group: "Menu",
+    default: false,
+  },
+  {
+    key: "allergenLegend",
+    label: "Dietary legend",
+    description:
+      "A small key under the menu header explaining the veg / vegan / gluten-free / dairy-free tag letters.",
+    group: "Menu",
+    default: false,
+  },
+  {
+    key: "menuFavorites",
+    label: "Menu favourites",
+    description:
+      "Lets visitors star menu items (saved on their own device) with a count badge and one-tap clear in the menu header.",
+    group: "Menu",
+    default: false,
+  },
+  {
+    key: "printMenu",
+    label: "Print menu",
+    description:
+      "Adds a 'Print menu' button that prints a clean, isolated copy of just the menu section.",
+    group: "Menu",
+    default: false,
+  },
+  {
+    key: "groupBookingCta",
+    label: "Group booking",
+    description:
+      "Adds a 'Group booking' action to the contact card that opens a pre-addressed enquiry email.",
+    group: "Commerce",
+    default: false,
+  },
+  {
+    key: "takeawayCta",
+    label: "Takeaway button",
+    description:
+      "Adds an 'Order takeaway' action that calls the café (or emails when no number is set) to order ahead.",
+    group: "Commerce",
+    default: false,
+  },
+  {
+    key: "feedbackPrompt",
+    label: "Feedback prompt",
+    description:
+      "A calm, dismissible 'how was your visit?' card near the foot of the page that opens a feedback email.",
+    group: "Engagement",
     default: false,
   },
 ];

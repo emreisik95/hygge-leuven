@@ -3518,3 +3518,248 @@ html[data-reduce-motion="on"] .loyalty-stamp { transition: none; }
 .pane-coffeeweek .back-link {
   margin-top: 24px;
 }
+
+/* ===================================================================
+   Batch C feature CSS — hand-authored
+   hoursCountdown · menuQuickNav · allergenLegend · menuFavorites ·
+   printMenu · feedbackPrompt
+   =================================================================== */
+
+/* hoursCountdown — a quiet line under the open/closed status */
+.hours-countdown {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--tan);
+  opacity: 0.9;
+}
+
+/* menuQuickNav — category jump chips */
+.menu-quicknav {
+  margin: 18px 0 4px;
+}
+.menu-quicknav-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.menu-quicknav-chip {
+  display: inline-block;
+  padding: 6px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--pill-bg);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+}
+.menu-quicknav-chip:hover {
+  border-color: var(--rule-strong);
+}
+.menu-quicknav-chip.is-active {
+  border-color: var(--rule-strong);
+  background: var(--ink);
+  color: var(--bg);
+}
+
+/* allergenLegend — dietary key under the menu header */
+.allergen-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin: 16px 0 4px;
+  padding: 12px 16px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--pill-bg);
+}
+.allergen-legend-heading {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tan);
+}
+.allergen-legend-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.allergen-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--ink);
+}
+.allergen-legend-label {
+  opacity: 0.9;
+}
+.allergen-legend-note {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink);
+  opacity: 0.7;
+}
+
+/* menuFavorites — per-item star + header count badge */
+.fav-star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-left: 6px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tan);
+  cursor: pointer;
+  vertical-align: middle;
+  transition: color 0.2s ease, transform 0.1s ease;
+}
+.fav-star:hover {
+  color: var(--ink);
+}
+.fav-star:active {
+  transform: scale(0.9);
+}
+.fav-star.is-saved {
+  color: var(--instagram);
+}
+.favorites-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0 0;
+  padding: 8px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--pill-bg);
+  font-size: 13px;
+  color: var(--ink);
+}
+.favorites-bar-count {
+  opacity: 0.9;
+}
+.favorites-bar-clear {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--tan);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.favorites-bar-clear:hover {
+  color: var(--ink);
+}
+
+/* printMenu — button lives in the menu CTA row */
+.menu-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.print-menu-btn {
+  cursor: pointer;
+}
+
+/* When printing via the menu button, isolate just the menu pane. Scoped to the
+   html.printing-menu class so a plain Cmd/Ctrl+P of the page is untouched. */
+@media print {
+  html.printing-menu body * {
+    visibility: hidden;
+  }
+  html.printing-menu .pane-menu,
+  html.printing-menu .pane-menu * {
+    visibility: visible;
+  }
+  html.printing-menu .pane-menu {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 24px;
+    background: #fff;
+    color: #1a1208;
+  }
+  html.printing-menu .pane-menu .menu-heading,
+  html.printing-menu .pane-menu .menu-category-heading,
+  html.printing-menu .pane-menu .menu-item-title,
+  html.printing-menu .pane-menu .menu-price,
+  html.printing-menu .pane-menu .menu-item-desc,
+  html.printing-menu .pane-menu .menu-sub {
+    color: #1a1208;
+  }
+  html.printing-menu .pane-menu .skip-link,
+  html.printing-menu .pane-menu .menu-cta,
+  html.printing-menu .pane-menu .menu-quicknav,
+  html.printing-menu .pane-menu .favorites-bar,
+  html.printing-menu .pane-menu .fav-star,
+  html.printing-menu .pane-menu .print-menu-btn {
+    display: none !important;
+  }
+  html.printing-menu .pane-menu .menu-item-photo {
+    display: none !important;
+  }
+}
+
+/* feedbackPrompt — calm dismissible card near the foot of the page */
+.pane-feedback {
+  display: flex;
+  justify-content: center;
+  padding: 48px 20px;
+}
+.feedback-card {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  padding: 28px 28px 30px;
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  background: var(--pill-bg);
+  text-align: center;
+}
+.feedback-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--tan);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.feedback-close:hover {
+  color: var(--ink);
+}
+.feedback-heading {
+  margin: 0 0 8px;
+  font-family: var(--font-editorial), var(--font-serif), serif;
+  font-size: 22px;
+  color: var(--ink);
+}
+.feedback-body {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+  opacity: 0.85;
+}

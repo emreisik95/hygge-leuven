@@ -35,6 +35,15 @@ import { ValuesStrip } from "./features/ValuesStrip";
 import { OpeningTimeline } from "./features/OpeningTimeline";
 import { NeighbourhoodGuide } from "./features/NeighbourhoodGuide";
 import { MenuSearch } from "./features/MenuSearch";
+import { HoursCountdown } from "./features/HoursCountdown";
+import { MenuQuickNav } from "./features/MenuQuickNav";
+import { AllergenLegend } from "./features/AllergenLegend";
+import { FavoriteStar } from "./features/FavoriteStar";
+import { FavoritesBar } from "./features/FavoritesBar";
+import { PrintMenu } from "./features/PrintMenu";
+import { GroupBookingCta } from "./features/GroupBookingCta";
+import { TakeawayCta } from "./features/TakeawayCta";
+import { FeedbackPrompt } from "./features/FeedbackPrompt";
 
 const CAFE_TZ = "Europe/Brussels";
 
@@ -301,6 +310,14 @@ export function Landing({
                       {flags.liveClock ? <LiveClock locale={BCP47[locale]} /> : null}
                     </div>
                     {statusSub ? <div className="sub">{statusSub}</div> : null}
+                    {flags.hoursCountdown ? (
+                      <HoursCountdown
+                        isOpen={status.isOpen}
+                        nextChangeISO={status.nextChange?.toISOString()}
+                        opensInTemplate={L.hoursCountdown.opensIn}
+                        closesInTemplate={L.hoursCountdown.closesIn}
+                      />
+                    ) : null}
                   </div>
                 </div>
               ) : null}
@@ -467,6 +484,24 @@ export function Landing({
                   noResults={L.menuSearch.noResults}
                 />
               ) : null}
+              {flags.menuQuickNav ? (
+                <MenuQuickNav
+                  categories={menu
+                    .filter((cat) => cat.items.length > 0)
+                    .map((cat) => ({ id: String(cat.id), label: cat.label }))}
+                  label={L.menuQuickNav.label}
+                />
+              ) : null}
+              {flags.menuFavorites ? (
+                <FavoritesBar
+                  summaryOne={L.menuFavorites.summaryOne}
+                  summaryMany={L.menuFavorites.summaryMany}
+                  clearLabel={L.menuFavorites.clear}
+                />
+              ) : null}
+              {flags.allergenLegend ? (
+                <AllergenLegend heading={L.allergen.heading} note={L.allergen.note} />
+              ) : null}
             </header>
 
             <div className="menu-grid">
@@ -515,6 +550,14 @@ export function Landing({
                                   </span>
                                 ))
                               : null}
+                            {flags.menuFavorites ? (
+                              <FavoriteStar
+                                id={`${cat.id}:${it.id}`}
+                                name={it.name || "this item"}
+                                addLabel={L.menuFavorites.add}
+                                removeLabel={L.menuFavorites.remove}
+                              />
+                            ) : null}
                           </span>
                           <span className="menu-price">
                             {formatPrice(it.priceCents, prismaLocale)}
@@ -529,6 +572,7 @@ export function Landing({
             </div>
 
             <div className="menu-cta">
+              {flags.printMenu ? <PrintMenu label={L.printMenu.label} /> : null}
               <a href="#landing" className="back-link">{c.backToTopLabel}</a>
             </div>
           </div>
@@ -595,11 +639,37 @@ export function Landing({
                   {L.reservation.label}
                 </a>
               ) : null}
+              {flags.groupBookingCta && c.contactEmail ? (
+                <GroupBookingCta
+                  label={L.groupBooking.label}
+                  email={c.contactEmail}
+                  subject={L.groupBooking.subject}
+                />
+              ) : null}
+              {flags.takeawayCta && (c.contactPhone || c.contactEmail) ? (
+                <TakeawayCta
+                  label={L.takeaway.label}
+                  phone={c.contactPhone}
+                  email={c.contactEmail}
+                  subject={L.takeaway.subject}
+                />
+              ) : null}
             </div>
           </div>
           <a href="#landing" className="back-link map-back">{c.backToTopLabel}</a>
         </div>
       </section>
+
+      {flags.feedbackPrompt && c.contactEmail ? (
+        <FeedbackPrompt
+          heading={L.feedback.heading}
+          body={L.feedback.body}
+          button={L.feedback.button}
+          email={c.contactEmail}
+          subject={L.feedback.subject}
+          dismissLabel={L.feedback.dismiss}
+        />
+      ) : null}
     </main>
   );
 }
