@@ -5,6 +5,8 @@ import {
   disconnectInstagram,
   refreshInstagramNow,
 } from "./actions";
+import { SubmitButton } from "../ui/SubmitButton";
+import { Flash } from "../ui/Flash";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Instagram — admin — hygge" };
@@ -46,17 +48,19 @@ export default async function InstagramAdminPage({
         {account ? (
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <form action={refreshInstagramNow}>
-              <button type="submit" className="btn-save">Refresh now</button>
+              <SubmitButton pendingLabel="Refreshing…">Refresh now</SubmitButton>
             </form>
             <form action={disconnectInstagram}>
-              <button type="submit" className="btn-save" style={{ background: "#b33", color: "#fff" }}>Disconnect</button>
+              <SubmitButton style={{ background: "#b33", color: "#fff" }} pendingLabel="Disconnecting…">
+                Disconnect
+              </SubmitButton>
             </form>
           </div>
         ) : (
           <form action={connectInstagram}>
-            <button type="submit" className="btn-save" disabled={!envOk}>
+            <SubmitButton disabled={!envOk} pendingLabel="Connecting…">
               {envOk ? "Connect Instagram" : "Connect Instagram (env missing)"}
-            </button>
+            </SubmitButton>
           </form>
         )}
       </section>
@@ -93,14 +97,6 @@ export default async function InstagramAdminPage({
         </ol>
       </section>
     </>
-  );
-}
-
-function Flash({ kind, children }: { kind: "ok" | "err"; children: React.ReactNode }) {
-  return (
-    <div className={`flash ${kind === "ok" ? "ok" : "err"}`} role="status" aria-live="polite">
-      {children}
-    </div>
   );
 }
 

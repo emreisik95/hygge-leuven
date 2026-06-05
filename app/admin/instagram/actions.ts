@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/auth";
+import { requireAdmin } from "@/lib/admin-auth";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import crypto from "crypto";
@@ -13,11 +13,6 @@ import {
   InstagramApiError,
 } from "@/lib/instagram";
 import { logAudit } from "@/lib/audit";
-
-async function requireAdmin() {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-}
 
 export async function connectInstagram() {
   await requireAdmin();

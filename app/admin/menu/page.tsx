@@ -16,6 +16,8 @@ import { decodeErrors } from "@/lib/validation";
 import { ImagePreview } from "../components/ImagePreview";
 import { DragReorderList } from "../components/DragReorderList";
 import { UndoFlash } from "../components/UndoFlash";
+import { SubmitButton } from "../ui/SubmitButton";
+import { Flash } from "../ui/Flash";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Menu — admin — hygge" };
@@ -43,7 +45,7 @@ export default async function AdminMenuPage({
       ) : null}
 
       {Object.keys(errors).length > 0 ? (
-        <div className="flash err" role="alert">Please fix the errors below.</div>
+        <Flash kind="err">Please fix the errors below.</Flash>
       ) : null}
 
       {isEmpty ? (
@@ -53,9 +55,9 @@ export default async function AdminMenuPage({
                 No categories yet. Seed the defaults (Coffee / Pastry / Lunch) or add your own below.
               </p>
               <form action={seedDefaultCategories}>
-                <button type="submit" className="btn-save" style={{ width: "auto" }}>
+                <SubmitButton style={{ width: "auto" }} pendingLabel="Seeding…">
                   Seed default categories
-                </button>
+                </SubmitButton>
               </form>
             </section>
           ) : null}
@@ -68,13 +70,12 @@ export default async function AdminMenuPage({
                 </h2>
                 <form action={deleteCategory}>
                   <input type="hidden" name="id" value={cat.id} />
-                  <button
-                    type="submit"
+                  <SubmitButton
                     className="link-danger"
-                    aria-label={`Delete category ${cat.label} (also deletes its items)`}
+                    ariaLabel={`Delete category ${cat.label} (also deletes its items)`}
                   >
                     delete category
-                  </button>
+                  </SubmitButton>
                 </form>
               </header>
 
@@ -173,9 +174,9 @@ export default async function AdminMenuPage({
                                   Available
                                 </label>
                               </div>
-                              <button type="submit" className="btn-save" style={{ width: "auto" }}>
+                              <SubmitButton style={{ width: "auto" }} pendingLabel="Saving…">
                                 Save changes
-                              </button>
+                              </SubmitButton>
                             </div>
                           </details>
                         </form>
@@ -195,13 +196,12 @@ export default async function AdminMenuPage({
                           />
                           <form action={deleteItem}>
                             <input type="hidden" name="id" value={it.id} />
-                            <button
-                              type="submit"
+                            <SubmitButton
                               className="link-danger"
-                              aria-label={`Delete item ${it.name || "(unnamed)"}`}
+                              ariaLabel={`Delete item ${it.name || "(unnamed)"}`}
                             >
                               delete
-                            </button>
+                            </SubmitButton>
                           </form>
                         </div>
                       </>
@@ -246,9 +246,9 @@ export default async function AdminMenuPage({
                       <p className="field-error" role="alert">{errors[`newItem-${cat.id}-price`]}</p>
                     ) : null}
                   </div>
-                  <button type="submit" className="btn-save" style={{ width: "auto" }}>
+                  <SubmitButton style={{ width: "auto" }} pendingLabel="Adding…">
                     Add item
-                  </button>
+                  </SubmitButton>
                 </form>
               </details>
             </section>
@@ -283,9 +283,9 @@ export default async function AdminMenuPage({
               {errors.slug ? <p className="field-error" role="alert">{errors.slug}</p> : null}
             </div>
           </div>
-          <button type="submit" className="btn-save" style={{ width: "auto" }}>
+          <SubmitButton style={{ width: "auto" }} pendingLabel="Adding…">
             Add category
-          </button>
+          </SubmitButton>
         </form>
       </section>
     </>
@@ -313,14 +313,9 @@ function ReorderButton({
     <form action={moveItem}>
       <input type="hidden" name="id" value={itemId} />
       <input type="hidden" name="dir" value={dir} />
-      <button
-        type="submit"
-        disabled={disabled}
-        className="btn-icon"
-        aria-label={`Move item ${dir}`}
-      >
+      <SubmitButton className="btn-icon" disabled={disabled} ariaLabel={`Move item ${dir}`}>
         {dir === "up" ? "↑" : "↓"}
-      </button>
+      </SubmitButton>
     </form>
   );
 }
@@ -365,14 +360,14 @@ function PhotoControls({
           />
           {altError ? <p className="field-error" role="alert">{altError}</p> : null}
         </div>
-        <button type="submit" className="btn-save" style={{ width: "auto" }}>
+        <SubmitButton style={{ width: "auto" }} pendingLabel="Uploading…">
           Upload
-        </button>
+        </SubmitButton>
       </form>
       {hasPhoto ? (
         <form action={removeItemPhoto} style={{ marginTop: 8 }}>
           <input type="hidden" name="id" value={itemId} />
-          <button type="submit" className="link-danger">remove photo</button>
+          <SubmitButton className="link-danger" pendingLabel="Removing…">remove photo</SubmitButton>
         </form>
       ) : null}
     </details>

@@ -1,20 +1,18 @@
 import Link from "next/link";
 import {
   getDraftContent,
-  getOpeningHours,
   hasUnpublishedDraft,
   summarizeDraft,
 } from "@/lib/db";
 import {
   updateContent,
-  updateHours,
   publishContent,
   discardContentDraft,
 } from "./actions";
-import { HoursRow } from "./components/HoursRow";
 import { decodeErrors } from "@/lib/validation";
-
-const DAY_ORDER = [1, 2, 3, 4, 5, 6, 0] as const; // Mon..Sun
+import { Field, TextareaField, FieldRow, Toggle } from "./ui/fields";
+import { SubmitButton } from "./ui/SubmitButton";
+import { Flash } from "./ui/Flash";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin — hygge" };
@@ -24,34 +22,31 @@ export default async function AdminPage({
 }: {
   searchParams: Promise<{
     saved?: string;
-    savedHours?: string;
     published?: string;
     discarded?: string;
+    error?: string;
     errors?: string;
   }>;
 }) {
-  const [c, hoursRows, dirty, draftSummary, params] = await Promise.all([
+  const [c, dirty, draftSummary, params] = await Promise.all([
     getDraftContent(),
-    getOpeningHours(),
     hasUnpublishedDraft(),
     summarizeDraft(),
     searchParams,
   ]);
-  const { saved, savedHours, published, discarded, errors: errorsRaw } = params;
+  const { saved, published, discarded, error, errors: errorsRaw } = params;
   const errors = decodeErrors(errorsRaw);
-
-  const hoursByDow = new Map(hoursRows.map((h) => [h.dayOfWeek, h] as const));
 
   return (
     <>
-      {saved ? <div className="flash ok" role="status" aria-live="polite">Draft saved.</div> : null}
-      {savedHours ? <div className="flash ok" role="status" aria-live="polite">Hours saved.</div> : null}
-      {published ? <div className="flash ok" role="status" aria-live="polite">Published.</div> : null}
-      {discarded ? <div className="flash ok" role="status" aria-live="polite">Draft discarded.</div> : null}
+      {saved ? <Flash kind="ok">Draft saved.</Flash> : null}
+      {published ? <Flash kind="ok">Published.</Flash> : null}
+      {discarded ? <Flash kind="ok">Draft discarded.</Flash> : null}
+      {error === "publish" ? (
+        <Flash kind="err">Publish failed — nothing was changed. Try again.</Flash>
+      ) : null}
       {Object.keys(errors).length > 0 ? (
-        <div className="flash err" role="alert">
-          Please fix the errors below.
-        </div>
+        <Flash kind="err">Please fix the errors below.</Flash>
       ) : null}
 
       {dirty ? (
@@ -85,7 +80,7 @@ export default async function AdminPage({
           <h2>Hero</h2>
           <Field name="brandName" label="Brand name" defaultValue={c.brandName} />
           <Field name="definitionLabel" label="Dictionary label" defaultValue={c.definitionLabel} />
-          <Textarea name="definitionBody" label="Definition body" defaultValue={c.definitionBody} rows={4} />
+          <TextareaField name="definitionBody" label="Definition body" defaultValue={c.definitionBody} rows={4} />
           <Field name="tagline" label="Tagline (bullet line)" defaultValue={c.tagline} />
           <FieldRow>
             <Field name="inviteLine" label="Invite line" defaultValue={c.inviteLine} />
@@ -128,54 +123,26 @@ export default async function AdminPage({
           <Field name="mapHeading" label="Map heading" defaultValue={c.mapHeading} />
           <Field name="mapSub" label="Map subtext" defaultValue={c.mapSub} />
           <FieldRow>
-            <Field name="mapLat" label="Latitude" defaultValue={String(c.mapLat)} error={errors.mapLat} />
-            <Field name="mapLng" label="Longitude" defaultValue={String(c.mapLng)} error={errors.mapLng} />
+            <Field name="mapLat" label="Latitude" inputMode="decimal" defaultValue={String(c.mapLat)} error={errors.mapLat} />
+            <Field name="mapLng" label="Longitude" inputMode="decimal" defaultValue={String(c.mapLng)} error={errors.mapLng} />
           </FieldRow>
-          <Field name="mapZoom" label="Zoom (1-22)" defaultValue={String(c.mapZoom)} error={errors.mapZoom} />
+          <Field name="mapZoom" label="Zoom (1-22)" inputMode="numeric" defaultValue={String(c.mapZoom)} error={errors.mapZoom} />
         </section>
 
         <section className="section">
           <h2>SEO</h2>
           <Field name="metaTitle" label="Meta title" defaultValue={c.metaTitle} />
-          <Textarea name="metaDescription" label="Meta description" defaultValue={c.metaDescription} />
+          <TextareaField name="metaDescription" label="Meta description" defaultValue={c.metaDescription} />
         </section>
 
         <p className="hint">
           Saving stores changes as a <strong>draft</strong>. Use{" "}
           <Link href="/admin/preview" className="admin-nav-link">Preview</Link> to verify, then
-          publish from the banner above. Hours, menu, photos and translations publish immediately
-          when saved.
+          publish from the banner above. Opening hours are edited at{" "}
+          <Link href="/admin/hours" className="admin-nav-link">Hours</Link>; menu, photos and
+          translations publish immediately when saved.
         </p>
-        <button type="submit" className="btn-save">Save draft</button>
-      </form>
-
-      <form action={updateHours} aria-label="Opening hours editor" id="hours">
-        <section className="section">
-          <h2>Opening hours</h2>
-          <p className="hint">
-            Set per-day hours. Tick &quot;closed&quot; to mark a day off.
-            The landing page derives &quot;open now&quot; status from these times in Europe/Brussels.
-            Overnight ranges (e.g. 18:00 – 02:00) are supported — set the close time to the next morning.
-          </p>
-          <div className="hours-grid" role="group" aria-label="Weekly opening hours">
-            {DAY_ORDER.map((dow) => {
-              const row = hoursByDow.get(dow);
-              const closed = !row || !row.opensAt || !row.closesAt;
-              return (
-                <HoursRow
-                  key={dow}
-                  dow={dow}
-                  initialClosed={closed}
-                  initialOpensAt={row?.opensAt ?? ""}
-                  initialClosesAt={row?.closesAt ?? ""}
-                  opensError={errors[`hours_${dow}_opensAt`]}
-                  closesError={errors[`hours_${dow}_closesAt`]}
-                />
-              );
-            })}
-          </div>
-          <button type="submit" className="btn-save">Save hours</button>
-        </section>
+        <SubmitButton pendingLabel="Saving…">Save draft</SubmitButton>
       </form>
     </>
   );
@@ -197,12 +164,12 @@ function DraftBanner({
         <div className="admin-draft-banner-actions">
           <Link href="/admin/preview" className="admin-nav-link">Preview</Link>
           <form action={publishAction}>
-            <button type="submit" className="btn-save">Publish</button>
+            <SubmitButton pendingLabel="Publishing…">Publish</SubmitButton>
           </form>
           <form action={discardAction}>
-            <button type="submit" className="btn-save btn-danger-solid">
+            <SubmitButton className="btn-save btn-danger-solid" pendingLabel="Discarding…">
               Discard draft
-            </button>
+            </SubmitButton>
           </form>
         </div>
       </div>
@@ -219,51 +186,5 @@ function DraftBanner({
         </details>
       ) : null}
     </div>
-  );
-}
-
-function Field({
-  name, label, defaultValue, type = "text", inputMode, error,
-}: {
-  name: string;
-  label: string;
-  defaultValue?: string;
-  type?: string;
-  inputMode?: "text" | "url" | "email" | "tel" | "search" | "numeric" | "decimal" | "none";
-  error?: string;
-}) {
-  const errProps = error ? { "aria-invalid": true as const, "aria-describedby": `${name}-error` } : {};
-  return (
-    <div className="field">
-      <label htmlFor={name}>{label}</label>
-      <input id={name} name={name} type={type} defaultValue={defaultValue} inputMode={inputMode} {...errProps} />
-      {error ? <p id={`${name}-error`} className="field-error" role="alert">{error}</p> : null}
-    </div>
-  );
-}
-
-function Textarea({
-  name, label, defaultValue, rows,
-}: { name: string; label: string; defaultValue?: string; rows?: number }) {
-  return (
-    <div className="field">
-      <label htmlFor={name}>{label}</label>
-      <textarea id={name} name={name} defaultValue={defaultValue} rows={rows} />
-    </div>
-  );
-}
-
-function FieldRow({ children }: { children: React.ReactNode }) {
-  return <div className="field-row">{children}</div>;
-}
-
-function Toggle({
-  name, label, defaultChecked,
-}: { name: string; label: string; defaultChecked: boolean }) {
-  return (
-    <label className="toggle" htmlFor={name}>
-      <input id={name} name={name} type="checkbox" defaultChecked={defaultChecked} />
-      <span>{label}</span>
-    </label>
   );
 }

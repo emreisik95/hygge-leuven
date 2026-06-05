@@ -44,6 +44,13 @@ export async function updateTranslations(formData: FormData) {
         continue;
       }
       if (value === "") {
+        // EN is the fallback locale: clearing it would leave the namespace with
+        // no row at all, silently dropping the public site back to hardcoded
+        // defaults. NL/FR may be cleared freely (they fall back to EN).
+        if (code === "EN") {
+          errors.push({ field: fieldName, message: "English is required — it's the fallback." });
+          continue;
+        }
         deletes.push({ namespace: ns, locale: toPrismaLocale(code) });
       } else {
         upserts.push({ namespace: ns, locale: toPrismaLocale(code), value });

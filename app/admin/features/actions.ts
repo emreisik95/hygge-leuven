@@ -1,15 +1,10 @@
 "use server";
 
-import { auth } from "@/auth";
+import { requireAdmin } from "@/lib/admin-auth";
 import { loadFlags, setFlag, FLAG_KEYS } from "@/lib/flags";
 import { logAudit } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
-async function requireAdmin() {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-}
 
 // Persist the whole flag form in one shot. Checkboxes absent from the POST mean
 // "off"; only flags whose value actually changed are written and audited.

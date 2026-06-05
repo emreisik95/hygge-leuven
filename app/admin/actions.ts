@@ -1,6 +1,7 @@
 "use server";
 
-import { auth, signOut } from "@/auth";
+import { signOut } from "@/auth";
+import { requireAdmin } from "@/lib/admin-auth";
 import {
   prisma,
   SITE_TEXT_FIELDS,
@@ -18,17 +19,9 @@ import {
   encodeErrors,
   validateHHMM,
   validateHoursRange,
-  validateLat,
-  validateLng,
-  validateUrl,
-  validateZoom,
   type FieldError,
 } from "@/lib/validation";
-
-async function requireAdmin() {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-}
+import { SiteContentSchema, zodFieldErrors } from "@/lib/schemas";
 
 const SITE_SCALAR_FIELDS = ["addressLine1", "addressLine2", "findUsUrl", "instagramUrl"] as const;
 const NUMBER_FIELDS = ["mapLat", "mapLng", "mapZoom"] as const;
@@ -78,42 +71,20 @@ function pickTexts(formData: FormData): SiteDraft["texts"] {
   return texts;
 }
 
-function validateSiteContent(formData: FormData): FieldError[] {
-  const errors: FieldError[] = [];
-  const findUsUrl = asString(formData.get("findUsUrl"));
-  const findUsErr = validateUrl(findUsUrl, { allowEmpty: true });
-  if (findUsErr) errors.push({ field: "findUsUrl", message: findUsErr });
-
-  const instagramUrl = asString(formData.get("instagramUrl"));
-  const instaErr = validateUrl(instagramUrl, { allowEmpty: true });
-  if (instaErr) errors.push({ field: "instagramUrl", message: instaErr });
-
-  const lat = asString(formData.get("mapLat"));
-  if (lat.trim()) {
-    const e = validateLat(lat);
-    if (e) errors.push({ field: "mapLat", message: e });
-  }
-  const lng = asString(formData.get("mapLng"));
-  if (lng.trim()) {
-    const e = validateLng(lng);
-    if (e) errors.push({ field: "mapLng", message: e });
-  }
-  const zoom = asString(formData.get("mapZoom"));
-  if (zoom.trim()) {
-    const e = validateZoom(zoom);
-    if (e) errors.push({ field: "mapZoom", message: e });
-  }
-  return errors;
-}
-
 // "Save draft": persist edits to SiteContent.draftJson without publishing.
 // The landing page continues to render the previously published values.
 export async function saveContentDraft(formData: FormData) {
   await requireAdmin();
 
-  const errors = validateSiteContent(formData);
-  if (errors.length > 0) {
-    redirect(`/admin?errors=${encodeErrors(errors)}`);
+  const parsed = SiteContentSchema.safeParse({
+    findUsUrl: asString(formData.get("findUsUrl")),
+    instagramUrl: asString(formData.get("instagramUrl")),
+    mapLat: asString(formData.get("mapLat")),
+    mapLng: asString(formData.get("mapLng")),
+    mapZoom: asString(formData.get("mapZoom")),
+  });
+  if (!parsed.success) {
+    redirect(`/admin?errors=${encodeErrors(zodFieldErrors(parsed.error))}`);
   }
 
   const existing = await prisma.siteContent.findUnique({ where: { id: 1 } });
@@ -168,26 +139,31 @@ export async function publishContent() {
     }
   }
 
-  await prisma.$transaction(async (tx) => {
-    await tx.siteContent.update({
-      where: { id: 1 },
-      data: {
-        ...scalarUpdate,
-        publishedAt: new Date(),
-        draftJson: null,
-      },
-    });
-    for (const [namespace, perLocale] of textNamespaces) {
-      for (const [locale, value] of Object.entries(perLocale)) {
-        if (typeof value !== "string") continue;
-        await tx.translation.upsert({
-          where: { namespace_locale: { namespace, locale: locale as "EN" | "NL" | "FR" } },
-          create: { namespace, locale: locale as "EN" | "NL" | "FR", value },
-          update: { value },
-        });
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.siteContent.update({
+        where: { id: 1 },
+        data: {
+          ...scalarUpdate,
+          publishedAt: new Date(),
+          draftJson: null,
+        },
+      });
+      for (const [namespace, perLocale] of textNamespaces) {
+        for (const [locale, value] of Object.entries(perLocale)) {
+          if (typeof value !== "string") continue;
+          await tx.translation.upsert({
+            where: { namespace_locale: { namespace, locale: locale as "EN" | "NL" | "FR" } },
+            create: { namespace, locale: locale as "EN" | "NL" | "FR", value },
+            update: { value },
+          });
+        }
       }
-    }
-  });
+    });
+  } catch (err) {
+    console.error("publishContent transaction failed", err);
+    redirect("/admin?error=publish");
+  }
 
   await logAudit({
     action: "site.publish",
@@ -203,26 +179,28 @@ export async function publishContent() {
   revalidatePath("/");
   revalidatePath("/admin");
   revalidatePath("/admin/preview");
+  redirect("/admin?published=1");
 }
 
 export async function discardContentDraft() {
   await requireAdmin();
   const existing = await prisma.siteContent.findUnique({ where: { id: 1 } });
-  if (!existing?.draftJson) return;
+  if (existing?.draftJson) {
+    await prisma.siteContent.update({
+      where: { id: 1 },
+      data: { draftJson: null },
+    });
 
-  await prisma.siteContent.update({
-    where: { id: 1 },
-    data: { draftJson: null },
-  });
+    await logAudit({
+      action: "site.draft.discard",
+      entity: "SiteContent",
+      entityId: 1,
+    });
 
-  await logAudit({
-    action: "site.draft.discard",
-    entity: "SiteContent",
-    entityId: 1,
-  });
-
-  revalidatePath("/admin");
-  revalidatePath("/admin/preview");
+    revalidatePath("/admin");
+    revalidatePath("/admin/preview");
+  }
+  redirect("/admin?discarded=1");
 }
 
 // Backwards-compat: the existing /admin form posts to `updateContent`. Keep
@@ -255,20 +233,27 @@ export async function updateHours(formData: FormData) {
   }
 
   if (errors.length > 0) {
-    redirect(`/admin?errors=${encodeErrors(errors)}#hours`);
+    redirect(`/admin/hours?errors=${encodeErrors(errors)}`);
   }
 
   const before = await prisma.openingHours.findMany({ orderBy: { dayOfWeek: "asc" } });
-  const after: { dayOfWeek: number; opensAt: string | null; closesAt: string | null }[] = [];
+  const after = parsed.map((row) => ({
+    dayOfWeek: row.dow,
+    opensAt: row.opensAt,
+    closesAt: row.closesAt,
+  }));
 
-  for (const row of parsed) {
-    await prisma.openingHours.upsert({
-      where: { dayOfWeek: row.dow },
-      create: { dayOfWeek: row.dow, opensAt: row.opensAt, closesAt: row.closesAt },
-      update: { opensAt: row.opensAt, closesAt: row.closesAt },
-    });
-    after.push({ dayOfWeek: row.dow, opensAt: row.opensAt, closesAt: row.closesAt });
-  }
+  // All seven days persist together: a partial failure mid-loop would leave
+  // the week in a mixed state, so upsert them atomically.
+  await prisma.$transaction(
+    parsed.map((row) =>
+      prisma.openingHours.upsert({
+        where: { dayOfWeek: row.dow },
+        create: { dayOfWeek: row.dow, opensAt: row.opensAt, closesAt: row.closesAt },
+        update: { opensAt: row.opensAt, closesAt: row.closesAt },
+      })
+    )
+  );
 
   await logAudit({
     action: "hours.update",
@@ -278,8 +263,8 @@ export async function updateHours(formData: FormData) {
   });
 
   revalidatePath("/");
-  revalidatePath("/admin");
-  redirect("/admin?savedHours=1#hours");
+  revalidatePath("/admin/hours");
+  redirect("/admin/hours?savedHours=1");
 }
 
 export async function logout() {

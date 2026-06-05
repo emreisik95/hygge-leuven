@@ -1,5 +1,8 @@
 import { loadFlags, FLAG_REGISTRY, type FlagGroup, type FlagMeta } from "@/lib/flags";
 import { updateFlags } from "./actions";
+import { Toggle } from "../ui/fields";
+import { SubmitButton } from "../ui/SubmitButton";
+import { Flash } from "../ui/Flash";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Features — admin — hygge" };
@@ -31,9 +34,7 @@ export default async function FeaturesPage({
 
   return (
     <>
-      {params.saved ? (
-        <div className="flash ok" role="status" aria-live="polite">Features updated.</div>
-      ) : null}
+      {params.saved ? <Flash kind="ok">Features updated.</Flash> : null}
 
       <form action={updateFlags} aria-label="Feature flags">
         <section className="section">
@@ -53,25 +54,21 @@ export default async function FeaturesPage({
               <p className="hint">{GROUP_BLURB[group]}</p>
               <div className="visibility-grid">
                 {items.map((meta) => (
-                  <label className="toggle toggle-feature" htmlFor={meta.key} key={meta.key}>
-                    <input
-                      id={meta.key}
-                      name={meta.key}
-                      type="checkbox"
-                      defaultChecked={flags[meta.key]}
-                    />
-                    <span>
-                      <strong>{meta.label}</strong>
-                      <span className="toggle-desc">{meta.description}</span>
-                    </span>
-                  </label>
+                  <Toggle
+                    key={meta.key}
+                    name={meta.key}
+                    label={meta.label}
+                    description={meta.description}
+                    defaultChecked={flags[meta.key]}
+                    className="toggle toggle-feature"
+                  />
                 ))}
               </div>
             </section>
           );
         })}
 
-        <button type="submit" className="btn-save">Save features</button>
+        <SubmitButton pendingLabel="Saving…">Save features</SubmitButton>
       </form>
     </>
   );

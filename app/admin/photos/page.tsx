@@ -11,6 +11,8 @@ import { decodeErrors } from "@/lib/validation";
 import { ImagePreview } from "../components/ImagePreview";
 import { DragReorderList } from "../components/DragReorderList";
 import { UndoFlash } from "../components/UndoFlash";
+import { SubmitButton } from "../ui/SubmitButton";
+import { Flash } from "../ui/Flash";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Photos — admin" };
@@ -53,7 +55,7 @@ export default async function PhotosPage({
         <UndoFlash payload={params.undo} message={params.undoMsg} action={restorePhotoFromUndo} />
       ) : null}
       {Object.keys(errors).length > 0 ? (
-        <div className="flash err" role="alert">Please fix the errors below.</div>
+        <Flash kind="err">Please fix the errors below.</Flash>
       ) : null}
           {ROLES.map((r) => {
             const photos = grouped.get(r.key) ?? [];
@@ -89,28 +91,18 @@ export default async function PhotosPage({
                             <form action={movePhoto}>
                               <input type="hidden" name="id" value={p.id} />
                               <input type="hidden" name="direction" value="up" />
-                              <button
-                                type="submit"
-                                className="btn-inline"
-                                disabled={i === 0}
-                                aria-label="Move up"
-                              >↑</button>
+                              <SubmitButton className="btn-inline" disabled={i === 0} ariaLabel="Move up">↑</SubmitButton>
                             </form>
                             <form action={movePhoto}>
                               <input type="hidden" name="id" value={p.id} />
                               <input type="hidden" name="direction" value="down" />
-                              <button
-                                type="submit"
-                                className="btn-inline"
-                                disabled={i === photos.length - 1}
-                                aria-label="Move down"
-                              >↓</button>
+                              <SubmitButton className="btn-inline" disabled={i === photos.length - 1} ariaLabel="Move down">↓</SubmitButton>
                             </form>
                             <form action={deletePhoto}>
                               <input type="hidden" name="id" value={p.id} />
-                              <button type="submit" className="btn-inline btn-danger" aria-label="Delete">
+                              <SubmitButton className="btn-inline btn-danger" ariaLabel="Delete" pendingLabel="…">
                                 Delete
-                              </button>
+                              </SubmitButton>
                             </form>
                           </div>
                         </>
@@ -153,7 +145,7 @@ export default async function PhotosPage({
                         <p className="field-error" role="alert">{errors[`upload-${r.key}-file`]}</p>
                       ) : null}
                     </div>
-                    <button type="submit" className="btn-save">Upload</button>
+                    <SubmitButton pendingLabel="Uploading…">Upload</SubmitButton>
                   </form>
                 )}
               </section>
@@ -203,7 +195,7 @@ function PhotoCard({
           ))}
         </select>
         {!role.readOnly && (
-          <button type="submit" className="btn-inline">Save row</button>
+          <SubmitButton className="btn-inline" pendingLabel="Saving…">Save row</SubmitButton>
         )}
       </form>
     </>

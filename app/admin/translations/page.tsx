@@ -3,6 +3,8 @@ import { LOCALES, LOCALE_LABELS, LOCALE_NAMES, type LocaleCode } from "@/lib/loc
 import { updateTranslations } from "./actions";
 import { decodeErrors } from "@/lib/validation";
 import { CountedTextarea } from "../components/CountedTextarea";
+import { SubmitButton } from "../ui/SubmitButton";
+import { Flash } from "../ui/Flash";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Translations — hygge" };
@@ -66,13 +68,9 @@ export default async function TranslationsPage({
 
   return (
     <>
-      {saved ? (
-        <div className="flash ok" role="status" aria-live="polite">
-          Saved.
-        </div>
-      ) : null}
+      {saved ? <Flash kind="ok">Saved.</Flash> : null}
       {Object.keys(errors).length > 0 ? (
-        <div className="flash err" role="alert">Some fields are over the length limit.</div>
+        <Flash kind="err">Some fields need attention — see the highlighted rows.</Flash>
       ) : null}
 
       <p className="hint" style={{ marginBottom: 16 }}>
@@ -136,7 +134,7 @@ export default async function TranslationsPage({
               })}
             </div>
 
-            <button type="submit" className="btn-save">Save {group.title}</button>
+            <SubmitButton pendingLabel="Saving…">Save {group.title}</SubmitButton>
           </form>
         );
       })}

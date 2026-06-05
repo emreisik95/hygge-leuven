@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/auth";
+import { requireAdmin } from "@/lib/admin-auth";
 import { prisma } from "@/lib/db";
 import { logAudit } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
@@ -23,11 +23,6 @@ const MAX_BYTES = 8 * 1024 * 1024;
 const MAX_WIDTH = 1600;
 const VALID_ROLES = new Set(["background", "hero", "gallery", "menu_item"]);
 const ALT_REQUIRED_ROLES = new Set(["hero", "gallery"]);
-
-async function requireAdmin() {
-  const session = await auth();
-  if (!session?.user) throw new Error("Unauthorized");
-}
 
 function redirectErrors(errors: FieldError[], scope: string): never {
   redirect(`/admin/photos?errors=${encodeErrors(errors)}&errScope=${encodeURIComponent(scope)}`);
