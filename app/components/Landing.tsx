@@ -403,6 +403,11 @@ export function Landing({
               <span className="map-contact-label">{c.contactHeading}</span>
               <ul className="map-contact-list" role="list">
                 <li>
+                  <a href={c.findUsUrl} target="_blank" rel="noreferrer" className="map-contact-link">
+                    <PinIcon /> {c.mapSub}<span className="sr-only"> (opens in new tab)</span>
+                  </a>
+                </li>
+                <li>
                   <a href={c.instagramUrl} target="_blank" rel="noreferrer" className="map-contact-link">
                     <InstagramIcon /> {c.instagramHandle}<span className="sr-only"> (opens in new tab)</span>
                   </a>
