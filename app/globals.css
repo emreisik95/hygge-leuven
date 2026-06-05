@@ -2722,3 +2722,799 @@ html[data-reduce-motion="on"] .loyalty-stamp { transition: none; }
 @media (prefers-reduced-motion: no-preference) {
   .fab-whatsapp { transition: border-color 0.2s ease; }
 }
+
+
+/* ===================================================================
+   Batch B (section panes) feature CSS — appended by scripts/integrate-batch.mjs
+   =================================================================== */
+
+/* ── gallery pane (photo grid) ─────────────────────────────────────── */
+.pane-gallery { justify-content: center; }
+.gallery-wrap {
+  width: min(960px, 92vw);
+  margin: 0 auto;
+  padding: clamp(48px, 9vh, 96px) 0 32px;
+}
+.gallery-heading {
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: clamp(26px, 5vw, 38px);
+  margin: 0 0 24px;
+}
+.gallery-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 600px) {
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .gallery-item-wide { grid-column: 1 / -1; }
+}
+@media (min-width: 900px) {
+  .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .gallery-item-wide { grid-column: span 2; }
+}
+.gallery-item { margin: 0; min-width: 0; }
+.gallery-figure {
+  margin: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--pill-bg);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  overflow: hidden;
+  transform: translateY(0);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.gallery-figure:hover {
+  transform: translateY(-4px);
+  border-color: var(--rule-strong);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+.gallery-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--pill-bg);
+}
+.gallery-caption {
+  padding: 12px 16px 16px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink);
+  opacity: 0.85;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gallery-figure { transition: none; }
+  .gallery-figure:hover { transform: none; }
+}
+/* ── press mentions pane ──────────────────────────────────────────── */
+/* Dark scrim matches .pane-insta / .pane-vision so the cream/italic quotes
+   stay legible over the rotating café photos (the bare .pane-quotes pattern
+   leans only on the global .bg overlay; this is a touch safer). No new colours. */
+.pane-press {
+  background: linear-gradient(180deg, rgba(58, 42, 31, 0.92) 0%, rgba(26, 20, 16, 0.95) 100%);
+  backdrop-filter: blur(2px);
+  align-items: center;
+  justify-content: center;
+  padding: 56px 20px max(40px, env(safe-area-inset-bottom));
+}
+.press-wrap {
+  width: min(880px, 92vw);
+  margin: 0 auto;
+  padding: clamp(48px, 9vh, 96px) 0 32px;
+}
+.press-heading {
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: clamp(26px, 5vw, 38px);
+  margin: 0 0 24px;
+}
+.press-list {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 720px) {
+  .press-list { grid-template-columns: 1fr 1fr; }
+}
+.press-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 26px 24px 22px;
+  background: var(--pill-bg);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+}
+.press-mark {
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: 44px;
+  line-height: 0.6;
+  color: var(--instagram);
+  opacity: 0.7;
+  margin-bottom: 6px;
+}
+.press-quote {
+  margin: 0 0 14px;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.press-source {
+  margin-top: auto;
+  font-style: normal;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tan);
+  opacity: 0.8;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .press-card {
+    transition: border-color 200ms ease;
+  }
+  .press-card:hover {
+    border-color: var(--rule-strong);
+  }
+}
+
+/* ───── about / our-story pane ───── */
+.pane-about {
+  background: linear-gradient(180deg, rgba(26, 20, 16, 0.92) 0%, rgba(58, 42, 31, 0.9) 100%);
+  align-items: center;
+  justify-content: center;
+  padding: clamp(48px, 9vh, 96px) 24px max(40px, env(safe-area-inset-bottom));
+}
+.about-wrap {
+  width: min(960px, 92vw);
+  margin: 0 auto;
+  display: grid;
+  gap: clamp(24px, 5vw, 48px);
+  align-items: center;
+}
+.about-figure {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+.about-illu {
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+  display: block;
+}
+.about-prose {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 56ch;
+}
+.about-heading {
+  font-family: var(--font-serif), "Didot LT Pro", Didot, serif;
+  font-weight: 700;
+  font-size: clamp(28px, 6vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--tan);
+  margin: 0 0 4px;
+}
+.about-body {
+  font-family: var(--font-editorial), serif;
+  font-size: clamp(16px, 4.2vw, 19px);
+  line-height: 1.65;
+  color: var(--ink);
+  opacity: 0.92;
+  margin: 0;
+  text-wrap: pretty;
+}
+.about-prose .back-link {
+  align-self: flex-start;
+  margin-top: 8px;
+  padding-left: 0;
+}
+@media (min-width: 760px) {
+  .about-wrap {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  }
+}
+/* duplicate-of-required-field placeholder; see cssAppend above */
+
+/* ───── drink finder pane ───── */
+.pane-drink-finder {
+  background: linear-gradient(180deg, rgba(58, 42, 31, 0.94) 0%, rgba(38, 28, 21, 0.97) 100%);
+  backdrop-filter: blur(2px);
+  /* Anchor content to the top (like the faq/quotes/events panes). The quiz can
+     grow taller than the viewport on phones, so we must NOT vertically centre,
+     or the heading and first question get pushed above the scroll-snap point. */
+  padding: clamp(40px, 8vw, 56px) clamp(16px, 5vw, 28px)
+    max(32px, env(safe-area-inset-bottom));
+  align-items: center;
+}
+.drink-finder-wrap {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.drink-finder-heading {
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: clamp(26px, 5vw, 38px);
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+.drink-finder-intro {
+  margin: 0 0 28px;
+  color: var(--tan);
+  max-width: 42ch;
+}
+.drink-finder-form {
+  width: 100%;
+}
+.drink-finder-questions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+.drink-finder-fieldset {
+  margin: 0;
+  padding: 18px 18px 20px;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--pill-bg);
+  text-align: left;
+}
+.drink-finder-legend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+.drink-finder-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 1px solid var(--rule-strong);
+  font-size: 0.85rem;
+  color: var(--tan);
+}
+.drink-finder-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.drink-finder-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+.drink-finder-option:hover {
+  border-color: var(--rule-strong);
+}
+.drink-finder-option.is-checked {
+  border-color: var(--instagram);
+  background: rgba(154, 62, 34, 0.16);
+}
+.drink-finder-radio {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--instagram);
+}
+.drink-finder-option:focus-within {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.drink-finder-radio:focus-visible {
+  outline: none;
+}
+.drink-finder-option-label {
+  line-height: 1.3;
+}
+.drink-finder-result {
+  width: 100%;
+  margin-top: 26px;
+}
+.drink-finder-result:focus {
+  outline: none;
+}
+.drink-finder-hint {
+  margin: 0;
+  color: var(--tan);
+  opacity: 0.85;
+  font-size: 0.95rem;
+}
+.drink-finder-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 28px 22px 24px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 16px;
+  background: var(--pill-bg);
+  animation: drink-finder-rise 0.32s ease both;
+}
+.drink-finder-emoji {
+  font-size: 2.4rem;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.drink-finder-pick {
+  margin: 0;
+  color: var(--tan);
+  font-size: 0.9rem;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+}
+.drink-finder-name {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--ink);
+}
+.drink-finder-blurb {
+  margin: 6px 0 18px;
+  max-width: 46ch;
+  color: var(--ink);
+  opacity: 0.92;
+  line-height: 1.5;
+}
+.drink-finder-reset {
+  min-height: 44px;
+  padding: 11px 22px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+.drink-finder-reset:hover {
+  background: rgba(215, 197, 172, 0.1);
+}
+.pane-drink-finder .back-link {
+  margin-top: 28px;
+}
+@keyframes drink-finder-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@media (max-width: 420px) {
+  .drink-finder-options {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .drink-finder-card {
+    animation: none;
+  }
+  .drink-finder-option,
+  .drink-finder-reset {
+    transition: none;
+  }
+}
+
+/* ── values strip ("what we care about") ───────────────────────────── */
+.values-wrap {
+  width: min(960px, 92vw);
+  margin: 0 auto;
+  padding: clamp(48px, 9vh, 96px) 0 32px;
+}
+.values-heading {
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: clamp(26px, 5vw, 38px);
+  margin: 0 0 28px;
+}
+.values-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 560px) {
+  .values-list { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 880px) {
+  .values-list { grid-template-columns: repeat(4, 1fr); }
+}
+.value-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px 22px 24px;
+  background: var(--pill-bg);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+}
+.value-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--tan);
+}
+.value-icon svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+.value-label {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.value-detail {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+.pane-values .back-link {
+  margin-top: 28px;
+}
+/* ── opening-hours timeline ──────────────────────────────────────────── */
+.pane-opening-timeline { justify-content: center; }
+.otl-wrap {
+  width: min(720px, 92vw);
+  margin: 0 auto;
+  padding: clamp(48px, 9vh, 96px) 0 32px;
+}
+.otl-heading {
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: clamp(26px, 5vw, 38px);
+  margin: 0 0 24px;
+}
+.otl-chart {
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--pill-bg);
+  padding: clamp(18px, 3vw, 28px);
+}
+
+/* Shared time axis: ticks are absolutely positioned across the same track width
+   the bars use. A left gutter reserves room for the day labels. The grid below
+   uses gap:10px, so the track column starts/ends one gap in from the label and
+   range columns — the axis margins include that 10px so ticks line up with bars.
+   If you change the grid gap or the gutter clamp() values, change both. */
+.otl-axis {
+  position: relative;
+  height: 18px;
+  margin: 0 0 6px;
+  margin-inline: calc(clamp(84px, 22%, 130px) + 10px) calc(clamp(64px, 18%, 96px) + 10px);
+}
+.otl-tick {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  border-left: 1px solid var(--rule);
+  height: 100%;
+}
+.otl-tick-label {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  opacity: 0.65;
+  white-space: nowrap;
+}
+
+.otl-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.otl-row {
+  display: grid;
+  grid-template-columns: clamp(84px, 22%, 130px) 1fr clamp(64px, 18%, 96px);
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-top: 1px solid var(--rule);
+}
+.otl-row:first-child { border-top: 0; }
+
+.otl-day {
+  font-size: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.otl-today-tag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--instagram);
+  color: var(--ink);
+}
+
+.otl-track {
+  position: relative;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+.otl-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
+  background: var(--tan);
+  min-width: 4px;
+}
+.otl-bar-empty { display: none; }
+
+.otl-range {
+  font-size: 13px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.9;
+  white-space: nowrap;
+}
+/* Closed days read muted but must stay legible on the dark background. At 0.65
+   the cream/tan text clears WCAG AA (~4.7:1) against the chart panel; lower
+   opacities (e.g. 0.45) drop below 3:1 and fail. */
+.otl-range.is-closed,
+.otl-row.is-closed .otl-day {
+  opacity: 0.65;
+}
+.otl-row.is-closed .otl-track { opacity: 0.5; }
+
+/* Today: subtle warm wash + a brighter bar so it reads at a glance. */
+.otl-row.is-today {
+  background: rgba(215, 197, 172, 0.08);
+  border-radius: 8px;
+  box-shadow: inset 2px 0 0 var(--instagram);
+  padding-inline: 8px;
+  margin-inline: -8px;
+}
+.otl-row.is-today .otl-day { font-weight: 600; }
+.otl-row.is-today .otl-bar { background: var(--ink); }
+
+/* Bars animate in; respected only when motion is welcome. */
+@media (prefers-reduced-motion: no-preference) {
+  .otl-bar {
+    transform-origin: left center;
+    animation: otl-grow 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  }
+}
+@keyframes otl-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Mobile: stack the label above the bar; keep the range on the same line as the bar. */
+@media (max-width: 540px) {
+  .otl-axis {
+    margin-inline: 0 calc(clamp(56px, 20%, 80px) + 10px);
+  }
+  .otl-row {
+    grid-template-columns: 1fr clamp(56px, 20%, 80px);
+    grid-template-areas:
+      "day day"
+      "track range";
+    gap: 6px 10px;
+    padding: 12px 0;
+  }
+  .otl-day { grid-area: day; }
+  .otl-track { grid-area: track; }
+  .otl-range { grid-area: range; }
+  .otl-row.is-today { padding-inline: 8px; }
+}
+/* ── neighbourhood guide (while you're in Leuven) ──────────────────── */
+.guide-wrap {
+  width: min(720px, 92vw);
+  margin: 0 auto;
+  padding: clamp(48px, 9vh, 96px) 0 32px;
+}
+.guide-heading {
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: clamp(26px, 5vw, 38px);
+  margin: 0 0 24px;
+}
+.guide-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+}
+@media (min-width: 640px) {
+  .guide-list { grid-template-columns: 1fr 1fr; }
+}
+.guide-card {
+  padding: 20px 22px;
+  background: var(--pill-bg);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+}
+.guide-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 8px;
+}
+.guide-name {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.3;
+}
+.guide-walk {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  opacity: 0.85;
+}
+.guide-walk svg { opacity: 0.85; }
+.guide-detail {
+  margin: 0;
+  opacity: 0.85;
+  line-height: 1.55;
+}
+
+/* ── coffee of the week pane (CSS hand-written: artifact cssAppend was a
+   broken placeholder; classNames taken from CoffeeOfWeek.tsx) ──────────── */
+.pane-coffeeweek {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.coffeeweek-wrap {
+  width: min(720px, 92vw);
+  margin: 0 auto;
+  padding: clamp(48px, 9vh, 96px) 0 32px;
+}
+.coffeeweek-heading {
+  font-family: var(--font-editorial), Georgia, serif;
+  font-size: clamp(26px, 5vw, 38px);
+  margin: 0 0 24px;
+}
+.coffeeweek-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(18px, 4vw, 32px);
+  align-items: center;
+  padding: clamp(22px, 4vw, 32px);
+  background: var(--pill-bg);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+}
+.coffeeweek-figure {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  border: 1px solid var(--rule-strong);
+  background: rgba(0, 0, 0, 0.18);
+}
+.coffeeweek-img {
+  width: 88px;
+  height: 88px;
+  max-width: 100%;
+  object-fit: contain;
+  display: block;
+}
+.coffeeweek-body {
+  flex: 1 1 260px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.coffeeweek-name {
+  margin: 0;
+  font-family: var(--font-serif), "Didot LT Pro", Didot, serif;
+  font-weight: 700;
+  font-size: clamp(24px, 5vw, 32px);
+  letter-spacing: -0.01em;
+  color: var(--tan);
+  overflow-wrap: anywhere;
+}
+.coffeeweek-meta {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.coffeeweek-meta-row {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.coffeeweek-meta-label {
+  flex: 0 0 64px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tan);
+  opacity: 0.75;
+}
+.coffeeweek-meta-value {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  color: var(--ink);
+}
+.coffeeweek-notes {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.coffeeweek-pill {
+  padding: 4px 12px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  opacity: 0.9;
+}
+.coffeeweek-note {
+  margin: 4px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink);
+  opacity: 0.88;
+}
+.pane-coffeeweek .back-link {
+  margin-top: 24px;
+}

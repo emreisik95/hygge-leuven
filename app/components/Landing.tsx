@@ -26,6 +26,14 @@ import { SpotifyEmbed } from "./features/SpotifyEmbed";
 import { FaqSection } from "./features/FaqSection";
 import { Testimonials } from "./features/Testimonials";
 import { EventsList } from "./features/EventsList";
+import { GalleryGrid } from "./features/GalleryGrid";
+import { PressMentions } from "./features/PressMentions";
+import { AboutStory } from "./features/AboutStory";
+import { CoffeeOfWeek } from "./features/CoffeeOfWeek";
+import { DrinkFinder } from "./features/DrinkFinder";
+import { ValuesStrip } from "./features/ValuesStrip";
+import { OpeningTimeline } from "./features/OpeningTimeline";
+import { NeighbourhoodGuide } from "./features/NeighbourhoodGuide";
 import { MenuSearch } from "./features/MenuSearch";
 
 const CAFE_TZ = "Europe/Brussels";
@@ -396,6 +404,15 @@ export function Landing({
       {flags.testimonials ? <Testimonials heading={L.testimonialsHeading} items={testimonials} /> : null}
       {flags.eventsList ? <EventsList heading={L.eventsHeading} events={events} /> : null}
       {flags.faqSection ? <FaqSection heading={L.faqHeading} items={faq} /> : null}
+
+      {flags.aboutStory ? <AboutStory heading={L.aboutStoryHeading} backToTopLabel={c.backToTopLabel} /> : null}
+      {flags.valuesStrip ? <ValuesStrip heading={L.valuesHeading} backToTopLabel={c.backToTopLabel} /> : null}
+      {flags.galleryGrid ? <GalleryGrid heading={L.galleryHeading} backToTopLabel={c.backToTopLabel} skipSectionLabel={c.skipSectionLabel} /> : null}
+      {flags.coffeeOfWeek ? <CoffeeOfWeek heading={L.coffeeOfWeekHeading} backToTopLabel={c.backToTopLabel} /> : null}
+      {flags.drinkFinder ? <DrinkFinder heading={L.drinkFinderHeading} backToTopLabel={c.backToTopLabel} /> : null}
+      {flags.openingTimeline ? <OpeningTimeline heading={L.openingTimelineHeading} backToTopLabel={c.backToTopLabel} hoursRows={hoursRows} locale={locale} /> : null}
+      {flags.pressMentions ? <PressMentions heading={L.pressMentionsHeading} backToTopLabel={c.backToTopLabel} /> : null}
+      {flags.neighbourhoodGuide ? <NeighbourhoodGuide heading={L.neighbourhoodGuideHeading} backToTopLabel={c.backToTopLabel} /> : null}
 
       {hasEngageBlock ? (
         <section className="pane pane-engage" id="more" aria-label="More from the café">

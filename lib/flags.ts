@@ -41,6 +41,14 @@ export const FLAG_KEYS = [
   "seasonalParticles",
   "weatherRecommend",
   "whatsappCta",
+  "galleryGrid",
+  "pressMentions",
+  "aboutStory",
+  "coffeeOfWeek",
+  "drinkFinder",
+  "valuesStrip",
+  "openingTimeline",
+  "neighbourhoodGuide",
 ] as const;
 
 export type FlagKey = (typeof FLAG_KEYS)[number];
@@ -274,6 +282,66 @@ export const FLAG_REGISTRY: FlagMeta[] = [
     description:
       "Shows a floating WhatsApp button linking to the café's contact number when a phone number is configured.",
     group: "Engagement",
+    default: false,
+  },
+  {
+    key: "galleryGrid",
+    label: "Photo gallery",
+    description: "A scrollable grid of café photos with captions, lazy-loaded for a quick first paint.",
+    group: "Content",
+    default: false,
+  },
+  {
+    key: "pressMentions",
+    label: "Press mentions",
+    description: "A short strip of kind words from around town, each with a source attribution.",
+    group: "Content",
+    default: false,
+  },
+  {
+    key: "aboutStory",
+    label: "Our story",
+    description:
+      "A short, warm note on the café's philosophy — hygge, slow mornings and Danish baking — paired with an illustration.",
+    group: "Content",
+    default: false,
+  },
+  {
+    key: "coffeeOfWeek",
+    label: "Coffee of the week",
+    description: "Features this week's single-origin bean with its origin, roast and tasting notes.",
+    group: "Content",
+    default: false,
+  },
+  {
+    key: "drinkFinder",
+    label: "Drink finder quiz",
+    description: "A short three-question quiz that recommends a café drink to the visitor.",
+    group: "Engagement",
+    default: false,
+  },
+  {
+    key: "valuesStrip",
+    label: "What we care about",
+    description:
+      "A calm strip of small value cards — specialty beans, in-house baking, oat by default and unhurried hours.",
+    group: "Content",
+    default: false,
+  },
+  {
+    key: "openingTimeline",
+    label: "Opening hours timeline",
+    description:
+      "A visual weekly chart of opening hours with a bar per day on a shared time axis, highlighting today.",
+    group: "Content",
+    default: false,
+  },
+  {
+    key: "neighbourhoodGuide",
+    label: "Neighbourhood guide",
+    description:
+      "Lists a few nearby Leuven spots — a square, a park, a bookshop, a museum — each with a short note and a walk time.",
+    group: "Content",
     default: false,
   },
 ];
