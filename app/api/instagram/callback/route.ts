@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { AdminAuthError, requireAdmin } from "@/lib/admin-auth";
 import { prisma } from "@/lib/db";
 import {
@@ -7,6 +8,7 @@ import {
   fetchAccountHandle,
   fetchRecentPosts,
   hasInstagramEnv,
+  IG_OAUTH_STATE_COOKIE,
 } from "@/lib/instagram";
 
 export const dynamic = "force-dynamic";
@@ -29,9 +31,19 @@ export async function GET(req: NextRequest) {
   const code = url.searchParams.get("code");
   const error = url.searchParams.get("error");
   const errorDescription = url.searchParams.get("error_description");
+  const returnedState = url.searchParams.get("state");
+
+  // Verify and consume the CSRF state cookie set by connectInstagram. A missing
+  // or mismatched state means this callback wasn't initiated by us — reject it.
+  const jar = await cookies();
+  const expectedState = jar.get(IG_OAUTH_STATE_COOKIE)?.value;
+  jar.delete(IG_OAUTH_STATE_COOKIE);
 
   if (error) {
     return adminRedirect(req, errorDescription ?? error);
+  }
+  if (!expectedState || !returnedState || returnedState !== expectedState) {
+    return adminRedirect(req, "state_mismatch");
   }
   if (!code) {
     return adminRedirect(req, "missing_code");

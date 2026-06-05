@@ -5,22 +5,15 @@ import { prisma } from "@/lib/db";
 import { logAudit } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { promises as fs } from "fs";
-import path from "path";
-import crypto from "crypto";
-import sharp from "sharp";
 import {
   asString,
   encodeErrors,
   validateImageFile,
   type FieldError,
 } from "@/lib/validation";
+import { encodeToWebp, persistImage, readValidatedImage } from "@/lib/images";
 import { encodeUndo, decodeUndo } from "@/lib/undo";
 
-const UPLOAD_DIR = process.env.UPLOAD_DIR ?? path.join(process.cwd(), "public", "uploads");
-const URL_BASE = "/api/uploads";
-const MAX_BYTES = 8 * 1024 * 1024;
-const MAX_WIDTH = 1600;
 const VALID_ROLES = new Set(["background", "hero", "gallery", "menu_item"]);
 const ALT_REQUIRED_ROLES = new Set(["hero", "gallery"]);
 
@@ -31,25 +24,6 @@ function redirectErrors(errors: FieldError[], scope: string): never {
 function assertRole(role: string): string {
   if (!VALID_ROLES.has(role)) throw new Error(`Invalid role: ${role}`);
   return role;
-}
-
-async function processToWebp(file: File): Promise<{ filename: string; bytes: number }> {
-  if (!file || file.size === 0) throw new Error("Empty upload");
-  if (file.size > MAX_BYTES) throw new Error("File too large (max 8MB)");
-  if (!file.type.startsWith("image/")) throw new Error(`Unsupported type: ${file.type}`);
-
-  const input = Buffer.from(await file.arrayBuffer());
-  const webp = await sharp(input)
-    .rotate()
-    .resize({ width: MAX_WIDTH, withoutEnlargement: true })
-    .webp({ quality: 80 })
-    .toBuffer();
-
-  const hash = crypto.createHash("sha256").update(webp).digest("hex").slice(0, 12);
-  const filename = `${hash}.webp`;
-  await fs.mkdir(UPLOAD_DIR, { recursive: true });
-  await fs.writeFile(path.join(UPLOAD_DIR, filename), webp);
-  return { filename, bytes: webp.byteLength };
 }
 
 function revalidate() {
@@ -73,7 +47,8 @@ export async function uploadPhoto(formData: FormData) {
   if (errors.length > 0) redirectErrors(errors, `upload-${role}`);
   if (!file) throw new Error("Missing file");
 
-  const { filename } = await processToWebp(file);
+  const { buffer } = await readValidatedImage(file);
+  const { filename, data } = await encodeToWebp(buffer);
 
   const last = await prisma.photo.findFirst({
     where: { role },
@@ -82,15 +57,18 @@ export async function uploadPhoto(formData: FormData) {
   });
   const sortOrder = (last?.sortOrder ?? -1) + 1;
 
-  const created = await prisma.photo.create({
-    data: { role, path: `${URL_BASE}/${filename}`, alt, sortOrder },
-  });
-
-  await logAudit({
-    action: "photo.upload",
-    entity: "Photo",
-    entityId: created.id,
-    diff: { role, path: created.path, alt, sortOrder },
+  // persistImage writes the file first, then runs the DB work; if the create
+  // throws, the file it just wrote is unlinked so no orphan is left behind.
+  await persistImage(filename, data, async (url) => {
+    const created = await prisma.photo.create({
+      data: { role, path: url, alt, sortOrder },
+    });
+    await logAudit({
+      action: "photo.upload",
+      entity: "Photo",
+      entityId: created.id,
+      diff: { role, path: created.path, alt, sortOrder },
+    });
   });
 
   revalidate();

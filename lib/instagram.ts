@@ -20,6 +20,10 @@ import type { InstagramAccount } from "@prisma/client";
 export const GRAPH_HOST = "https://graph.instagram.com";
 export const OAUTH_HOST = "https://api.instagram.com";
 
+// Name of the httpOnly cookie holding the OAuth CSRF state token. Set when the
+// admin starts the connect flow, verified (and cleared) in the callback route.
+export const IG_OAUTH_STATE_COOKIE = "ig_oauth_state";
+
 // Scope required for the Instagram Login (Business) flow.
 // `instagram_business_basic` lets us read the connected IG business account's profile + media.
 export const SCOPES = ["instagram_business_basic"];

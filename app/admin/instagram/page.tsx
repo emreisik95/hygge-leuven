@@ -106,6 +106,8 @@ function describeError(code: string): string {
       return "Instagram env vars are not set. See setup checklist below.";
     case "missing_code":
       return "OAuth callback did not return a code.";
+    case "state_mismatch":
+      return "OAuth state check failed (possible CSRF or an expired attempt). Try connecting again.";
     case "no_account":
       return "No Instagram account connected.";
     case "invalid_token":

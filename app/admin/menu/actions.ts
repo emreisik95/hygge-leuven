@@ -5,9 +5,6 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { logAudit } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { promises as fs } from "fs";
-import path from "path";
-import crypto from "crypto";
 import {
   asString,
   encodeErrors,
@@ -15,28 +12,14 @@ import {
   validateImageFile,
   type FieldError,
 } from "@/lib/validation";
+import {
+  persistImage,
+  rawImageFilename,
+  readValidatedImage,
+  unlinkByUrl,
+  UPLOAD_URL_BASE,
+} from "@/lib/images";
 import { encodeUndo } from "@/lib/undo";
-
-const UPLOAD_DIR = process.env.UPLOAD_DIR ?? path.join(process.cwd(), "public", "uploads");
-const UPLOAD_URL_BASE = "/api/uploads";
-const ALLOWED_IMAGE = new Set(["image/png", "image/jpeg", "image/webp", "image/gif"]);
-const MAX_BYTES = 8 * 1024 * 1024;
-
-async function ensureUploadDir() {
-  await fs.mkdir(UPLOAD_DIR, { recursive: true });
-}
-
-async function saveImage(file: File, prefix = ""): Promise<string> {
-  if (!file || file.size === 0) throw new Error("Empty upload");
-  if (file.size > MAX_BYTES) throw new Error("File too large (max 8MB)");
-  if (!ALLOWED_IMAGE.has(file.type)) throw new Error(`Unsupported type: ${file.type}`);
-  await ensureUploadDir();
-  const ext = file.type === "image/jpeg" ? "jpg" : file.type.split("/")[1];
-  const name = `${prefix}${Date.now()}-${crypto.randomBytes(6).toString("hex")}.${ext}`;
-  const buf = Buffer.from(await file.arrayBuffer());
-  await fs.writeFile(path.join(UPLOAD_DIR, name), buf);
-  return `${UPLOAD_URL_BASE}/${name}`;
-}
 
 function redirectErrors(errors: FieldError[], scope: string): never {
   redirect(`/admin/menu?errors=${encodeErrors(errors)}&errScope=${encodeURIComponent(scope)}`);
@@ -156,6 +139,12 @@ export async function createItem(formData: FormData) {
   const categoryId = parseInt(asString(formData.get("categoryId")), 10);
   if (!Number.isFinite(categoryId)) throw new Error("Invalid category");
 
+  // Guard against a dangling FK: the category could have been deleted (e.g. in
+  // another tab) between page render and form submit. Without this the item
+  // would be created pointing at a non-existent category.
+  const category = await prisma.menuCategory.findUnique({ where: { id: categoryId } });
+  if (!category) throw new Error(`Category ${categoryId} no longer exists`);
+
   const nameEn = asString(formData.get("nameEn")).trim();
   const descriptionEn = asString(formData.get("descriptionEn")).trim();
   const priceRaw = asString(formData.get("price"));
@@ -273,12 +262,7 @@ async function deleteItemInternal(id: number) {
   if (!item) return;
   if (item.photoId) {
     const photo = await prisma.photo.findUnique({ where: { id: item.photoId } });
-    if (photo?.path?.startsWith(UPLOAD_URL_BASE + "/")) {
-      const file = photo.path.slice(UPLOAD_URL_BASE.length + 1);
-      if (file && !file.includes("/") && !file.includes("..")) {
-        await fs.unlink(path.join(UPLOAD_DIR, file)).catch(() => {});
-      }
-    }
+    await unlinkByUrl(photo?.path);
     await prisma.photo.delete({ where: { id: item.photoId } }).catch(() => {});
   }
   await prisma.translation.deleteMany({
@@ -388,30 +372,38 @@ export async function uploadItemPhoto(formData: FormData) {
   const item = await prisma.menuItem.findUnique({ where: { id } });
   if (!item) throw new Error("Item not found");
 
-  const url = await saveImage(file, "menu-");
+  // Menu photos keep their original bytes (so animated GIFs keep animating),
+  // but still pass the magic-byte check before we write anything.
+  const { buffer, mime } = await readValidatedImage(file);
+  const filename = rawImageFilename(buffer, mime, "menu-");
 
-  // Replace any prior photo for this item.
-  if (item.photoId) {
-    const prior = await prisma.photo.findUnique({ where: { id: item.photoId } });
-    if (prior?.path?.startsWith(UPLOAD_URL_BASE + "/")) {
-      const f = prior.path.slice(UPLOAD_URL_BASE.length + 1);
-      if (f && !f.includes("/") && !f.includes("..")) {
-        await fs.unlink(path.join(UPLOAD_DIR, f)).catch(() => {});
-      }
-    }
-    await prisma.photo.delete({ where: { id: item.photoId } }).catch(() => {});
+  // Snapshot the prior photo; only remove it once the new one is committed.
+  const prior = item.photoId
+    ? await prisma.photo.findUnique({ where: { id: item.photoId } })
+    : null;
+
+  // persistImage rolls back the written file if the DB writes throw.
+  await persistImage(filename, buffer, async (url) => {
+    const photo = await prisma.photo.create({
+      data: { path: url, alt: altRaw, role: "menu_item", refId: id, sortOrder: 0 },
+    });
+    await prisma.menuItem.update({ where: { id }, data: { photoId: photo.id } });
+    await logAudit({
+      action: "menu.item.photo.upload",
+      entity: "MenuItem",
+      entityId: id,
+      diff: { photoId: photo.id, path: url, alt: altRaw },
+    });
+  });
+
+  // New photo is live — now retire the old one (row always; file only if the
+  // bytes differ, since identical content yields the same filename we just
+  // wrote and the new row now points at it).
+  if (prior) {
+    if (prior.path !== `${UPLOAD_URL_BASE}/${filename}`) await unlinkByUrl(prior.path);
+    await prisma.photo.delete({ where: { id: prior.id } }).catch(() => {});
   }
 
-  const photo = await prisma.photo.create({
-    data: { path: url, alt: altRaw, role: "menu_item", refId: id, sortOrder: 0 },
-  });
-  await prisma.menuItem.update({ where: { id }, data: { photoId: photo.id } });
-  await logAudit({
-    action: "menu.item.photo.upload",
-    entity: "MenuItem",
-    entityId: id,
-    diff: { photoId: photo.id, path: url, alt: altRaw },
-  });
   revalidateMenu();
 }
 

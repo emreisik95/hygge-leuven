@@ -3,6 +3,7 @@
 import { requireAdmin } from "@/lib/admin-auth";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import crypto from "crypto";
 import {
   buildAuthorizeUrl,
@@ -10,6 +11,7 @@ import {
   fetchRecentPosts,
   getAccount,
   hasInstagramEnv,
+  IG_OAUTH_STATE_COOKIE,
   InstagramApiError,
 } from "@/lib/instagram";
 import { logAudit } from "@/lib/audit";
@@ -19,9 +21,18 @@ export async function connectInstagram() {
   if (!hasInstagramEnv()) {
     redirect("/admin/instagram?error=missing_env");
   }
-  // CSRF state is not strictly necessary here (single admin user, redirect URI fixed),
-  // but harmless to include — Facebook echoes it back unchanged.
+  // CSRF protection for the OAuth round-trip: stash a random state in an
+  // httpOnly cookie now and require the callback to echo it back. sameSite=lax
+  // lets the cookie ride the top-level GET navigation back from Instagram.
   const state = crypto.randomBytes(16).toString("hex");
+  const jar = await cookies();
+  jar.set(IG_OAUTH_STATE_COOKIE, state, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 600,
+  });
   await logAudit({
     action: "instagram.connect.initiate",
     entity: "InstagramAccount",
