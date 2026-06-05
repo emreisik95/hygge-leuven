@@ -3,6 +3,7 @@ import { updateFlags } from "./actions";
 import { Toggle } from "../ui/fields";
 import { SubmitButton } from "../ui/SubmitButton";
 import { Flash } from "../ui/Flash";
+import { FeaturePreview } from "./FeaturePreview";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Features — admin — hygge" };
@@ -70,6 +71,8 @@ export default async function FeaturesPage({
 
         <SubmitButton pendingLabel="Saving…">Save features</SubmitButton>
       </form>
+
+      <FeaturePreview />
     </>
   );
 }

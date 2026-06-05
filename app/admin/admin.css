@@ -77,6 +77,14 @@
 @media (min-width: 960px) {
   .admin-shell {
     grid-template-columns: var(--a-sidebar-w) minmax(0, 1fr);
+    /* App-shell on desktop: pin the whole shell to the viewport and let only
+       the content column scroll. The sidebar is then a full-height static
+       column that never scrolls away. (position:sticky can't be used here —
+       globals' `body { overflow-x: hidden }` makes body the sticky scroll
+       container, but the viewport is what actually scrolls, so sticky never
+       engages.) */
+    height: 100dvh;
+    overflow: hidden;
   }
 }
 
@@ -92,8 +100,6 @@
 }
 @media (min-width: 960px) {
   .admin-sidebar {
-    position: sticky;
-    top: 0;
     height: 100dvh;
     border-bottom: none;
     border-right: 1px solid var(--a-line);
@@ -178,6 +184,13 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
+}
+@media (min-width: 960px) {
+  /* Only this column scrolls; the sidebar stays put. */
+  .admin-content {
+    height: 100dvh;
+    overflow-y: auto;
+  }
 }
 
 .admin-shell .admin-main {
@@ -651,6 +664,76 @@
 .admin-shell .drag-saving { font-size: 12px; color: var(--a-text-dim); padding: var(--a-s2) var(--a-s3); list-style: none; }
 @media (pointer: coarse) {
   .admin-shell .drag-handle { min-width: 44px; min-height: 44px; font-size: 18px; }
+}
+
+/* ── feature live preview ─────────────────────────────────────────────────── */
+.admin-shell .feature-preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--a-s3);
+  flex-wrap: wrap;
+}
+.admin-shell .feature-preview-head h2 { margin: 0; }
+.admin-shell .feature-preview-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--a-s2);
+  flex-wrap: wrap;
+}
+/* segmented phone/full switch */
+.admin-shell .seg {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  border: 1px solid var(--a-line-strong);
+  border-radius: var(--a-r-pill);
+  background: var(--a-surface-2);
+}
+.admin-shell .seg-btn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: var(--a-r-pill);
+  background: transparent;
+  color: var(--a-text-dim);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.13s ease, color 0.13s ease;
+}
+.admin-shell .seg-btn[data-active="true"] {
+  background: var(--a-accent);
+  color: var(--a-accent-ink);
+  font-weight: 600;
+}
+.admin-shell .feature-preview-stage {
+  margin-top: var(--a-s4);
+  display: flex;
+  justify-content: center;
+  padding: var(--a-s4);
+  border: 1px solid var(--a-line);
+  border-radius: var(--a-r-md);
+  background: var(--a-input);
+  overflow: auto;
+}
+.admin-shell .feature-preview-frame {
+  border: 1px solid var(--a-line-strong);
+  border-radius: var(--a-r-md);
+  background: var(--a-bg);
+  width: 100%;
+  height: 600px;
+  display: block;
+}
+/* phone framing: constrain width, tall aspect */
+.admin-shell .feature-preview-stage[data-device="phone"] .feature-preview-frame {
+  width: 390px;
+  max-width: 100%;
+  height: 720px;
+  border-radius: var(--a-r-lg);
+}
+.admin-shell .feature-preview-stage[data-device="full"] .feature-preview-frame {
+  height: 70dvh;
+  min-height: 480px;
 }
 
 /* ── misc ─────────────────────────────────────────────────────────────────── */
