@@ -35,8 +35,13 @@ const TEXT_NAMESPACES = {
   instaSub: "site.instaSub",
   instaCtaLabel: "site.instaCtaLabel",
   instaEmbedHtml: "site.instaEmbedHtml",
+  visionHeading: "site.visionHeading",
+  visionBody: "site.visionBody",
   mapHeading: "site.mapHeading",
   mapSub: "site.mapSub",
+  contactHeading: "site.contactHeading",
+  contactEmail: "site.contactEmail",
+  contactPhone: "site.contactPhone",
   metaTitle: "site.metaTitle",
   metaDescription: "site.metaDescription",
 } as const;
@@ -60,8 +65,14 @@ const SITE_TEXT_DEFAULTS: Record<SiteTextField, string> = {
   instaSub: "daily moments — pastries, light, faces",
   instaCtaLabel: "Follow @hygge.leuven",
   instaEmbedHtml: "",
+  visionHeading: "why hygge",
+  visionBody:
+    "Hygge is the Danish art of cosy contentment — warmth over noise, presence over hurry. We made this corner of Leuven to slow you down: honest specialty coffee, pastry straight from the oven, and a seat that feels like a friend's kitchen. Stay a while.",
   mapHeading: "come find us",
   mapSub: "Naamsestraat 55, 3000 Leuven",
+  contactHeading: "say hello",
+  contactEmail: "",
+  contactPhone: "",
   metaTitle: "hygge — Danish café in Leuven",
   metaDescription: "Specialty coffee, pastry, and danish lunch. Naamsestraat 55, Leuven.",
 };

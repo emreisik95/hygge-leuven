@@ -73,6 +73,23 @@ function ArrowDown() {
   );
 }
 
+function MailIcon() {
+  return (
+    <svg aria-hidden="true" focusable={false} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="M3 7l9 6 9-6" />
+    </svg>
+  );
+}
+
+function PhoneIcon() {
+  return (
+    <svg aria-hidden="true" focusable={false} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+    </svg>
+  );
+}
+
 function InstagramIcon() {
   return (
     <svg aria-hidden="true" focusable={false} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -259,6 +276,16 @@ export function Landing({
         </footer>
       </section>
 
+      {c.visionBody ? (
+        <section className="pane pane-vision" id="vision" aria-labelledby="vision-heading">
+          <div className="vision-wrap">
+            <h2 className="vision-heading" id="vision-heading">{c.visionHeading}</h2>
+            <p className="vision-body">{c.visionBody}</p>
+            <a href="#landing" className="back-link">↑ back to top</a>
+          </div>
+        </section>
+      ) : null}
+
       <section className="pane pane-insta" id="insta" aria-labelledby="insta-heading">
         <div className="insta-wrap">
           <header className="insta-head">
@@ -371,6 +398,32 @@ export function Landing({
           <div className="map-card">
             <h2 className="map-heading" id="map-heading">{c.mapHeading}</h2>
             <p className="map-sub">{c.mapSub}</p>
+
+            <div className="map-contact" aria-label={c.contactHeading}>
+              <span className="map-contact-label">{c.contactHeading}</span>
+              <ul className="map-contact-list" role="list">
+                <li>
+                  <a href={c.instagramUrl} target="_blank" rel="noreferrer" className="map-contact-link">
+                    <InstagramIcon /> {c.instagramHandle}<span className="sr-only"> (opens in new tab)</span>
+                  </a>
+                </li>
+                {c.contactEmail ? (
+                  <li>
+                    <a href={`mailto:${c.contactEmail}`} className="map-contact-link">
+                      <MailIcon /> {c.contactEmail}
+                    </a>
+                  </li>
+                ) : null}
+                {c.contactPhone ? (
+                  <li>
+                    <a href={`tel:${c.contactPhone.replace(/[^\d+]/g, "")}`} className="map-contact-link">
+                      <PhoneIcon /> {c.contactPhone}
+                    </a>
+                  </li>
+                ) : null}
+              </ul>
+            </div>
+
             <div className="map-actions">
               <a href={c.findUsUrl} target="_blank" rel="noreferrer" className="btn btn-secondary">
                 Open in Google Maps <ArrowRight /><span className="sr-only"> (opens in new tab)</span>

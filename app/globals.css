@@ -529,6 +529,39 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 .back-link:hover { opacity: 1; }
 
+/* ───── vision pane ───── */
+.pane-vision {
+  background: linear-gradient(180deg, rgba(26, 20, 16, 0.95) 0%, rgba(58, 42, 31, 0.92) 100%);
+  backdrop-filter: blur(2px);
+  padding: 56px 24px max(40px, env(safe-area-inset-bottom));
+  align-items: center;
+  justify-content: center;
+}
+.vision-wrap {
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  text-align: center;
+}
+.vision-heading {
+  font-family: var(--font-serif), "Didot LT Pro", Didot, serif;
+  font-weight: 700;
+  font-size: clamp(34px, 8vw, 60px);
+  color: var(--tan);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+.vision-body {
+  font-family: var(--font-editorial), serif;
+  font-size: clamp(17px, 4.4vw, 22px);
+  line-height: 1.6;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
 /* ───── map pane ───── */
 .pane-map {
   position: relative;
@@ -545,6 +578,10 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .map-iframe {
   border: 0;
   display: block;
+  /* Static location preview: the iframe must not capture touch/scroll, or it
+     traps one-finger pans on mobile ("can't scroll back up"). Real interaction
+     is handled by the "Open in Google Maps" button in the overlay card. */
+  pointer-events: none;
   filter: invert(0.92) hue-rotate(180deg) sepia(0.45) saturate(0.75) brightness(0.95) contrast(0.95);
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -724,6 +761,46 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   color: var(--ink);
   opacity: 1;
 }
+.map-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  width: 100%;
+}
+.map-contact-label {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tan);
+  opacity: 0.8;
+}
+.map-contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.map-contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 6px 8px;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  opacity: 0.95;
+}
+.map-contact-link:hover,
+.map-contact-link:focus-visible { opacity: 1; text-decoration: underline; }
+.map-contact-link svg { flex-shrink: 0; opacity: 0.85; }
+
 .map-actions {
   display: flex;
   flex-direction: column;
