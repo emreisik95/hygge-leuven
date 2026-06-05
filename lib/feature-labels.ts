@@ -2,6 +2,11 @@
 // to migrate into the translation system. English-only for now; every string
 // here only ever renders once an admin enables the matching flag.
 
+// Translation namespace for the announcement message. The text is editable from
+// the Translations admin (per-locale, EN-fallback); FEATURE_LABELS.announcement
+// .message below is the seed/default shown until an admin overrides it.
+export const ANNOUNCEMENT_NS = "feature.announcement.message";
+
 export const FEATURE_LABELS = {
   announcement: {
     message: "Open all week — extended weekend hours through the season. Come cosy up. ☕",

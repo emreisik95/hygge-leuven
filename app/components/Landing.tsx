@@ -54,6 +54,7 @@ export type LandingProps = {
   beholdFeedId?: string;
   flags: Flags;
   origin: string;
+  announcement?: string;
 };
 
 function PinIcon() {
@@ -171,6 +172,7 @@ export function Landing({
   beholdFeedId,
   flags,
   origin,
+  announcement,
 }: LandingProps) {
   const hasMenu = menu.some((cat) => cat.items.length > 0);
   const hasEngageBlock =
@@ -185,7 +187,7 @@ export function Landing({
 
   return (
     <main className="shell">
-      <GlobalFeatures flags={flags} />
+      <GlobalFeatures flags={flags} announcementMessage={announcement} />
 
       {preview ? (
         <div

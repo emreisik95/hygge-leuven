@@ -440,6 +440,24 @@ export function computeIsOpen(hours: HoursRow[], now: Date): boolean {
   return minutes >= open && minutes < close;
 }
 
+// Resolve a single translation namespace for `locale` with EN fallback, then a
+// hardcoded `fallback` when no row exists at all. Used for one-off strings
+// (e.g. the announcement banner) that live in the Translation table but aren't
+// part of the structured site-copy or menu groups.
+export async function getTranslation(
+  namespace: string,
+  locale: Locale,
+  fallback: string,
+): Promise<string> {
+  const rows = await prisma.translation.findMany({
+    where: {
+      namespace,
+      locale: locale === DEFAULT_LOCALE ? DEFAULT_LOCALE : { in: [locale, DEFAULT_LOCALE] },
+    },
+  });
+  return pickTranslation(rows, namespace, locale, fallback);
+}
+
 export async function setTranslation(namespace: string, locale: Locale, value: string) {
   return prisma.translation.upsert({
     where: { namespace_locale: { namespace, locale } },

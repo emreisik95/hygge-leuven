@@ -80,9 +80,16 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .editorial { font-family: var(--font-editorial), serif; }
 
 /* ───── landing ───── */
+/* --ann-h: height the announcement banner reserves at the top of the page.
+   The banner sets it while open (and clears it when dismissed), so the shell
+   and its full-height panes shrink to sit below the banner instead of being
+   covered by it. Default 0 = no banner. */
+:root { --ann-h: 0px; }
+
 .shell {
   position: relative;
-  height: 100dvh;
+  margin-top: var(--ann-h);
+  height: calc(100dvh - var(--ann-h));
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
@@ -96,7 +103,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 .pane {
   position: relative;
-  min-height: 100dvh;
+  min-height: calc(100dvh - var(--ann-h));
   scroll-snap-align: start;
   scroll-snap-stop: always;
   display: flex;
@@ -104,9 +111,9 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 .pane-landing {
-  height: 100dvh;
-  min-height: 100dvh;
-  max-height: 100dvh;
+  height: calc(100dvh - var(--ann-h));
+  min-height: calc(100dvh - var(--ann-h));
+  max-height: calc(100dvh - var(--ann-h));
   overflow: hidden;
 }
 
@@ -351,7 +358,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 @media (max-width: 720px) {
-  .pane-landing { height: auto; max-height: none; min-height: 100dvh; overflow: visible; }
+  .pane-landing { height: auto; max-height: none; min-height: calc(100dvh - var(--ann-h)); overflow: visible; }
   .hero { padding: 28px 24px 0; gap: 4px; min-height: auto; overflow: visible; }
   .card { gap: 4px; max-width: 440px; }
   .brand { font-size: clamp(52px, 14vw, 84px); margin-bottom: 0; line-height: 0.95; }
@@ -1973,7 +1980,7 @@ textarea[aria-invalid="true"] {
 /* ── scroll progress ───────────────────────────────────────────────── */
 .scroll-progress {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: var(--ann-h, 0px); left: 0; right: 0;
   height: 3px;
   z-index: 950;
   background: transparent;

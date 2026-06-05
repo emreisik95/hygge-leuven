@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Dismissible top-of-page bar. The dismissal is keyed by the message text, so
 // changing the announcement re-shows it even to visitors who closed the old one.
+// While open, it publishes its own height as the `--ann-h` CSS variable so the
+// page below shifts down by exactly the banner height instead of being covered.
 export function AnnouncementBanner({ message, closeLabel }: { message: string; closeLabel: string }) {
   const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
   const storageKey = `hygge-ann:${hash(message)}`;
 
   useEffect(() => {
@@ -16,10 +19,29 @@ export function AnnouncementBanner({ message, closeLabel }: { message: string; c
     }
   }, [storageKey]);
 
+  // Publish banner height to the page (and keep it in sync on resize/wrap).
+  useEffect(() => {
+    const root = document.documentElement;
+    if (!open) {
+      root.style.removeProperty("--ann-h");
+      return;
+    }
+    const el = ref.current;
+    if (!el) return;
+    const sync = () => root.style.setProperty("--ann-h", `${el.offsetHeight}px`);
+    sync();
+    const ro = new ResizeObserver(sync);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      root.style.removeProperty("--ann-h");
+    };
+  }, [open, message]);
+
   if (!open || !message.trim()) return null;
 
   return (
-    <div className="ann-banner" role="region" aria-label="Announcement">
+    <div ref={ref} className="ann-banner" role="region" aria-label="Announcement">
       <p className="ann-banner-text">{message}</p>
       <button
         type="button"

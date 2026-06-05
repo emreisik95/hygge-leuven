@@ -714,26 +714,25 @@
   border: 1px solid var(--a-line);
   border-radius: var(--a-r-md);
   background: var(--a-input);
-  overflow: auto;
+  overflow: hidden;
 }
-.admin-shell .feature-preview-frame {
+/* holder is sized (inline) to the SCALED page dimensions, so it occupies real
+   layout space and centers; the iframe is full device size, scaled to fit. */
+.admin-shell .feature-preview-holder {
+  position: relative;
+  overflow: hidden;
   border: 1px solid var(--a-line-strong);
   border-radius: var(--a-r-md);
   background: var(--a-bg);
-  width: 100%;
-  height: 600px;
-  display: block;
+  box-shadow: var(--a-shadow-2);
 }
-/* phone framing: constrain width, tall aspect */
-.admin-shell .feature-preview-stage[data-device="phone"] .feature-preview-frame {
-  width: 390px;
-  max-width: 100%;
-  height: 720px;
-  border-radius: var(--a-r-lg);
-}
-.admin-shell .feature-preview-stage[data-device="full"] .feature-preview-frame {
-  height: 70dvh;
-  min-height: 480px;
+.admin-shell .feature-preview-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: none;
+  transform-origin: top left;
+  background: var(--a-bg);
 }
 
 /* ── misc ─────────────────────────────────────────────────────────────────── */

@@ -1,4 +1,5 @@
 import { prisma, siteTextNamespace, SITE_TEXT_FIELDS } from "@/lib/db";
+import { ANNOUNCEMENT_NS, FEATURE_LABELS } from "@/lib/feature-labels";
 import { LOCALES, LOCALE_LABELS, LOCALE_NAMES, type LocaleCode } from "@/lib/locale";
 import { updateTranslations } from "./actions";
 import { decodeErrors } from "@/lib/validation";
@@ -35,7 +36,12 @@ async function buildExpectedGroups(): Promise<Group[]> {
     })),
   };
 
-  const groups = [siteGroup];
+  const featuresGroup: Group = {
+    title: "Features",
+    namespaces: [{ namespace: ANNOUNCEMENT_NS, label: "Announcement banner" }],
+  };
+
+  const groups = [siteGroup, featuresGroup];
   if (menuGroup.namespaces.length > 0) groups.push(menuGroup);
   return groups;
 }
@@ -65,6 +71,15 @@ export default async function TranslationsPage({
   const groups = await buildExpectedGroups();
   const allNamespaces = groups.flatMap((g) => g.namespaces.map((n) => n.namespace));
   const valuesByNs = await loadTranslationMap(allNamespaces);
+
+  // Seed the announcement EN field with its default copy when no row exists yet,
+  // so the editor shows the live text and a first save doesn't trip the
+  // EN-required rule on an untouched field.
+  const annSlot = valuesByNs.get(ANNOUNCEMENT_NS) ?? {};
+  if (!annSlot.EN) {
+    annSlot.EN = FEATURE_LABELS.announcement.message;
+    valuesByNs.set(ANNOUNCEMENT_NS, annSlot);
+  }
 
   return (
     <>

@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
-import { getPublishedContent, getOpeningHours, getPhotos, getMenuForLocale } from "@/lib/db";
+import { getPublishedContent, getOpeningHours, getPhotos, getMenuForLocale, getTranslation } from "@/lib/db";
+import { ANNOUNCEMENT_NS, FEATURE_LABELS } from "@/lib/feature-labels";
 import { LOCALE_COOKIE, parseLocale, toPrismaLocale } from "@/lib/locale";
 import { getRecentPostsForRender } from "@/lib/instagram";
 import { getStaticFeed } from "@/lib/instagram-static";
@@ -16,7 +17,7 @@ export default async function Home() {
   const store = await cookies();
   const locale = parseLocale(store.get(LOCALE_COOKIE)?.value);
   const prismaLocale = toPrismaLocale(locale);
-  const [content, seedPosts, hoursRows, statusTranslations, bgPhotos, menu, flags] = await Promise.all([
+  const [content, seedPosts, hoursRows, statusTranslations, bgPhotos, menu, flags, announcement] = await Promise.all([
     getPublishedContent(prismaLocale),
     getRecentPostsForRender(9),
     getOpeningHours(),
@@ -24,6 +25,7 @@ export default async function Home() {
     getPhotos("background"),
     getMenuForLocale(prismaLocale),
     loadFlags(),
+    getTranslation(ANNOUNCEMENT_NS, prismaLocale, FEATURE_LABELS.announcement.message),
   ]);
 
   // Real @hygge.leuven posts baked into the repo (refreshed via
@@ -76,6 +78,7 @@ export default async function Home() {
         beholdFeedId={process.env.BEHOLD_FEED_ID ?? ""}
         flags={flags}
         origin={origin}
+        announcement={announcement}
       />
     </>
   );

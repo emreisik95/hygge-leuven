@@ -14,11 +14,21 @@ import { Lightbox } from "./Lightbox";
 // Single mount point for the page-wide client "chrome" features. Each renders
 // only when its flag is on; the floating controls share a fixed stack via CSS
 // so they don't overlap.
-export function GlobalFeatures({ flags }: { flags: Flags }) {
+export function GlobalFeatures({
+  flags,
+  announcementMessage,
+}: {
+  flags: Flags;
+  // Resolved from translations (EN-fallback) server-side; defaults to the seed.
+  announcementMessage?: string;
+}) {
   return (
     <>
       {flags.announcementBanner ? (
-        <AnnouncementBanner message={L.announcement.message} closeLabel={L.announcement.close} />
+        <AnnouncementBanner
+          message={announcementMessage ?? L.announcement.message}
+          closeLabel={L.announcement.close}
+        />
       ) : null}
       {flags.scrollProgress ? <ScrollProgress /> : null}
       {flags.seasonalAccent ? <SeasonalAccent /> : null}

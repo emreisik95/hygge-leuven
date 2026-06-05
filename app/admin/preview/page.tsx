@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
-import { getDraftContent, getOpeningHours, getPhotos, getMenuForLocale } from "@/lib/db";
+import { getDraftContent, getOpeningHours, getPhotos, getMenuForLocale, getTranslation } from "@/lib/db";
+import { ANNOUNCEMENT_NS, FEATURE_LABELS } from "@/lib/feature-labels";
 import { LOCALE_COOKIE, parseLocale, toPrismaLocale } from "@/lib/locale";
 import { getRecentPostsForRender } from "@/lib/instagram";
 import { computeIsOpen, loadStatusTranslations } from "@/lib/hours";
@@ -16,7 +17,7 @@ export default async function PreviewPage() {
   const store = await cookies();
   const locale = parseLocale(store.get(LOCALE_COOKIE)?.value);
   const prismaLocale = toPrismaLocale(locale);
-  const [content, instaPosts, hoursRows, statusTranslations, bgPhotos, menu, flags, origin] =
+  const [content, instaPosts, hoursRows, statusTranslations, bgPhotos, menu, flags, origin, announcement] =
     await Promise.all([
       getDraftContent(prismaLocale),
       getRecentPostsForRender(9),
@@ -26,6 +27,7 @@ export default async function PreviewPage() {
       getMenuForLocale(prismaLocale),
       loadFlags(),
       getOrigin(),
+      getTranslation(ANNOUNCEMENT_NS, prismaLocale, FEATURE_LABELS.announcement.message),
     ]);
 
   const now = new Date();
@@ -47,6 +49,7 @@ export default async function PreviewPage() {
       beholdFeedId={process.env.BEHOLD_FEED_ID ?? ""}
       flags={flags}
       origin={origin}
+      announcement={announcement}
     />
   );
 }
