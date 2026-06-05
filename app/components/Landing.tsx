@@ -117,7 +117,16 @@ function formatHoursToday(status: IsOpenResult, t: StatusT): string {
   return range ? `${t["site.todayLabel"]} ${range}` : t["site.todayLabel"];
 }
 
-function formatHoursWeekend(rows: OpeningHoursRow[], t: StatusT): string | null {
+const BCP47: Record<LocaleCode, string> = { EN: "en-GB", NL: "nl-BE", FR: "fr-BE" };
+
+// Localised short weekday name (e.g. EN "Sat", NL "za", FR "sam.") for a given
+// day-of-week index (0 = Sunday). Reference dates: 2024-01-07 is a Sunday.
+function shortDayName(dow: number, locale: LocaleCode): string {
+  const ref = new Date(Date.UTC(2024, 0, 7 + dow));
+  return new Intl.DateTimeFormat(BCP47[locale], { weekday: "short", timeZone: "UTC" }).format(ref);
+}
+
+function formatHoursWeekend(rows: OpeningHoursRow[], t: StatusT, locale: LocaleCode): string | null {
   const sat = rows.find((r) => r.dayOfWeek === 6);
   const sun = rows.find((r) => r.dayOfWeek === 0);
   const satRange = formatRowRange(sat);
@@ -125,8 +134,8 @@ function formatHoursWeekend(rows: OpeningHoursRow[], t: StatusT): string | null 
   if (!satRange && !sunRange) return null;
   if (satRange && sunRange && satRange === sunRange) return `${t["site.weekendLabel"]} ${satRange}`;
   const parts: string[] = [];
-  if (satRange) parts.push(`Sat ${satRange}`);
-  if (sunRange) parts.push(`Sun ${sunRange}`);
+  if (satRange) parts.push(`${shortDayName(6, locale)} ${satRange}`);
+  if (sunRange) parts.push(`${shortDayName(0, locale)} ${sunRange}`);
   return `${t["site.weekendLabel"]} ${parts.join(" · ")}`;
 }
 
@@ -150,7 +159,7 @@ export function Landing({
   const statusLabel = status.isOpen ? t["site.statusOpen"] : t["site.statusClosed"];
   const statusSub = formatStatusSub(status, now, t);
   const hoursTodayLine = formatHoursToday(status, t);
-  const hoursWeekendLine = formatHoursWeekend(hoursRows, t);
+  const hoursWeekendLine = formatHoursWeekend(hoursRows, t, locale);
   const dotAriaLabel = statusLabel;
 
   return (
@@ -221,7 +230,7 @@ export function Landing({
                 {c.inviteSub ? <p className="invite-sub">{c.inviteSub}</p> : null}
               </div>
             ) : null}
-            <a href="#insta" className="scroll-cue" aria-label="See more">
+            <a href="#insta" className="scroll-cue" aria-label={c.seeMoreLabel}>
               <ArrowDown />
             </a>
           </div>
@@ -263,7 +272,7 @@ export function Landing({
           <div className="actions">
             {hasMenu ? (
               <a href="#menu" className="btn btn-secondary">
-                Menu <ArrowRight />
+                {c.menuNavLabel} <ArrowRight />
               </a>
             ) : null}
             <a href="#map" className="btn btn-secondary">
@@ -281,7 +290,7 @@ export function Landing({
           <div className="vision-wrap">
             <h2 className="vision-heading" id="vision-heading">{c.visionHeading}</h2>
             <p className="vision-body">{c.visionBody}</p>
-            <a href="#landing" className="back-link">↑ back to top</a>
+            <a href="#landing" className="back-link">{c.backToTopLabel}</a>
           </div>
         </section>
       ) : null}
@@ -299,12 +308,12 @@ export function Landing({
             ) : instaPosts.length > 0 ? (
               <ul className="insta-grid" role="list">
                 {instaPosts.map((p) => {
-                  const alt = p.caption ? truncate(p.caption, 80) : "Instagram post";
+                  const alt = p.caption ? truncate(p.caption, 80) : c.instagramHandle;
                   return (
                     <li key={p.id} className="insta-grid-item">
                       <a href={p.permalink} target="_blank" rel="noreferrer" className="insta-grid-link">
                         <img src={p.mediaUrl} alt={alt} loading="lazy" decoding="async" width={320} height={320} />
-                        <span className="sr-only"> (opens in new tab)</span>
+                        <span className="sr-only"> {c.newTabLabel}</span>
                       </a>
                     </li>
                   );
@@ -312,28 +321,28 @@ export function Landing({
               </ul>
             ) : (
               <a href={c.instagramUrl} target="_blank" rel="noreferrer" className="insta-empty">
-                <p>Live feed loads here once a widget is connected.</p>
-                <p className="insta-empty-sub">Tap to view @hygge.leuven on Instagram →</p>
-                <span className="sr-only"> (opens in new tab)</span>
+                <p>{c.instaEmptyLine}</p>
+                <p className="insta-empty-sub">{c.instaEmptySub}</p>
+                <span className="sr-only"> {c.newTabLabel}</span>
               </a>
             )}
           </div>
 
           <div className="insta-cta">
             <a href={c.instagramUrl} target="_blank" rel="noreferrer" className="btn btn-primary btn-lg">
-              <InstagramIcon /> {c.instaCtaLabel}<span className="sr-only"> (opens in new tab)</span>
+              <InstagramIcon /> {c.instaCtaLabel}<span className="sr-only"> {c.newTabLabel}</span>
             </a>
-            <a href="#landing" className="back-link">↑ back to top</a>
+            <a href="#landing" className="back-link">{c.backToTopLabel}</a>
           </div>
         </div>
       </section>
 
       {hasMenu ? (
         <section className="pane pane-menu" id="menu" aria-labelledby="menu-heading">
-          <a href="#landing" className="skip-link">Skip menu</a>
+          <a href="#landing" className="skip-link">{c.skipSectionLabel}</a>
           <div className="menu-wrap">
             <header className="menu-head">
-              <h2 className="menu-heading" id="menu-heading">menu</h2>
+              <h2 className="menu-heading" id="menu-heading">{c.menuHeading}</h2>
               <p className="menu-sub">{c.tagline}</p>
             </header>
 
@@ -369,7 +378,7 @@ export function Landing({
                           <span className="menu-item-title">
                             {it.name || <em>—</em>}
                             {it.available ? null : (
-                              <span className="menu-item-unavailable-tag">sold out</span>
+                              <span className="menu-item-unavailable-tag">{c.soldOutLabel}</span>
                             )}
                           </span>
                           <span className="menu-price">
@@ -385,14 +394,14 @@ export function Landing({
             </div>
 
             <div className="menu-cta">
-              <a href="#landing" className="back-link">↑ back to top</a>
+              <a href="#landing" className="back-link">{c.backToTopLabel}</a>
             </div>
           </div>
         </section>
       ) : null}
 
       <section className="pane pane-map" id="map" aria-labelledby="map-heading">
-        <a href="#landing" className="skip-link">Skip map</a>
+        <a href="#landing" className="skip-link">{c.skipSectionLabel}</a>
         <OsmMap lat={c.mapLat} lng={c.mapLng} zoom={c.mapZoom} label={c.brandName} />
         <div className="map-overlay">
           <div className="map-card">
@@ -404,12 +413,12 @@ export function Landing({
               <ul className="map-contact-list" role="list">
                 <li>
                   <a href={c.findUsUrl} target="_blank" rel="noreferrer" className="map-contact-link">
-                    <PinIcon /> {c.mapSub}<span className="sr-only"> (opens in new tab)</span>
+                    <PinIcon /> {c.mapSub}<span className="sr-only"> {c.newTabLabel}</span>
                   </a>
                 </li>
                 <li>
                   <a href={c.instagramUrl} target="_blank" rel="noreferrer" className="map-contact-link">
-                    <InstagramIcon /> {c.instagramHandle}<span className="sr-only"> (opens in new tab)</span>
+                    <InstagramIcon /> {c.instagramHandle}<span className="sr-only"> {c.newTabLabel}</span>
                   </a>
                 </li>
                 {c.contactEmail ? (
@@ -431,11 +440,11 @@ export function Landing({
 
             <div className="map-actions">
               <a href={c.findUsUrl} target="_blank" rel="noreferrer" className="btn btn-secondary">
-                Open in Google Maps <ArrowRight /><span className="sr-only"> (opens in new tab)</span>
+                {c.mapsLinkLabel} <ArrowRight /><span className="sr-only"> {c.newTabLabel}</span>
               </a>
             </div>
           </div>
-          <a href="#landing" className="back-link map-back">↑ back to top</a>
+          <a href="#landing" className="back-link map-back">{c.backToTopLabel}</a>
         </div>
       </section>
     </main>
