@@ -200,7 +200,13 @@ export function Landing({
 
   return (
     <main className="shell">
-      <GlobalFeatures flags={flags} announcementMessage={announcement} copy={L} />
+      <GlobalFeatures
+        flags={flags}
+        announcementMessage={announcement}
+        copy={L}
+        locale={locale}
+        phone={c.contactPhone}
+      />
 
       {preview ? (
         <div

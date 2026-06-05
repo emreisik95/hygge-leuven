@@ -2210,3 +2210,515 @@ details[open] .faq-q::after { content: "–"; }
   .fab-top, .scroll-progress-bar, .loyalty-stamp { transition: none; }
 }
 
+
+
+/* ===================================================================
+   Batch A (global overlays) feature CSS — appended by scripts/integrate-batch.mjs
+   =================================================================== */
+
+/* ── section nav dots ──────────────────────────────────────────────── */
+.section-dots {
+  position: fixed;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  z-index: 840;
+  pointer-events: none;
+}
+.section-dots-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  background: var(--pill-bg);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  pointer-events: auto;
+}
+.section-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.section-dot-mark {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--rule-strong);
+  background: transparent;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.section-dot:hover .section-dot-mark {
+  border-color: var(--ink);
+}
+.section-dot.is-active .section-dot-mark {
+  background: var(--ink);
+  border-color: var(--ink);
+  transform: scale(1.25);
+}
+.section-dot:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .section-dot-mark { transition: none; }
+  .section-dot.is-active .section-dot-mark { transform: none; }
+}
+@media (max-width: 900px) {
+  .section-dots { display: none; }
+}
+
+/* revealOnScroll — gentle fade-and-rise as blocks enter the viewport. The
+   hidden state (.reveal-init) is only ever applied by JS, so without scripts
+   everything renders fully visible. No layout shift: opacity + transform only. */
+.reveal-init {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 620ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 620ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal-init.reveal-shown {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-init {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+}
+
+/* ── accessibility toolbar (a11yToolbar) ───────────────────────────── */
+
+/* Text-size scaling. The site sizes type in px / viewport units, so a root
+   font-size has no effect; instead the visitor's choice rides on `zoom` over
+   the scrolling content container, which scales px text and spacing
+   proportionally and reflows naturally. The fixed control stack lives outside
+   .shell, so it is unaffected. Browsers lacking `zoom` ignore this (no-op). */
+.shell { zoom: var(--user-zoom, 1); }
+
+.a11y-tb { position: relative; display: inline-flex; }
+
+.a11y-tb-btn {
+  width: 46px; height: 46px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--bg); color: var(--ink);
+  border: 1.5px solid var(--rule-strong);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+.a11y-tb-btn:hover { border-color: var(--ink); }
+
+.a11y-tb-panel {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  width: 250px;
+  max-width: calc(100vw - 32px);
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--rule-strong);
+  border-radius: 14px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.38);
+  padding: 14px;
+  z-index: 851;
+  animation: a11y-tb-in 0.16s ease;
+}
+
+@keyframes a11y-tb-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.a11y-tb-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+}
+.a11y-tb-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+.a11y-tb-close {
+  width: 30px; height: 30px;
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--pill-bg);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.a11y-tb-close:hover { border-color: var(--ink); }
+
+.a11y-tb-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+}
+.a11y-tb-row + .a11y-tb-row { border-top: 1px solid var(--rule); }
+.a11y-tb-label { font-size: 13px; color: var(--ink); }
+
+.a11y-tb-size { display: inline-flex; align-items: center; gap: 6px; }
+.a11y-tb-step {
+  min-width: 34px; height: 34px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--pill-bg);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+}
+.a11y-tb-step:hover:not(:disabled) { border-color: var(--ink); }
+.a11y-tb-step:disabled { opacity: 0.4; cursor: not-allowed; }
+.a11y-tb-pct {
+  min-width: 40px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--tan);
+  font-variant-numeric: tabular-nums;
+}
+
+.a11y-tb-switch {
+  position: relative;
+  width: 44px; height: 26px;
+  flex: 0 0 auto;
+  padding: 0;
+  background: var(--pill-bg);
+  border: 1px solid var(--rule-strong);
+  border-radius: 13px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+.a11y-tb-switch:hover { border-color: var(--ink); }
+.a11y-tb-switch.is-on { background: var(--instagram); border-color: var(--instagram); }
+.a11y-tb-knob {
+  position: absolute;
+  top: 50%; left: 3px;
+  width: 18px; height: 18px;
+  transform: translateY(-50%);
+  background: var(--ink);
+  border-radius: 50%;
+  transition: left 0.18s ease;
+}
+.a11y-tb-switch.is-on .a11y-tb-knob { left: 21px; }
+
+/* High-contrast mode: firm up rules and text for visitors who opt in. */
+html[data-contrast="high"] {
+  --rule: rgba(244, 234, 216, 0.7);
+  --rule-strong: rgba(244, 234, 216, 0.92);
+  --tan: #f4ead8;
+}
+html[data-contrast="high"] body { color: var(--ink); }
+
+/* Visitor-requested reduced motion. Mirrors the site's own
+   @media (prefers-reduced-motion: reduce) kills so the toggle genuinely stops
+   page motion — not just this toolbar — including the background crossfade,
+   scroll cue, map pulse, snap scrolling and shared chrome transitions. */
+html[data-reduce-motion="on"] .shell,
+html[data-reduce-motion="on"] { scroll-behavior: auto; }
+html[data-reduce-motion="on"] .shell { scroll-snap-type: none; }
+html[data-reduce-motion="on"] .scroll-cue,
+html[data-reduce-motion="on"] .hygge-marker-pulse { animation: none; }
+html[data-reduce-motion="on"] .bg-layer { animation: none; opacity: 0; }
+html[data-reduce-motion="on"] .bg-layer:first-child { opacity: 1; }
+html[data-reduce-motion="on"] .btn,
+html[data-reduce-motion="on"] .skip-link,
+html[data-reduce-motion="on"] .menu-item-details summary::after { transition: none; }
+html[data-reduce-motion="on"] .a11y-tb-panel { animation: none; }
+html[data-reduce-motion="on"] .a11y-tb-switch,
+html[data-reduce-motion="on"] .a11y-tb-knob,
+html[data-reduce-motion="on"] .fab-top,
+html[data-reduce-motion="on"] .scroll-progress-bar,
+html[data-reduce-motion="on"] .loyalty-stamp { transition: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .a11y-tb-panel { animation: none; }
+  .a11y-tb-switch, .a11y-tb-knob { transition: none; }
+}
+
+/* ── locale suggestion (cozy corner toast) ─────────────────────────── */
+.locale-suggest {
+  position: fixed;
+  /* Top-left corner, clear of the announcement banner when present. A small
+     card — NOT a full-width bar — so it floats over content without occluding
+     the landing pane or the language switcher it points at, and reserves no
+     layout space. */
+  top: calc(var(--ann-h, 0px) + 12px);
+  left: 12px;
+  z-index: 840; /* below fab-stack (850) and the announcement banner (900) */
+  max-width: min(320px, calc(100vw - 24px));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  background: var(--bg);
+  border: 1px solid var(--rule-strong);
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.locale-suggest-text { margin: 0; }
+.locale-suggest-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.locale-suggest-action {
+  flex: 0 0 auto;
+  min-height: 36px;
+  padding: 7px 14px;
+  background: transparent;
+  border: 1px solid var(--rule-strong);
+  border-radius: 18px;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.locale-suggest-action:hover { border-color: var(--ink); }
+.locale-suggest-close {
+  flex: 0 0 auto;
+  width: 32px; height: 32px;
+  margin-left: auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 0; color: var(--ink);
+  font-size: 22px; line-height: 1; cursor: pointer; border-radius: 6px;
+  transition: background 0.2s ease;
+}
+.locale-suggest-close:hover { background: var(--pill-bg); }
+@media (prefers-reduced-motion: reduce) {
+  .locale-suggest-action,
+  .locale-suggest-close { transition: none; }
+}
+
+/* ── command palette (keyboard quick-jump) ─────────────────────────── */
+.cmdk {
+  position: fixed; inset: 0; z-index: 1200;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: clamp(48px, 14vh, 140px) 16px 16px;
+  background: rgba(0, 0, 0, 0.62);
+  animation: cmdk-fade 0.14s ease;
+}
+.cmdk-panel {
+  width: min(440px, 100%);
+  display: flex; flex-direction: column;
+  background: var(--bg);
+  border: 1.5px solid var(--rule-strong);
+  border-radius: 14px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: cmdk-rise 0.16s ease;
+}
+.cmdk-hint {
+  margin: 0;
+  padding: 12px 16px 8px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tan);
+  opacity: 0.85;
+}
+.cmdk-input {
+  margin: 0 12px 10px;
+  padding: 11px 14px;
+  min-height: 44px;
+  background: var(--pill-bg);
+  border: 1.5px solid var(--rule);
+  border-radius: 8px;
+  color: var(--ink);
+  font-size: 15px;
+}
+.cmdk-input::placeholder { color: var(--ink); opacity: 0.5; }
+.cmdk-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 8px 8px;
+  max-height: min(320px, 46vh);
+  overflow-y: auto;
+}
+.cmdk-opt {
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--ink);
+  font-size: 14px;
+  cursor: pointer;
+}
+.cmdk-opt.is-active {
+  background: var(--pill-bg);
+  border: 1px solid var(--rule-strong);
+  padding: 9px 11px;
+}
+.cmdk-empty {
+  margin: 0;
+  padding: 4px 18px 18px;
+  font-size: 13px;
+  color: var(--ink);
+  opacity: 0.7;
+}
+@keyframes cmdk-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cmdk-rise {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cmdk, .cmdk-panel { animation: none; }
+}
+
+/* ── seasonal particles (decorative falling overlay) ───────────────── */
+.seasonal-particles {
+  position: fixed;
+  inset: 0;
+  /* GlobalFeatures mounts INSIDE `<main className="shell">`, which sets
+     `isolation: isolate` and so is a stacking context. The page's content
+     panes are `position: relative` with z-index auto and follow this layer in
+     DOM order, so a z-index of 0 here would let every pane paint OVER the
+     particles (the effect would be invisible). A small positive z-index lifts
+     the layer above those auto/0 panes (and above .bg at -1) so the particles
+     actually show, while staying below the page's explicitly-raised
+     interactive chrome (locale switcher z-index:5, map overlay 500, CTAs 600,
+     fab-stack 850, cookie 860, banner 900, scroll-progress 950) so it never
+     visually competes with controls. pointer-events:none guarantees it can
+     never intercept clicks regardless of stacking. */
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none; /* never blocks clicks */
+}
+.seasonal-particle {
+  position: absolute;
+  top: -8vh; /* start just above the viewport */
+  line-height: 1;
+  color: var(--ink);
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+  animation-name: seasonal-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+/* Tints per season, layered over the inline per-particle opacity. */
+.seasonal-particles.is-winter .seasonal-particle { color: var(--ink); }
+.seasonal-particles.is-autumn .seasonal-particle { color: var(--instagram); }
+.seasonal-particles.is-spring .seasonal-particle { color: var(--tan); }
+@keyframes seasonal-fall {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(58vh) translateX(var(--drift, 0px)) rotate(180deg);
+  }
+  100% {
+    transform: translateY(116vh) translateX(0) rotate(360deg);
+  }
+}
+/* Decorative motion only — remove it entirely when motion is unwelcome. The
+   component already renders nothing under reduced-motion; this is a belt-and-
+   suspenders guard so the layer can never animate or show. */
+@media (prefers-reduced-motion: reduce) {
+  .seasonal-particles { display: none; }
+  .seasonal-particle { animation: none; }
+}
+
+/* ── weather drink suggestion ──────────────────────────────────────── */
+.weather-rec {
+  position: fixed;
+  left: 16px;
+  bottom: 120px;
+  z-index: 865;
+  max-width: 320px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--bg);
+  color: var(--ink);
+  border: 1.5px solid var(--rule-strong);
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+  animation: weather-rec-in 0.28s ease both;
+}
+.weather-rec-icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  color: var(--ink);
+}
+.weather-rec-text {
+  margin: 0;
+  flex: 1 1 auto;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.weather-rec-dismiss {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  margin: -3px -4px 0 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--pill-bg);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.weather-rec-dismiss:hover { border-color: var(--ink); }
+@keyframes weather-rec-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .weather-rec { animation: none; }
+}
+@media (max-width: 420px) {
+  .weather-rec { max-width: calc(100vw - 32px); }
+}
+/* On short viewports, sit higher so a stacked cookie-consent card below never
+   covers or click-blocks the dismiss button. */
+@media (max-height: 560px) {
+  .weather-rec { bottom: 96px; }
+}
+
+/* ── WhatsApp contact button (fab-stack) ───────────────────────────── */
+.fab-whatsapp {
+  width: 46px; height: 46px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--bg); color: var(--ink);
+  border: 1.5px solid var(--rule-strong);
+  border-radius: 50%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+}
+.fab-whatsapp:hover { border-color: var(--ink); }
+@media (prefers-reduced-motion: no-preference) {
+  .fab-whatsapp { transition: border-color 0.2s ease; }
+}

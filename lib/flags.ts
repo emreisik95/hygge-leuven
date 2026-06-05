@@ -33,6 +33,14 @@ export const FLAG_KEYS = [
   "spotifyEmbed",
   "newsletterSignup",
   "mapDirectionsCta",
+  "sectionNavDots",
+  "revealOnScroll",
+  "a11yToolbar",
+  "localeSuggest",
+  "commandPalette",
+  "seasonalParticles",
+  "weatherRecommend",
+  "whatsappCta",
 ] as const;
 
 export type FlagKey = (typeof FLAG_KEYS)[number];
@@ -204,6 +212,68 @@ export const FLAG_REGISTRY: FlagMeta[] = [
     label: "Directions shortcut",
     description: "Adds a one-tap 'Get directions' button to the map card.",
     group: "Commerce",
+    default: false,
+  },
+  {
+    key: "sectionNavDots",
+    label: "Section nav dots",
+    description:
+      "Shows a vertical column of dots on the right edge (desktop) that mark the page sections and highlight the one in view.",
+    group: "Chrome",
+    default: false,
+  },
+  {
+    key: "revealOnScroll",
+    label: "Reveal on scroll",
+    description: "Fades and rises content blocks gently into view as the visitor scrolls.",
+    group: "Chrome",
+    default: false,
+  },
+  {
+    key: "a11yToolbar",
+    label: "Accessibility toolbar",
+    description:
+      "Floating control letting visitors adjust text size, high contrast, and reduced motion, remembered in their browser.",
+    group: "Chrome",
+    default: false,
+  },
+  {
+    key: "localeSuggest",
+    label: "Language suggestion",
+    description:
+      "Hints Dutch- and French-speaking visitors towards the language switcher when the page is in English.",
+    group: "Chrome",
+    default: false,
+  },
+  {
+    key: "commandPalette",
+    label: "Command palette",
+    description:
+      "Adds a keyboard quick-jump palette (open with \"/\" or Cmd/Ctrl+K) that filters and smooth-scrolls to on-page sections.",
+    group: "Chrome",
+    default: false,
+  },
+  {
+    key: "seasonalParticles",
+    label: "Seasonal particles",
+    description: "Subtle falling snow, leaves or petals themed by the current season (nothing in summer).",
+    group: "Chrome",
+    default: false,
+  },
+  {
+    key: "weatherRecommend",
+    label: "Weather drink suggestion",
+    description:
+      "Shows a small dismissible note suggesting an iced, warm, or cosy drink based on the live Leuven weather.",
+    group: "Engagement",
+    default: false,
+  },
+  {
+    key: "whatsappCta",
+    label: "WhatsApp button",
+    description:
+      "Shows a floating WhatsApp button linking to the café's contact number when a phone number is configured.",
+    group: "Engagement",
     default: false,
   },
 ];
