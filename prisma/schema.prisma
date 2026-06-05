@@ -119,6 +119,17 @@ model FeatureFlag {
   updatedAt DateTime @updatedAt
 }
 
+// Generic key→JSON store for editable feature settings (FAQ list, testimonials,
+// events, Spotify id, per-feature copy, …). Absent keys fall back to the
+// in-code defaults in lib/feature-settings.ts, so the table stays sparse —
+// only features an admin has customised are persisted. `value` is a JSON string
+// validated against that feature's Zod schema on read and write.
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
 // Newsletter opt-ins captured by the (flag-gated) signup form.
 model Subscriber {
   id        Int      @id @default(autoincrement())

@@ -1,7 +1,7 @@
 "use client";
 
 import type { Flags } from "@/lib/flags";
-import { FEATURE_LABELS as L } from "@/lib/feature-labels";
+import { FEATURE_LABELS } from "@/lib/feature-labels";
 import { AnnouncementBanner } from "./AnnouncementBanner";
 import { ScrollProgress } from "./ScrollProgress";
 import { BackToTop } from "./BackToTop";
@@ -17,11 +17,15 @@ import { Lightbox } from "./Lightbox";
 export function GlobalFeatures({
   flags,
   announcementMessage,
+  copy,
 }: {
   flags: Flags;
   // Resolved from translations (EN-fallback) server-side; defaults to the seed.
   announcementMessage?: string;
+  // Feature copy resolved from settings; defaults to the in-code seed.
+  copy?: typeof FEATURE_LABELS;
 }) {
+  const L = copy ?? FEATURE_LABELS;
   return (
     <>
       {flags.announcementBanner ? (

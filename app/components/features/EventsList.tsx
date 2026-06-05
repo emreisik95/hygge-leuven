@@ -1,14 +1,21 @@
 import { EVENTS } from "@/lib/feature-content";
 
 // Upcoming recurring happenings. Rendered as a definition-style list.
-export function EventsList({ heading }: { heading: string }) {
-  if (EVENTS.length === 0) return null;
+export function EventsList({
+  heading,
+  events,
+}: {
+  heading: string;
+  events?: { date: string; title: string; detail: string }[];
+}) {
+  const list = events && events.length > 0 ? events : EVENTS;
+  if (list.length === 0) return null;
   return (
     <section className="pane pane-events" id="events" aria-labelledby="events-heading">
       <div className="events-wrap">
         <h2 className="events-heading" id="events-heading">{heading}</h2>
         <ul className="events-list" role="list">
-          {EVENTS.map((e) => (
+          {list.map((e) => (
             <li key={e.title} className="event-item">
               <span className="event-date">{e.date}</span>
               <div className="event-body">

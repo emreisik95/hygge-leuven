@@ -7,6 +7,7 @@ import { getStaticFeed } from "@/lib/instagram-static";
 import { computeIsOpen, loadStatusTranslations } from "@/lib/hours";
 import { getOrigin, buildCafeJsonLd, jsonLdScript } from "@/lib/site";
 import { loadFlags } from "@/lib/flags";
+import { resolveFeatureSettings } from "@/lib/feature-settings";
 import { Landing, type InstaPostView } from "./components/Landing";
 
 const CAFE_TZ = "Europe/Brussels";
@@ -17,7 +18,7 @@ export default async function Home() {
   const store = await cookies();
   const locale = parseLocale(store.get(LOCALE_COOKIE)?.value);
   const prismaLocale = toPrismaLocale(locale);
-  const [content, seedPosts, hoursRows, statusTranslations, bgPhotos, menu, flags, announcement] = await Promise.all([
+  const [content, seedPosts, hoursRows, statusTranslations, bgPhotos, menu, flags, announcement, featureSettings] = await Promise.all([
     getPublishedContent(prismaLocale),
     getRecentPostsForRender(9),
     getOpeningHours(),
@@ -26,6 +27,7 @@ export default async function Home() {
     getMenuForLocale(prismaLocale),
     loadFlags(),
     getTranslation(ANNOUNCEMENT_NS, prismaLocale, FEATURE_LABELS.announcement.message),
+    resolveFeatureSettings(),
   ]);
 
   // Real @hygge.leuven posts baked into the repo (refreshed via
@@ -79,6 +81,11 @@ export default async function Home() {
         flags={flags}
         origin={origin}
         announcement={announcement}
+        featureCopy={featureSettings.copy}
+        faq={featureSettings.faq}
+        testimonials={featureSettings.testimonials}
+        events={featureSettings.events}
+        spotifyPlaylistId={featureSettings.spotifyPlaylistId}
       />
     </>
   );

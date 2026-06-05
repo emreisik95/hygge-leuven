@@ -14,7 +14,7 @@ import { LocaleSwitcher } from "./LocaleSwitcher";
 import { BeholdWidget } from "./BeholdWidget";
 import type { Flags } from "@/lib/flags";
 import { dietaryTags } from "@/lib/dietary";
-import { FEATURE_LABELS as L } from "@/lib/feature-labels";
+import { FEATURE_LABELS } from "@/lib/feature-labels";
 import { GlobalFeatures } from "./features/GlobalFeatures";
 import { WeatherGreeting } from "./features/WeatherGreeting";
 import { LiveClock } from "./features/LiveClock";
@@ -55,6 +55,13 @@ export type LandingProps = {
   flags: Flags;
   origin: string;
   announcement?: string;
+  // Feature copy/content resolved from settings (defaults applied); when omitted
+  // the in-code FEATURE_LABELS / feature-content seeds are used.
+  featureCopy?: typeof FEATURE_LABELS;
+  faq?: { q: string; a: string }[];
+  testimonials?: { quote: string; author: string }[];
+  events?: { date: string; title: string; detail: string }[];
+  spotifyPlaylistId?: string;
 };
 
 function PinIcon() {
@@ -173,7 +180,13 @@ export function Landing({
   flags,
   origin,
   announcement,
+  featureCopy,
+  faq,
+  testimonials,
+  events,
+  spotifyPlaylistId,
 }: LandingProps) {
+  const L = featureCopy ?? FEATURE_LABELS;
   const hasMenu = menu.some((cat) => cat.items.length > 0);
   const hasEngageBlock =
     flags.loyaltyCard || flags.newsletterSignup || flags.giftCardCta || flags.spotifyEmbed;
@@ -187,7 +200,7 @@ export function Landing({
 
   return (
     <main className="shell">
-      <GlobalFeatures flags={flags} announcementMessage={announcement} />
+      <GlobalFeatures flags={flags} announcementMessage={announcement} copy={L} />
 
       {preview ? (
         <div
@@ -374,9 +387,9 @@ export function Landing({
         </div>
       </section>
 
-      {flags.testimonials ? <Testimonials heading={L.testimonialsHeading} /> : null}
-      {flags.eventsList ? <EventsList heading={L.eventsHeading} /> : null}
-      {flags.faqSection ? <FaqSection heading={L.faqHeading} /> : null}
+      {flags.testimonials ? <Testimonials heading={L.testimonialsHeading} items={testimonials} /> : null}
+      {flags.eventsList ? <EventsList heading={L.eventsHeading} events={events} /> : null}
+      {flags.faqSection ? <FaqSection heading={L.faqHeading} items={faq} /> : null}
 
       {hasEngageBlock ? (
         <section className="pane pane-engage" id="more" aria-label="More from the café">
@@ -412,7 +425,7 @@ export function Landing({
                 newTabLabel={c.newTabLabel}
               />
             ) : null}
-            {flags.spotifyEmbed ? <SpotifyEmbed heading={L.spotifyHeading} /> : null}
+            {flags.spotifyEmbed ? <SpotifyEmbed heading={L.spotifyHeading} playlistId={spotifyPlaylistId} /> : null}
           </div>
           <a href="#landing" className="back-link">{c.backToTopLabel}</a>
         </section>

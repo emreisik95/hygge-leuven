@@ -6,6 +6,7 @@ import { getRecentPostsForRender } from "@/lib/instagram";
 import { computeIsOpen, loadStatusTranslations } from "@/lib/hours";
 import { getOrigin } from "@/lib/site";
 import { loadFlags } from "@/lib/flags";
+import { resolveFeatureSettings } from "@/lib/feature-settings";
 import { Landing } from "@/app/components/Landing";
 
 const CAFE_TZ = "Europe/Brussels";
@@ -17,7 +18,7 @@ export default async function PreviewPage() {
   const store = await cookies();
   const locale = parseLocale(store.get(LOCALE_COOKIE)?.value);
   const prismaLocale = toPrismaLocale(locale);
-  const [content, instaPosts, hoursRows, statusTranslations, bgPhotos, menu, flags, origin, announcement] =
+  const [content, instaPosts, hoursRows, statusTranslations, bgPhotos, menu, flags, origin, announcement, featureSettings] =
     await Promise.all([
       getDraftContent(prismaLocale),
       getRecentPostsForRender(9),
@@ -28,6 +29,7 @@ export default async function PreviewPage() {
       loadFlags(),
       getOrigin(),
       getTranslation(ANNOUNCEMENT_NS, prismaLocale, FEATURE_LABELS.announcement.message),
+      resolveFeatureSettings(),
     ]);
 
   const now = new Date();
@@ -50,6 +52,11 @@ export default async function PreviewPage() {
       flags={flags}
       origin={origin}
       announcement={announcement}
+      featureCopy={featureSettings.copy}
+      faq={featureSettings.faq}
+      testimonials={featureSettings.testimonials}
+      events={featureSettings.events}
+      spotifyPlaylistId={featureSettings.spotifyPlaylistId}
     />
   );
 }

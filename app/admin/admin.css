@@ -735,6 +735,88 @@
   background: var(--a-bg);
 }
 
+/* ── inline feature settings (content & copy editors) ───────────────────────── */
+.admin-shell .settings-group { margin-top: var(--a-s5); }
+.admin-shell .settings-group-heading {
+  margin: 0 0 var(--a-s3);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--a-text-dim);
+}
+.admin-shell .feature-settings {
+  margin-bottom: var(--a-s3);
+  padding: 0;
+  overflow: hidden;
+}
+.admin-shell .feature-settings-summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--a-s3);
+  padding: var(--a-s3) var(--a-s4);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.admin-shell .feature-settings-summary::-webkit-details-marker { display: none; }
+.admin-shell .feature-settings-summary:hover { background: var(--a-surface-2); }
+.admin-shell .feature-settings[open] .feature-settings-summary {
+  border-bottom: 1px solid var(--a-line);
+}
+.admin-shell .feature-settings-title { font-size: 14px; font-weight: 600; }
+.admin-shell .feature-settings-title::before {
+  content: "›";
+  display: inline-block;
+  margin-right: 8px;
+  color: var(--a-text-dim);
+  transition: transform 0.13s ease;
+}
+.admin-shell .feature-settings[open] .feature-settings-title::before {
+  transform: rotate(90deg);
+}
+.admin-shell .feature-settings-meta {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--a-text-dim);
+}
+.admin-shell .feature-settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s3);
+  padding: var(--a-s4);
+}
+.admin-shell .settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s3);
+}
+.admin-shell .settings-list-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--a-s3);
+  padding: var(--a-s3);
+  border: 1px solid var(--a-line);
+  border-radius: var(--a-r-sm);
+  background: var(--a-surface-2);
+}
+.admin-shell .settings-list-fields {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s2);
+  min-width: 0;
+}
+.admin-shell .settings-list-actions {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
 /* ── misc ─────────────────────────────────────────────────────────────────── */
 .admin-shell pre {
   background: var(--a-input);
