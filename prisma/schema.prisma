@@ -109,3 +109,20 @@ model AuditLog {
   diff      String?
   createdAt DateTime @default(now())
 }
+
+// Runtime feature flags. Each row toggles one optional landing-page feature.
+// Absent rows fall back to the registry default (all off) in lib/flags.ts, so
+// the table can be sparse — only explicitly-changed flags are persisted.
+model FeatureFlag {
+  key       String   @id
+  enabled   Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+}
+
+// Newsletter opt-ins captured by the (flag-gated) signup form.
+model Subscriber {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  locale    Locale   @default(EN)
+  createdAt DateTime @default(now())
+}

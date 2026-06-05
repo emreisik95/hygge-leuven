@@ -5,6 +5,7 @@ import { getRecentPostsForRender } from "@/lib/instagram";
 import { getStaticFeed } from "@/lib/instagram-static";
 import { computeIsOpen, loadStatusTranslations } from "@/lib/hours";
 import { getOrigin, buildCafeJsonLd, jsonLdScript } from "@/lib/site";
+import { loadFlags } from "@/lib/flags";
 import { Landing, type InstaPostView } from "./components/Landing";
 
 const CAFE_TZ = "Europe/Brussels";
@@ -15,13 +16,14 @@ export default async function Home() {
   const store = await cookies();
   const locale = parseLocale(store.get(LOCALE_COOKIE)?.value);
   const prismaLocale = toPrismaLocale(locale);
-  const [content, seedPosts, hoursRows, statusTranslations, bgPhotos, menu] = await Promise.all([
+  const [content, seedPosts, hoursRows, statusTranslations, bgPhotos, menu, flags] = await Promise.all([
     getPublishedContent(prismaLocale),
     getRecentPostsForRender(9),
     getOpeningHours(),
     loadStatusTranslations(prismaLocale),
     getPhotos("background"),
     getMenuForLocale(prismaLocale),
+    loadFlags(),
   ]);
 
   // Real @hygge.leuven posts baked into the repo (refreshed via
@@ -72,6 +74,8 @@ export default async function Home() {
         locale={locale}
         prismaLocale={prismaLocale}
         beholdFeedId={process.env.BEHOLD_FEED_ID ?? ""}
+        flags={flags}
+        origin={origin}
       />
     </>
   );

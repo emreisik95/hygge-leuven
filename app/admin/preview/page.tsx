@@ -3,6 +3,8 @@ import { getDraftContent, getOpeningHours, getPhotos, getMenuForLocale } from "@
 import { LOCALE_COOKIE, parseLocale, toPrismaLocale } from "@/lib/locale";
 import { getRecentPostsForRender } from "@/lib/instagram";
 import { computeIsOpen, loadStatusTranslations } from "@/lib/hours";
+import { getOrigin } from "@/lib/site";
+import { loadFlags } from "@/lib/flags";
 import { Landing } from "@/app/components/Landing";
 
 const CAFE_TZ = "Europe/Brussels";
@@ -14,14 +16,17 @@ export default async function PreviewPage() {
   const store = await cookies();
   const locale = parseLocale(store.get(LOCALE_COOKIE)?.value);
   const prismaLocale = toPrismaLocale(locale);
-  const [content, instaPosts, hoursRows, statusTranslations, bgPhotos, menu] = await Promise.all([
-    getDraftContent(prismaLocale),
-    getRecentPostsForRender(9),
-    getOpeningHours(),
-    loadStatusTranslations(prismaLocale),
-    getPhotos("background"),
-    getMenuForLocale(prismaLocale),
-  ]);
+  const [content, instaPosts, hoursRows, statusTranslations, bgPhotos, menu, flags, origin] =
+    await Promise.all([
+      getDraftContent(prismaLocale),
+      getRecentPostsForRender(9),
+      getOpeningHours(),
+      loadStatusTranslations(prismaLocale),
+      getPhotos("background"),
+      getMenuForLocale(prismaLocale),
+      loadFlags(),
+      getOrigin(),
+    ]);
 
   const now = new Date();
   const status = computeIsOpen(hoursRows, now, CAFE_TZ);
@@ -40,6 +45,8 @@ export default async function PreviewPage() {
       prismaLocale={prismaLocale}
       preview
       beholdFeedId={process.env.BEHOLD_FEED_ID ?? ""}
+      flags={flags}
+      origin={origin}
     />
   );
 }

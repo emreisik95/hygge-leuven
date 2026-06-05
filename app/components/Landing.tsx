@@ -12,6 +12,21 @@ import {
 import { OsmMap } from "./OsmMap";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { BeholdWidget } from "./BeholdWidget";
+import type { Flags } from "@/lib/flags";
+import { dietaryTags } from "@/lib/dietary";
+import { FEATURE_LABELS as L } from "@/lib/feature-labels";
+import { GlobalFeatures } from "./features/GlobalFeatures";
+import { WeatherGreeting } from "./features/WeatherGreeting";
+import { LiveClock } from "./features/LiveClock";
+import { ShareButton } from "./features/ShareButton";
+import { LoyaltyCard } from "./features/LoyaltyCard";
+import { NewsletterSignup } from "./features/NewsletterSignup";
+import { GiftCard } from "./features/GiftCard";
+import { SpotifyEmbed } from "./features/SpotifyEmbed";
+import { FaqSection } from "./features/FaqSection";
+import { Testimonials } from "./features/Testimonials";
+import { EventsList } from "./features/EventsList";
+import { MenuSearch } from "./features/MenuSearch";
 
 const CAFE_TZ = "Europe/Brussels";
 
@@ -37,6 +52,8 @@ export type LandingProps = {
   prismaLocale: Locale;
   preview?: boolean;
   beholdFeedId?: string;
+  flags: Flags;
+  origin: string;
 };
 
 function PinIcon() {
@@ -152,8 +169,12 @@ export function Landing({
   prismaLocale,
   preview,
   beholdFeedId,
+  flags,
+  origin,
 }: LandingProps) {
   const hasMenu = menu.some((cat) => cat.items.length > 0);
+  const hasEngageBlock =
+    flags.loyaltyCard || flags.newsletterSignup || flags.giftCardCta || flags.spotifyEmbed;
   const bgLayers = bgPaths.length > 0 ? bgPaths : [c.bgImagePath];
   const bgDuration = Math.max(15, bgLayers.length * 8);
   const statusLabel = status.isOpen ? t["site.statusOpen"] : t["site.statusClosed"];
@@ -164,6 +185,8 @@ export function Landing({
 
   return (
     <main className="shell">
+      <GlobalFeatures flags={flags} />
+
       {preview ? (
         <div
           role="status"
@@ -230,6 +253,7 @@ export function Landing({
                 {c.inviteSub ? <p className="invite-sub">{c.inviteSub}</p> : null}
               </div>
             ) : null}
+            {flags.weatherGreeting ? <WeatherGreeting template={L.weatherTemplate} /> : null}
             <a href="#insta" className="scroll-cue" aria-label={c.seeMoreLabel}>
               <ArrowDown />
             </a>
@@ -243,7 +267,10 @@ export function Landing({
                 <div className="meta-item">
                   <span role="img" aria-label={dotAriaLabel} className={`dot ${status.isOpen ? "" : "closed"}`} />
                   <div>
-                    <div className="label">{statusLabel}</div>
+                    <div className="label">
+                      {statusLabel}
+                      {flags.liveClock ? <LiveClock locale={BCP47[locale]} /> : null}
+                    </div>
                     {statusSub ? <div className="sub">{statusSub}</div> : null}
                   </div>
                 </div>
@@ -281,6 +308,14 @@ export function Landing({
             <a href="#insta" className="btn btn-primary">
               <InstagramIcon /> {c.instagramHandle}
             </a>
+            {flags.socialShare ? (
+              <ShareButton
+                url={origin}
+                title={c.brandName}
+                shareLabel={L.share.share}
+                copiedLabel={L.share.copied}
+              />
+            ) : null}
           </div>
         </footer>
       </section>
@@ -337,6 +372,50 @@ export function Landing({
         </div>
       </section>
 
+      {flags.testimonials ? <Testimonials heading={L.testimonialsHeading} /> : null}
+      {flags.eventsList ? <EventsList heading={L.eventsHeading} /> : null}
+      {flags.faqSection ? <FaqSection heading={L.faqHeading} /> : null}
+
+      {hasEngageBlock ? (
+        <section className="pane pane-engage" id="more" aria-label="More from the café">
+          <div className="engage-wrap">
+            {flags.newsletterSignup ? (
+              <NewsletterSignup
+                locale={prismaLocale}
+                copy={{
+                  heading: L.newsletter.heading,
+                  body: L.newsletter.body,
+                  placeholder: L.newsletter.placeholder,
+                  button: L.newsletter.button,
+                  success: L.newsletter.success,
+                  invalid: L.newsletter.invalid,
+                  error: L.newsletter.error,
+                }}
+              />
+            ) : null}
+            {flags.loyaltyCard ? (
+              <LoyaltyCard
+                heading={L.loyalty.heading}
+                hint={L.loyalty.hint}
+                rewardLine={L.loyalty.reward}
+                resetLabel={L.loyalty.reset}
+              />
+            ) : null}
+            {flags.giftCardCta ? (
+              <GiftCard
+                heading={L.giftCard.heading}
+                body={L.giftCard.body}
+                buttonLabel={L.giftCard.button}
+                email={c.contactEmail}
+                newTabLabel={c.newTabLabel}
+              />
+            ) : null}
+            {flags.spotifyEmbed ? <SpotifyEmbed heading={L.spotifyHeading} /> : null}
+          </div>
+          <a href="#landing" className="back-link">{c.backToTopLabel}</a>
+        </section>
+      ) : null}
+
       {hasMenu ? (
         <section className="pane pane-menu" id="menu" aria-labelledby="menu-heading">
           <a href="#landing" className="skip-link">{c.skipSectionLabel}</a>
@@ -344,6 +423,12 @@ export function Landing({
             <header className="menu-head">
               <h2 className="menu-heading" id="menu-heading">{c.menuHeading}</h2>
               <p className="menu-sub">{c.tagline}</p>
+              {flags.menuSearch ? (
+                <MenuSearch
+                  placeholder={L.menuSearch.placeholder}
+                  noResults={L.menuSearch.noResults}
+                />
+              ) : null}
             </header>
 
             <div className="menu-grid">
@@ -380,6 +465,18 @@ export function Landing({
                             {it.available ? null : (
                               <span className="menu-item-unavailable-tag">{c.soldOutLabel}</span>
                             )}
+                            {flags.menuDietaryTags
+                              ? dietaryTags(it.name, it.description).map((tag) => (
+                                  <span
+                                    key={tag.code}
+                                    className="diet-tag"
+                                    title={tag.label}
+                                    aria-label={tag.label}
+                                  >
+                                    {tag.code}
+                                  </span>
+                                ))
+                              : null}
                           </span>
                           <span className="menu-price">
                             {formatPrice(it.priceCents, prismaLocale)}
@@ -442,6 +539,24 @@ export function Landing({
               <a href={c.findUsUrl} target="_blank" rel="noreferrer" className="btn btn-secondary">
                 {c.mapsLinkLabel} <ArrowRight /><span className="sr-only"> {c.newTabLabel}</span>
               </a>
+              {flags.mapDirectionsCta ? (
+                <a
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${c.mapLat},${c.mapLng}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-secondary"
+                >
+                  {L.directions} <ArrowRight /><span className="sr-only"> {c.newTabLabel}</span>
+                </a>
+              ) : null}
+              {flags.reservationCta && c.contactEmail ? (
+                <a
+                  href={`mailto:${c.contactEmail}?subject=${encodeURIComponent(L.reservation.subject)}`}
+                  className="btn btn-primary"
+                >
+                  {L.reservation.label}
+                </a>
+              ) : null}
             </div>
           </div>
           <a href="#landing" className="back-link map-back">{c.backToTopLabel}</a>
