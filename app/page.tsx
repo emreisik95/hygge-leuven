@@ -2,9 +2,10 @@ import { cookies } from "next/headers";
 import { getPublishedContent, getOpeningHours, getPhotos, getMenuForLocale } from "@/lib/db";
 import { LOCALE_COOKIE, parseLocale, toPrismaLocale } from "@/lib/locale";
 import { getRecentPostsForRender } from "@/lib/instagram";
+import { getPublicFeed } from "@/lib/instagram-public";
 import { computeIsOpen, loadStatusTranslations } from "@/lib/hours";
 import { getOrigin, buildCafeJsonLd, jsonLdScript } from "@/lib/site";
-import { Landing } from "./components/Landing";
+import { Landing, type InstaPostView } from "./components/Landing";
 
 const CAFE_TZ = "Europe/Brussels";
 
@@ -14,14 +15,32 @@ export default async function Home() {
   const store = await cookies();
   const locale = parseLocale(store.get(LOCALE_COOKIE)?.value);
   const prismaLocale = toPrismaLocale(locale);
-  const [content, instaPosts, hoursRows, statusTranslations, bgPhotos, menu] = await Promise.all([
+  const [content, publicFeed, seedPosts, hoursRows, statusTranslations, bgPhotos, menu] = await Promise.all([
     getPublishedContent(prismaLocale),
+    getPublicFeed(9),
     getRecentPostsForRender(9),
     getOpeningHours(),
     loadStatusTranslations(prismaLocale),
     getPhotos("background"),
     getMenuForLocale(prismaLocale),
   ]);
+
+  // Real-time public feed when Instagram is reachable; otherwise the seeded
+  // curated grid (DB) so the section is never empty.
+  const instaPosts: InstaPostView[] =
+    publicFeed.length > 0
+      ? publicFeed.map((p) => ({
+          id: p.shortcode,
+          mediaUrl: `/api/insta/image?s=${encodeURIComponent(p.shortcode)}`,
+          permalink: p.permalink,
+          caption: p.caption,
+        }))
+      : seedPosts.map((p) => ({
+          id: p.id,
+          mediaUrl: p.mediaUrl,
+          permalink: p.permalink,
+          caption: p.caption,
+        }));
 
   const now = new Date();
   const status = computeIsOpen(hoursRows, now, CAFE_TZ);
