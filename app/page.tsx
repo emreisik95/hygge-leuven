@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { getPublishedContent, getOpeningHours, getPhotos, getMenuForLocale } from "@/lib/db";
 import { LOCALE_COOKIE, parseLocale, toPrismaLocale } from "@/lib/locale";
 import { getRecentPostsForRender } from "@/lib/instagram";
-import { getPublicFeed } from "@/lib/instagram-public";
+import { getStaticFeed } from "@/lib/instagram-static";
 import { computeIsOpen, loadStatusTranslations } from "@/lib/hours";
 import { getOrigin, buildCafeJsonLd, jsonLdScript } from "@/lib/site";
 import { Landing, type InstaPostView } from "./components/Landing";
@@ -15,9 +15,8 @@ export default async function Home() {
   const store = await cookies();
   const locale = parseLocale(store.get(LOCALE_COOKIE)?.value);
   const prismaLocale = toPrismaLocale(locale);
-  const [content, publicFeed, seedPosts, hoursRows, statusTranslations, bgPhotos, menu] = await Promise.all([
+  const [content, seedPosts, hoursRows, statusTranslations, bgPhotos, menu] = await Promise.all([
     getPublishedContent(prismaLocale),
-    getPublicFeed(9),
     getRecentPostsForRender(9),
     getOpeningHours(),
     loadStatusTranslations(prismaLocale),
@@ -25,16 +24,13 @@ export default async function Home() {
     getMenuForLocale(prismaLocale),
   ]);
 
-  // Real-time public feed when Instagram is reachable; otherwise the seeded
-  // curated grid (DB) so the section is never empty.
+  // Real @hygge.leuven posts baked into the repo (refreshed via
+  // scripts/refresh-instagram.mjs); the seeded DB grid is the final fallback so
+  // the section is never empty.
+  const staticFeed = getStaticFeed(9);
   const instaPosts: InstaPostView[] =
-    publicFeed.length > 0
-      ? publicFeed.map((p) => ({
-          id: p.shortcode,
-          mediaUrl: `/api/insta/image?s=${encodeURIComponent(p.shortcode)}`,
-          permalink: p.permalink,
-          caption: p.caption,
-        }))
+    staticFeed.length > 0
+      ? staticFeed
       : seedPosts.map((p) => ({
           id: p.id,
           mediaUrl: p.mediaUrl,
