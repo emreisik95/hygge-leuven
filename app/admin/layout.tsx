@@ -1,5 +1,6 @@
 import { auth, signOut } from "@/auth";
 import { AdminNav, type AdminNavLink } from "./components/admin-nav";
+import "./admin.css";
 
 export const dynamic = "force-dynamic";
 
@@ -35,14 +36,17 @@ export default async function AdminLayout({
 
   return (
     <div className="admin-shell">
-      <div className="admin-wrap">
-        <header className="admin-header admin-header-shared">
-          <h1>hygge — admin</h1>
-          <form action={logout}>
-            <button type="submit" className="signout-link">Sign out</button>
-          </form>
-        </header>
+      <aside className="admin-sidebar">
+        <div className="admin-brand">
+          <span className="admin-brand-mark">hygge</span>
+          <span className="admin-brand-sub">admin</span>
+        </div>
         <AdminNav links={NAV_LINKS} />
+        <form action={logout} className="admin-sidebar-foot">
+          <button type="submit" className="signout-link">Sign out</button>
+        </form>
+      </aside>
+      <div className="admin-content">
         <main className="admin-main">{children}</main>
       </div>
     </div>

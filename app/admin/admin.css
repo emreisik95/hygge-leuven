@@ -1,0 +1,676 @@
+/* ============================================================================
+   hygge admin — design system
+   ----------------------------------------------------------------------------
+   A self-contained admin look, authored from scratch. EVERY rule is scoped
+   under `.admin-shell` so it cannot leak into the public site or the login
+   page (which renders without the shell). The shared globals.css admin rules
+   still exist but lose every specificity contest to the `.admin-shell …`
+   selectors here, so this file fully owns the authenticated admin surface.
+
+   Layout: a fixed sidebar (brand + nav + sign-out) beside a scrolling content
+   column on desktop; the sidebar collapses to a stacked top bar on mobile.
+   ========================================================================== */
+
+.admin-shell {
+  /* ── design tokens ─────────────────────────────────────────────────────── */
+  --a-bg: #17110d;
+  --a-surface-1: #211a14;        /* cards */
+  --a-surface-2: #2b2219;        /* raised / inputs / rows */
+  --a-surface-3: #352a1f;        /* hover */
+  --a-input: #1c1611;
+
+  --a-line: rgba(215, 197, 172, 0.14);
+  --a-line-strong: rgba(215, 197, 172, 0.28);
+
+  --a-accent: #d7c5ac;
+  --a-accent-strong: #e8d8bd;
+  --a-accent-ink: #221911;       /* text on accent */
+
+  --a-text: #f4ead8;
+  --a-text-dim: rgba(244, 234, 216, 0.66);
+  --a-text-faint: rgba(244, 234, 216, 0.42);
+
+  --a-ok: #a7d8b3;
+  --a-ok-bg: rgba(111, 179, 126, 0.14);
+  --a-ok-line: rgba(111, 179, 126, 0.4);
+  --a-err: #ec9a83;
+  --a-err-bg: rgba(176, 74, 44, 0.16);
+  --a-err-line: rgba(176, 74, 44, 0.45);
+  --a-err-solid: #b04a2c;
+  --a-warn: #f3e3a8;
+  --a-warn-bg: rgba(232, 201, 91, 0.14);
+  --a-warn-line: rgba(232, 201, 91, 0.38);
+
+  --a-r-sm: 8px;
+  --a-r-md: 12px;
+  --a-r-lg: 16px;
+  --a-r-pill: 999px;
+
+  --a-s1: 4px;
+  --a-s2: 8px;
+  --a-s3: 12px;
+  --a-s4: 16px;
+  --a-s5: 24px;
+  --a-s6: 32px;
+  --a-s7: 48px;
+
+  --a-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --a-shadow-2: 0 8px 30px rgba(0, 0, 0, 0.38);
+
+  --a-sidebar-w: 248px;
+
+  background: var(--a-bg);
+  color: var(--a-text);
+  min-height: 100dvh;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The shell is a two-column grid on desktop, stacked on mobile. */
+.admin-shell {
+  display: grid;
+  /* minmax(0,…) is load-bearing: it stops a track from expanding to the
+     nav-list's min-content width (all links in a row), which would otherwise
+     push the whole sidebar wider than the viewport on mobile. */
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 960px) {
+  .admin-shell {
+    grid-template-columns: var(--a-sidebar-w) minmax(0, 1fr);
+  }
+}
+
+/* ── sidebar ──────────────────────────────────────────────────────────────── */
+.admin-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s4);
+  padding: var(--a-s5) var(--a-s4);
+  background: var(--a-surface-1);
+  border-bottom: 1px solid var(--a-line);
+  min-width: 0;
+}
+@media (min-width: 960px) {
+  .admin-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    border-bottom: none;
+    border-right: 1px solid var(--a-line);
+    overflow-y: auto;
+  }
+}
+
+.admin-brand {
+  display: flex;
+  align-items: baseline;
+  gap: var(--a-s2);
+  padding: 0 var(--a-s2);
+}
+.admin-brand-mark {
+  font-family: var(--font-serif), serif;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--a-accent);
+}
+.admin-brand-sub {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--a-text-faint);
+}
+
+.admin-sidebar-foot {
+  margin-top: auto;
+  padding-top: var(--a-s4);
+  border-top: 1px solid var(--a-line);
+}
+
+/* ── nav ──────────────────────────────────────────────────────────────────── */
+.admin-shell .admin-nav { margin: 0; }
+.admin-shell .admin-nav-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: var(--a-s1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.admin-shell .admin-nav-list::-webkit-scrollbar { display: none; }
+@media (min-width: 960px) {
+  .admin-shell .admin-nav-list {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 2px;
+    overflow: visible;
+  }
+}
+
+.admin-shell .admin-nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--a-s2);
+  white-space: nowrap;
+  padding: 10px var(--a-s3);
+  border-radius: var(--a-r-sm);
+  border: none;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--a-text-dim);
+  text-decoration: none;
+  transition: background 0.13s ease, color 0.13s ease;
+}
+.admin-shell .admin-nav-link:hover {
+  background: var(--a-surface-2);
+  color: var(--a-text);
+}
+.admin-shell .admin-nav-link[data-active="true"] {
+  background: var(--a-accent);
+  color: var(--a-accent-ink);
+  font-weight: 600;
+}
+
+/* ── content column ───────────────────────────────────────────────────────── */
+.admin-content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-shell .admin-main {
+  padding: clamp(20px, 4vw, 40px);
+  max-width: 920px;
+  width: 100%;
+}
+
+/* Page heading inside content. */
+.admin-shell .admin-page-heading,
+.admin-shell h1 {
+  font-family: var(--font-serif), serif;
+  font-size: 28px;
+  color: var(--a-accent);
+  margin: 0 0 var(--a-s5);
+  text-transform: lowercase;
+}
+
+/* ── cards / sections ─────────────────────────────────────────────────────── */
+.admin-shell .section {
+  margin: 0 0 var(--a-s5);
+  padding: var(--a-s5);
+  border: 1px solid var(--a-line);
+  border-top: 1px solid var(--a-line);
+  border-radius: var(--a-r-lg);
+  background: var(--a-surface-1);
+  box-shadow: var(--a-shadow-1);
+}
+.admin-shell .section h2 {
+  font-family: var(--font-serif), serif;
+  font-size: 19px;
+  color: var(--a-accent);
+  margin: 0 0 var(--a-s4);
+}
+.admin-shell .hint {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--a-text-dim);
+}
+
+/* ── forms ────────────────────────────────────────────────────────────────── */
+.admin-shell .field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s2);
+  margin-bottom: var(--a-s4);
+}
+.admin-shell .field > label,
+.admin-shell .field-label {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--a-text-dim);
+}
+.admin-shell .field input[type="text"],
+.admin-shell .field input[type="email"],
+.admin-shell .field input[type="password"],
+.admin-shell .field input[type="url"],
+.admin-shell .field input[type="number"],
+.admin-shell .field textarea,
+.admin-shell .field select,
+.admin-shell input[type="text"],
+.admin-shell input[type="email"],
+.admin-shell input[type="password"],
+.admin-shell input[type="url"],
+.admin-shell input[type="number"],
+.admin-shell textarea,
+.admin-shell select {
+  width: 100%;
+  background: var(--a-input);
+  border: 1px solid var(--a-line-strong);
+  border-radius: var(--a-r-sm);
+  padding: 10px 12px;
+  color: var(--a-text);
+  font: inherit;
+  font-size: 14px;
+  transition: border-color 0.13s ease, box-shadow 0.13s ease;
+}
+.admin-shell .field textarea,
+.admin-shell textarea { min-height: 84px; resize: vertical; }
+.admin-shell input::placeholder,
+.admin-shell textarea::placeholder { color: var(--a-text-faint); }
+
+.admin-shell input:focus-visible,
+.admin-shell textarea:focus-visible,
+.admin-shell select:focus-visible {
+  outline: none;
+  border-color: var(--a-accent);
+  box-shadow: 0 0 0 3px rgba(215, 197, 172, 0.22);
+}
+.admin-shell .field .hint { font-size: 11px; color: var(--a-text-faint); }
+
+.admin-shell .field-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--a-s4);
+}
+@media (min-width: 640px) {
+  .admin-shell .field-row { grid-template-columns: 1fr 1fr; }
+}
+
+.admin-shell .checkbox-row,
+.admin-shell .toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: var(--a-s4);
+}
+.admin-shell .toggle {
+  padding: 12px 14px;
+  border: 1px solid var(--a-line);
+  border-radius: var(--a-r-sm);
+  background: var(--a-surface-2);
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+  min-height: 48px;
+  transition: background 0.13s ease, border-color 0.13s ease;
+}
+.admin-shell .toggle:hover { background: var(--a-surface-3); border-color: var(--a-line-strong); }
+.admin-shell .checkbox-row input,
+.admin-shell .toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--a-accent);
+  flex-shrink: 0;
+}
+.admin-shell .visibility-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--a-s2);
+  margin-top: var(--a-s3);
+}
+@media (min-width: 640px) {
+  .admin-shell .visibility-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* validation */
+.admin-shell .field-error {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--a-err);
+  line-height: 1.4;
+}
+.admin-shell input[aria-invalid="true"],
+.admin-shell textarea[aria-invalid="true"],
+.admin-shell select[aria-invalid="true"] {
+  border-color: var(--a-err-solid) !important;
+  box-shadow: 0 0 0 3px var(--a-err-bg) !important;
+}
+
+/* ── buttons ──────────────────────────────────────────────────────────────── */
+.admin-shell .btn-save,
+.admin-shell .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--a-s2);
+  width: 100%;
+  padding: 13px 22px;
+  border: none;
+  border-radius: var(--a-r-pill);
+  background: var(--a-accent);
+  color: var(--a-accent-ink);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.13s ease, transform 0.08s ease, opacity 0.13s ease;
+}
+.admin-shell .btn-save:hover,
+.admin-shell .btn-primary:hover { background: var(--a-accent-strong); }
+.admin-shell .btn-save:active,
+.admin-shell .btn-primary:active { transform: scale(0.985); }
+.admin-shell .btn-save:disabled,
+.admin-shell .btn-primary:disabled,
+.admin-shell button[aria-busy="true"] { opacity: 0.55; cursor: not-allowed; }
+
+.admin-shell .btn-secondary,
+.admin-shell .btn-secondary-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--a-s2);
+  padding: 10px 16px;
+  border: 1px solid var(--a-line-strong);
+  border-radius: var(--a-r-pill);
+  background: var(--a-surface-2);
+  color: var(--a-text);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  list-style: none;
+  transition: background 0.13s ease, border-color 0.13s ease;
+}
+.admin-shell .btn-secondary-inline::-webkit-details-marker { display: none; }
+.admin-shell .btn-secondary:hover,
+.admin-shell .btn-secondary-inline:hover {
+  background: var(--a-surface-3);
+  border-color: var(--a-accent);
+}
+
+/* small square icon buttons (reorder ↑/↓) */
+.admin-shell .btn-icon,
+.admin-shell .btn-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--a-line);
+  border-radius: var(--a-r-sm);
+  background: var(--a-surface-2);
+  color: var(--a-text);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.13s ease, border-color 0.13s ease;
+}
+.admin-shell .btn-inline { width: auto; padding: 0 12px; height: 36px; font-size: 13px; }
+.admin-shell .btn-icon:not(:disabled):hover,
+.admin-shell .btn-inline:not(:disabled):hover {
+  background: var(--a-surface-3);
+  border-color: var(--a-accent);
+}
+.admin-shell .btn-icon:disabled,
+.admin-shell .btn-inline:disabled { opacity: 0.3; cursor: not-allowed; }
+@media (pointer: coarse) {
+  .admin-shell .btn-icon { width: 44px; height: 44px; }
+}
+
+/* destructive */
+.admin-shell .link-danger,
+.admin-shell .btn-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--a-r-sm);
+  background: transparent;
+  color: var(--a-err);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+.admin-shell .btn-danger { border-color: var(--a-err-line); }
+.admin-shell .link-danger:hover,
+.admin-shell .btn-danger:hover {
+  color: #ffb29b;
+  background: var(--a-err-bg);
+  text-decoration: none;
+}
+
+.admin-shell .signout-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--a-line-strong);
+  border-radius: var(--a-r-sm);
+  background: transparent;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--a-text-dim);
+  cursor: pointer;
+  transition: background 0.13s ease, color 0.13s ease;
+}
+.admin-shell .signout-link:hover { background: var(--a-surface-2); color: var(--a-text); }
+
+/* ── flashes ──────────────────────────────────────────────────────────────── */
+.admin-shell .flash {
+  display: flex;
+  align-items: center;
+  gap: var(--a-s2);
+  padding: 12px 14px;
+  border-radius: var(--a-r-sm);
+  border: 1px solid transparent;
+  font-size: 13px;
+  margin-bottom: var(--a-s4);
+}
+.admin-shell .flash.ok { background: var(--a-ok-bg); color: var(--a-ok); border-color: var(--a-ok-line); }
+.admin-shell .flash.err { background: var(--a-err-bg); color: var(--a-err); border-color: var(--a-err-line); }
+.admin-shell .flash-undo {
+  background: var(--a-warn-bg);
+  color: var(--a-warn);
+  border-color: var(--a-warn-line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--a-s3);
+  flex-wrap: wrap;
+}
+.admin-shell .flash-undo-msg { flex: 1 1 auto; min-width: 0; }
+.admin-shell .flash-undo-btn {
+  background: transparent;
+  border: 1px solid currentColor;
+  color: inherit;
+  border-radius: var(--a-r-pill);
+  padding: 7px 16px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.admin-shell .flash-undo-btn:hover { background: rgba(255, 255, 255, 0.06); }
+
+/* ── media previews ───────────────────────────────────────────────────────── */
+.admin-shell .image-preview { margin-top: var(--a-s2); display: flex; flex-direction: column; gap: var(--a-s1); }
+.admin-shell .image-preview img,
+.admin-shell .thumb {
+  max-width: 240px;
+  max-height: 168px;
+  border-radius: var(--a-r-sm);
+  border: 1px solid var(--a-line-strong);
+  object-fit: cover;
+}
+.admin-shell .image-preview-meta,
+.admin-shell .char-counter { font-size: 11px; color: var(--a-text-faint); }
+.admin-shell .char-counter { text-align: right; margin-top: 2px; }
+.admin-shell .char-counter-over { color: var(--a-err); font-weight: 600; }
+
+/* ── translations table ───────────────────────────────────────────────────── */
+.admin-shell .tx-table { display: flex; flex-direction: column; gap: var(--a-s2); }
+.admin-shell .tx-row { display: grid; gap: var(--a-s2); }
+.admin-shell .tx-row.tx-head { display: none; }
+@media (min-width: 760px) {
+  .admin-shell .tx-row {
+    grid-template-columns: 200px repeat(3, 1fr);
+    gap: var(--a-s3);
+    align-items: start;
+  }
+  .admin-shell .tx-row.tx-head {
+    display: grid;
+    padding-bottom: var(--a-s2);
+    border-bottom: 1px solid var(--a-line);
+  }
+}
+.admin-shell .tx-cell { min-width: 0; }
+.admin-shell .tx-key { padding-top: 6px; }
+.admin-shell .tx-key-label { font-size: 13px; color: var(--a-text); }
+.admin-shell .tx-key-ns { font-size: 11px; color: var(--a-text-faint); word-break: break-word; }
+.admin-shell .tx-columnheader,
+.admin-shell .tx-head .tx-cell { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--a-text-dim); }
+.admin-shell .tx-textarea { font-size: 13px; }
+
+/* ── photo grid ───────────────────────────────────────────────────────────── */
+.admin-shell .photo-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--a-s3);
+  list-style: none;
+  margin: 0 0 var(--a-s4);
+  padding: 0;
+}
+@media (min-width: 620px) { .admin-shell .photo-grid { grid-template-columns: 1fr 1fr; } }
+.admin-shell .photo-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--a-s3);
+  padding: var(--a-s3);
+  border: 1px solid var(--a-line);
+  border-radius: var(--a-r-md);
+  background: var(--a-surface-2);
+}
+.admin-shell .photo-thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--a-r-sm);
+  border: 1px solid var(--a-line);
+}
+.admin-shell .photo-fields { display: flex; flex-direction: column; gap: var(--a-s2); }
+.admin-shell .photo-actions { display: flex; gap: var(--a-s2); flex-wrap: wrap; }
+.admin-shell .upload-zone {
+  margin-top: var(--a-s3);
+  padding: var(--a-s4);
+  border: 1px dashed var(--a-line-strong);
+  border-radius: var(--a-r-md);
+  background: var(--a-surface-2);
+}
+
+/* ── menu editor ──────────────────────────────────────────────────────────── */
+.admin-shell .menu-cat-block { }
+.admin-shell .menu-cat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--a-s3);
+  flex-wrap: wrap;
+  margin-bottom: var(--a-s4);
+}
+.admin-shell .menu-cat-slug { font-size: 12px; color: var(--a-text-faint); font-family: var(--font-sans), sans-serif; }
+.admin-shell .menu-item-list { display: flex; flex-direction: column; gap: var(--a-s2); list-style: none; margin: 0 0 var(--a-s4); padding: 0; }
+.admin-shell .menu-item-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas: "thumb body actions";
+  align-items: center;
+  gap: var(--a-s3);
+  padding: var(--a-s3);
+  border: 1px solid var(--a-line);
+  border-radius: var(--a-r-md);
+  background: var(--a-surface-2);
+}
+.admin-shell .menu-item-thumb {
+  grid-area: thumb;
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: var(--a-r-sm);
+  border: 1px solid var(--a-line);
+}
+.admin-shell .menu-item-thumb-empty { background: var(--a-surface-3); }
+.admin-shell .menu-item-form { grid-area: body; min-width: 0; }
+.admin-shell .menu-item-actions { grid-area: actions; display: flex; align-items: center; gap: var(--a-s2); flex-wrap: wrap; }
+.admin-shell .menu-item-details summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--a-s3);
+  cursor: pointer;
+  list-style: none;
+  padding: 6px 0;
+}
+.admin-shell .menu-item-details summary::-webkit-details-marker { display: none; }
+.admin-shell .menu-item-details summary::after {
+  content: "›";
+  color: var(--a-text-faint);
+  transition: transform 0.13s ease;
+}
+.admin-shell .menu-item-details[open] summary::after { transform: rotate(90deg); }
+.admin-shell .menu-item-name { font-size: 14px; color: var(--a-text); }
+.admin-shell .menu-item-name .muted { opacity: 0.5; font-style: italic; }
+.admin-shell .menu-item-price { font-size: 13px; color: var(--a-accent); font-variant-numeric: tabular-nums; }
+.admin-shell .menu-item-fields { display: flex; flex-direction: column; gap: var(--a-s3); padding-top: var(--a-s3); }
+.admin-shell .menu-item-fields code {
+  font-size: 11px;
+  background: var(--a-input);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--a-text-dim);
+}
+.admin-shell .add-item-wrap,
+.admin-shell .add-item-form,
+.admin-shell .add-cat-form { display: flex; flex-direction: column; gap: var(--a-s3); }
+.admin-shell .add-item-wrap { margin-top: var(--a-s3); }
+.admin-shell .add-item-form { margin-top: var(--a-s3); }
+
+/* ── drag reorder ─────────────────────────────────────────────────────────── */
+.admin-shell .drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  color: var(--a-text-faint);
+  font-size: 14px;
+  letter-spacing: -2px;
+  min-width: 32px;
+  min-height: 32px;
+  user-select: none;
+  touch-action: none;
+}
+.admin-shell .drag-handle:hover { color: var(--a-accent); }
+.admin-shell [draggable="true"]:active .drag-handle { cursor: grabbing; }
+.admin-shell .drag-source { opacity: 0.4; }
+.admin-shell .drag-over { outline: 2px dashed var(--a-accent); outline-offset: -2px; }
+.admin-shell .drag-saving { font-size: 12px; color: var(--a-text-dim); padding: var(--a-s2) var(--a-s3); list-style: none; }
+@media (pointer: coarse) {
+  .admin-shell .drag-handle { min-width: 44px; min-height: 44px; font-size: 18px; }
+}
+
+/* ── misc ─────────────────────────────────────────────────────────────────── */
+.admin-shell pre {
+  background: var(--a-input);
+  border: 1px solid var(--a-line);
+  padding: var(--a-s3);
+  border-radius: var(--a-r-sm);
+  overflow-x: auto;
+  font-size: 12px;
+  color: var(--a-text-dim);
+}
+.admin-shell code { font-size: 0.92em; }
+.admin-shell a { color: var(--a-accent); }
+.admin-shell .sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
