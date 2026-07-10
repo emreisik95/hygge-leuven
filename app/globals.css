@@ -343,8 +343,15 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   letter-spacing: 0.01em;
 }
 
+/* The figures are a mask, not an <img>: the PNG's alpha provides the shapes and
+   background-color paints them, so the line art stays legible in both themes
+   (deep brown on the beige default, cream in dark mode). */
 .people {
   display: none;
+  aspect-ratio: 608 / 612;
+  background-color: var(--tan);
+  -webkit-mask: url(/assets/people.png) center / contain no-repeat;
+  mask: url(/assets/people.png) center / contain no-repeat;
 }
 @media (min-width: 720px) and (min-height: 800px) {
   .people {

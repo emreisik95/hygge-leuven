@@ -298,7 +298,10 @@ export function Landing({
               </>
             ) : null}
             {c.showTagline ? <p className="tagline">{c.tagline}</p> : null}
-            <img src="/assets/people.png" alt="" aria-hidden="true" className="people" />
+            {/* Line-art figures, drawn via CSS mask so the stroke colour follows
+                the theme palette (--tan) instead of the cream baked into the PNG,
+                which vanished against the beige default ground. */}
+            <span aria-hidden="true" className="people" />
             {c.showInvite && (c.inviteLine || c.inviteSub) ? (
               <div className="invite">
                 {c.inviteLine ? <p className="invite-line">{c.inviteLine}</p> : null}
