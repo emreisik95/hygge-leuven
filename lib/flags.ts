@@ -56,6 +56,10 @@ export const FLAG_KEYS = [
   "feedbackPrompt",
   "takeawayCup",
   "heroArt",
+  "endMark",
+  "brandSelection",
+  "themeTransition",
+  "passportStamp",
 ] as const;
 
 export type FlagKey = (typeof FLAG_KEYS)[number];
@@ -406,6 +410,38 @@ export const FLAG_REGISTRY: FlagMeta[] = [
     description:
       "The café-corner illustration from our sticker, shown beside the hero wordmark on wide screens.",
     group: "Chrome",
+    default: false,
+  },
+  {
+    key: "endMark",
+    label: "End mark",
+    description:
+      "A single quiet 'tak.' that fades in once the visitor reaches the very end of the page.",
+    group: "Content",
+    default: false,
+  },
+  {
+    key: "brandSelection",
+    label: "House-ink text selection",
+    description:
+      "Selected text highlights in the café palette instead of the browser's default blue.",
+    group: "Chrome",
+    default: false,
+  },
+  {
+    key: "themeTransition",
+    label: "Candlelight theme switch",
+    description:
+      "The dark/light toggle spreads the new theme from the button like lighting (or blowing out) a candle.",
+    group: "Chrome",
+    default: false,
+  },
+  {
+    key: "passportStamp",
+    label: "Passport stamp",
+    description:
+      "One derived line under the menu note naming the origin that is in the cup right now.",
+    group: "Menu",
     default: false,
   },
 ];

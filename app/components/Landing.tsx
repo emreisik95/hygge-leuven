@@ -43,6 +43,7 @@ import { PrintMenu } from "./features/PrintMenu";
 import { GroupBookingCta } from "./features/GroupBookingCta";
 import { TakeawayCta } from "./features/TakeawayCta";
 import { FeedbackPrompt } from "./features/FeedbackPrompt";
+import { EndMark } from "./features/EndMark";
 
 const CAFE_TZ = "Europe/Brussels";
 
@@ -214,6 +215,19 @@ export function Landing({
   const hasEngageBlock =
     flags.loyaltyCard || flags.newsletterSignup || flags.giftCardCta || flags.spotifyEmbed;
   const bgLayers = bgPaths.length > 0 ? bgPaths : [c.bgImagePath];
+  // Countries currently "in the cup": the leading segment of each available
+  // item's origin line (e.g. "Uganda · Rwenzori Mountains · natural" → "Uganda"),
+  // deduped. Drives the passportStamp line; empty → the line renders nothing.
+  const cupOrigins = Array.from(
+    new Set(
+      menu.flatMap((cat) =>
+        cat.items
+          .filter((it) => it.available && it.origin)
+          .map((it) => it.origin.split("·")[0].trim())
+          .filter(Boolean),
+      ),
+    ),
+  ).slice(0, 3);
   const bgDuration = Math.max(15, bgLayers.length * 8);
   const statusLabel = status.isOpen ? t["site.statusOpen"] : t["site.statusClosed"];
   const statusSub = formatStatusSub(status, now, t);
@@ -222,7 +236,7 @@ export function Landing({
   const dotAriaLabel = statusLabel;
 
   return (
-    <main className="shell">
+    <main className="shell" data-selection={flags.brandSelection ? "" : undefined}>
       <GlobalFeatures
         flags={flags}
         announcementMessage={announcement}
@@ -494,6 +508,11 @@ export function Landing({
               <h2 className="menu-heading" id="menu-heading">{c.menuHeading}</h2>
               <p className="menu-sub">{c.tagline}</p>
               {c.menuBeansNote ? <p className="menu-beans-note">{c.menuBeansNote}</p> : null}
+              {flags.passportStamp && cupOrigins.length > 0 ? (
+                <p className="menu-beans-note menu-passport-stamp">
+                  {tmpl(L.passportStamp.line, { origin: cupOrigins.join(" / ") })}
+                </p>
+              ) : null}
               {flags.menuSearch ? (
                 <MenuSearch
                   placeholder={L.menuSearch.placeholder}
@@ -669,6 +688,7 @@ export function Landing({
                 />
               ) : null}
             </div>
+            {flags.endMark ? <EndMark text={L.endMark.text} /> : null}
           </div>
           <a href="#landing" className="back-link map-back">{c.backToTopLabel}</a>
         </div>

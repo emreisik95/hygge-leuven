@@ -1451,6 +1451,16 @@ textarea[aria-invalid="true"] {
   margin: 10px auto 0;
   text-wrap: balance;
 }
+/* passportStamp flag: the note's live punchline — one small-caps line naming
+   the origin currently in the cup, derived from the menu items themselves. */
+.menu-passport-stamp {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.85;
+  margin-top: 8px;
+}
 .menu-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -2115,6 +2125,57 @@ textarea[aria-invalid="true"] {
    Flag-gated features. Every selector below only renders when its
    feature flag is enabled (see lib/flags.ts + /admin/features).
    ════════════════════════════════════════════════════════════════════ */
+
+/* ── house-ink text selection (brandSelection flag) ────────────────── */
+/* Selection stays in the café palette instead of browser blue; the dark theme
+   inverts for free because the custom properties swap. ::target-text keeps
+   find-in-page/scroll-to-text links in-world too. */
+[data-selection] ::selection {
+  background: var(--tan);
+  color: var(--bg);
+}
+[data-selection] ::target-text {
+  background: var(--tan);
+  color: var(--bg);
+}
+
+/* ── end mark (endMark flag) ───────────────────────────────────────── */
+/* The page's closing "fin.": a hairline rule and one small serif word at the
+   foot of the map card, fading in once when first scrolled into view. */
+.end-mark {
+  position: relative;
+  margin: 18px auto 0;
+  padding-top: 14px;
+  font-family: var(--font-serif), serif;
+  font-size: 13px;
+  text-align: center;
+  color: var(--tan);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.end-mark::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 1px;
+  background: var(--rule-strong);
+}
+.end-mark.is-shown { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .end-mark { transition: none; }
+}
+
+/* ── candlelight theme switch (themeTransition flag) ───────────────── */
+/* ThemeToggle drives the circular wipe by animating
+   ::view-transition-new(root); the defaults' cross-fade would fight it. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
 
 /* ── theme toggle (darkMode flag) ──────────────────────────────────── */
 /* Beige/light is the site default (see :root at the top of this file); the

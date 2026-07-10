@@ -131,6 +131,8 @@ export const FEATURE_LABELS = {
   takeaway: { label: "Order takeaway", subject: "Takeaway order" },
   takeawayCup: { label: "Our takeaway cup, wearing its sticker" },
   heroArt: { label: "A cosy corner of the café, illustrated" },
+  endMark: { text: "tak." },
+  passportStamp: { line: "in the cup right now: {origin}" },
   feedback: {
     heading: "How was your visit?",
     body: "We read every note. Tell us what made your morning — or what we could do better.",

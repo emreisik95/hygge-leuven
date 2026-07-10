@@ -208,6 +208,18 @@ export const FEATURE_SETTINGS_SPECS: FeatureSettingsSpec[] = [
     title: "Get directions",
     fields: [copy("directions", "Button label")],
   },
+  {
+    flag: "endMark",
+    title: "End mark",
+    fields: [copy("endMark.text", "Text", "text", "The single word (or few) at the very end of the page.")],
+  },
+  {
+    flag: "passportStamp",
+    title: "Passport stamp",
+    fields: [
+      copy("passportStamp.line", "Line", "text", "Use {origin} as the placeholder for the current origin(s)."),
+    ],
+  },
 ];
 
 export const SPECS_BY_FLAG: Map<FlagKey, FeatureSettingsSpec> = new Map(

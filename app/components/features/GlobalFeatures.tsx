@@ -72,7 +72,13 @@ export function GlobalFeatures({
       ) : null}
       <div className="fab-stack" aria-label="Page controls">
         {flags.pwaInstall ? <PwaInstall label={L.pwaInstall} /> : null}
-        {flags.darkMode ? <ThemeToggle lightLabel={L.theme.toLight} darkLabel={L.theme.toDark} /> : null}
+        {flags.darkMode ? (
+          <ThemeToggle
+            lightLabel={L.theme.toLight}
+            darkLabel={L.theme.toDark}
+            viewTransition={flags.themeTransition}
+          />
+        ) : null}
         {flags.a11yToolbar ? <A11yToolbar copy={L.a11y} /> : null}
         {flags.whatsappCta && phone ? <WhatsappCta phone={phone} label={L.whatsapp.label} /> : null}
         {flags.backToTop ? <BackToTop label={L.backToTop} /> : null}

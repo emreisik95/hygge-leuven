@@ -21,6 +21,7 @@ const FLAG_KEYS = [
   "coffeeOfWeek", "drinkFinder", "valuesStrip", "neighbourhoodGuide",
   "hoursCountdown", "menuQuickNav", "allergenLegend", "menuFavorites", "printMenu",
   "groupBookingCta", "takeawayCta", "feedbackPrompt", "takeawayCup", "heroArt",
+  "endMark", "brandSelection", "themeTransition", "passportStamp",
 ];
 
 const enabled = (process.argv[2] ?? "on") === "off" ? 0 : 1;
