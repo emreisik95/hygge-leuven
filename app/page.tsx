@@ -8,6 +8,7 @@ import { computeIsOpen, loadStatusTranslations } from "@/lib/hours";
 import { getOrigin, buildCafeJsonLd, jsonLdScript } from "@/lib/site";
 import { loadFlags } from "@/lib/flags";
 import { resolveFeatureSettings } from "@/lib/feature-settings";
+import { findCupArtSrc, findCupStickerSrc } from "@/lib/images";
 import { Landing, type InstaPostView } from "./components/Landing";
 
 const CAFE_TZ = "Europe/Brussels";
@@ -18,7 +19,7 @@ export default async function Home() {
   const store = await cookies();
   const locale = parseLocale(store.get(LOCALE_COOKIE)?.value);
   const prismaLocale = toPrismaLocale(locale);
-  const [content, seedPosts, hoursRows, statusTranslations, bgPhotos, menu, flags, announcement, featureSettings] = await Promise.all([
+  const [content, seedPosts, hoursRows, statusTranslations, bgPhotos, menu, flags, announcement, featureSettings, stickerSrc] = await Promise.all([
     getPublishedContent(prismaLocale),
     getRecentPostsForRender(9),
     getOpeningHours(),
@@ -28,7 +29,9 @@ export default async function Home() {
     loadFlags(),
     getTranslation(ANNOUNCEMENT_NS, prismaLocale, FEATURE_LABELS.announcement.message),
     resolveFeatureSettings(),
+    findCupStickerSrc(),
   ]);
+  const cupSrc = await findCupArtSrc();
 
   // Real @hygge.leuven posts baked into the repo (refreshed via
   // scripts/refresh-instagram.mjs); the seeded DB grid is the final fallback so
@@ -86,6 +89,8 @@ export default async function Home() {
         testimonials={featureSettings.testimonials}
         events={featureSettings.events}
         spotifyPlaylistId={featureSettings.spotifyPlaylistId}
+        cupSrc={cupSrc}
+        stickerSrc={stickerSrc}
       />
     </>
   );

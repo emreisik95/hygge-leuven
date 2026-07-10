@@ -112,6 +112,35 @@ export async function persistImage<T>(
   }
 }
 
+// The takeaway-cup artwork lives as repo assets rather than uploads:
+// public/assets/cup.<ext> is the full illustrated cup (shown as-is), and
+// public/assets/sticker.<ext> is the bare sticker (worn by the inline SVG cup
+// when no cup art exists). Resolved per request (the landing page is
+// force-dynamic) so dropping a new file in takes effect without a rebuild; null
+// when absent, which makes the badge fall back down the chain.
+const CUP_NAMES = ["cup.webp", "cup.png"];
+const STICKER_NAMES = ["sticker.png", "sticker.webp", "sticker.jpg", "sticker.jpeg", "sticker.svg"];
+
+async function firstAssetOf(names: string[]): Promise<string | null> {
+  for (const name of names) {
+    try {
+      await fs.access(path.join(process.cwd(), "public", "assets", name));
+      return `/assets/${name}`;
+    } catch {
+      // keep looking
+    }
+  }
+  return null;
+}
+
+export async function findCupArtSrc(): Promise<string | null> {
+  return firstAssetOf(CUP_NAMES);
+}
+
+export async function findCupStickerSrc(): Promise<string | null> {
+  return firstAssetOf(STICKER_NAMES);
+}
+
 // Best-effort delete of a stored upload given its public URL. Guards against
 // path traversal — only unlinks a bare filename inside UPLOAD_DIR.
 export async function unlinkByUrl(url: string | null | undefined): Promise<void> {

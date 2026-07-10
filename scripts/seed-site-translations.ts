@@ -8,16 +8,19 @@ import { PrismaClient, type Locale } from "@prisma/client";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
 type Field =
-  | "brandName" | "definitionLabel" | "definitionBody" | "tagline"
+  | "brandName" | "definitionLabel" | "tagline"
   | "inviteLine" | "inviteSub" | "statusLabel" | "statusSub"
   | "hoursToday" | "hoursWeekend" | "findUsLabel" | "instagramHandle"
   | "instaHeading" | "instaSub" | "instaCtaLabel" | "instaEmbedHtml"
-  | "mapHeading" | "mapSub" | "metaTitle" | "metaDescription";
+  | "mapHeading" | "mapSub" | "menuBeansNote" | "metaTitle" | "metaDescription";
+
+// Retired copy: the dictionary-definition body and the "why hygge" pane. Rows
+// are deleted on every run so re-seeding also cleans up older databases.
+const RETIRED_NAMESPACES = ["site.definitionBody", "site.visionHeading", "site.visionBody"];
 
 const NS: Record<Field, string> = {
   brandName: "site.brandName",
   definitionLabel: "site.definitionLabel",
-  definitionBody: "site.definitionBody",
   tagline: "site.tagline",
   inviteLine: "site.inviteLine",
   inviteSub: "site.inviteSub",
@@ -33,6 +36,7 @@ const NS: Record<Field, string> = {
   instaEmbedHtml: "site.instaEmbedHtml",
   mapHeading: "site.mapHeading",
   mapSub: "site.mapSub",
+  menuBeansNote: "site.menuBeansNote",
   metaTitle: "site.metaTitle",
   metaDescription: "site.metaDescription",
 };
@@ -40,8 +44,6 @@ const NS: Record<Field, string> = {
 const EN: Record<Field, string> = {
   brandName: "hygge",
   definitionLabel: "Danish [hyü-ge] noun",
-  definitionBody:
-    "A feeling of warmth, comfort, and coziness when you feel at peace and able to enjoy simple pleasures and being in the moment.",
   tagline: "• specialty coffee • pastry • danish lunch",
   inviteLine: "Slow down a little.",
   inviteSub: "A quiet corner is waiting.",
@@ -57,6 +59,8 @@ const EN: Record<Field, string> = {
   instaEmbedHtml: "",
   mapHeading: "come find us",
   mapSub: "Naamsestraat 55, 3000 Leuven",
+  menuBeansNote:
+    "Every cup here has a passport. Our espresso and americano beans move to a new single origin roughly once a month, and our coffees and teas are chosen origin-first — so there is always a new flavour, a new feeling, waiting. Come back soon; the cup changes with the seasons.",
   metaTitle: "hygge — Danish café in Leuven",
   metaDescription: "Specialty coffee, pastry, and danish lunch. Naamsestraat 55, Leuven.",
 };
@@ -64,8 +68,6 @@ const EN: Record<Field, string> = {
 const NL: Record<Field, string> = {
   brandName: "hygge",
   definitionLabel: "Deens [hyü-ge] zelfstandig naamwoord",
-  definitionBody:
-    "Een gevoel van warmte, comfort en gezelligheid wanneer je in rust bent en kan genieten van eenvoudige momenten en het hier en nu.",
   tagline: "• specialty koffie • patisserie • deense lunch",
   inviteLine: "Even vertragen.",
   inviteSub: "Een rustig hoekje wacht op je.",
@@ -81,6 +83,8 @@ const NL: Record<Field, string> = {
   instaEmbedHtml: "",
   mapHeading: "kom ons opzoeken",
   mapSub: "Naamsestraat 55, 3000 Leuven",
+  menuBeansNote:
+    "Elke kop heeft hier een paspoort. Onze espresso- en americanobonen verhuizen ongeveer elke maand naar een nieuwe single origin, en onze koffie en thee kiezen we op herkomst — er wacht dus altijd een nieuwe smaak, een nieuw gevoel. Kom snel terug; de kop verandert met de seizoenen.",
   metaTitle: "hygge — Deens café in Leuven",
   metaDescription: "Specialty koffie, patisserie en deense lunch. Naamsestraat 55, Leuven.",
 };
@@ -88,8 +92,6 @@ const NL: Record<Field, string> = {
 const FR: Record<Field, string> = {
   brandName: "hygge",
   definitionLabel: "Danois [hyü-ge] nom",
-  definitionBody:
-    "Un sentiment de chaleur, de confort et de douceur, lorsque l'on se sent apaisé et que l'on savoure les plaisirs simples de l'instant présent.",
   tagline: "• café de spécialité • pâtisserie • déjeuner danois",
   inviteLine: "Prenez le temps.",
   inviteSub: "Un coin tranquille vous attend.",
@@ -105,6 +107,8 @@ const FR: Record<Field, string> = {
   instaEmbedHtml: "",
   mapHeading: "venez nous voir",
   mapSub: "Naamsestraat 55, 3000 Leuven",
+  menuBeansNote:
+    "Chaque tasse a ici son passeport. Nos grains d'espresso et d'americano changent d'origine environ une fois par mois, et nos cafés comme nos thés sont choisis pour leur terroir — il y a donc toujours une nouvelle saveur, une nouvelle émotion à découvrir. Revenez bientôt ; la tasse change avec les saisons.",
   metaTitle: "hygge — café danois à Louvain",
   metaDescription: "Café de spécialité, pâtisserie et déjeuner danois. Naamsestraat 55, Leuven.",
 };
@@ -119,6 +123,11 @@ async function main() {
     ["NL", NL],
     ["FR", FR],
   ];
+
+  const removed = await prisma.translation.deleteMany({
+    where: { namespace: { in: RETIRED_NAMESPACES } },
+  });
+  if (removed.count > 0) console.log(`Removed ${removed.count} retired translation rows.`);
 
   let count = 0;
   for (const [locale, dict] of all) {

@@ -17,7 +17,6 @@ import { A11yToolbar } from "./A11yToolbar";
 import { LocaleSuggest } from "./LocaleSuggest";
 import { CommandPalette } from "./CommandPalette";
 import { SeasonalParticles } from "./SeasonalParticles";
-import { WeatherRecommend } from "./WeatherRecommend";
 import { WhatsappCta } from "./WhatsappCta";
 
 // Single mount point for the page-wide client "chrome" features. Each renders
@@ -71,15 +70,6 @@ export function GlobalFeatures({
           closeLabel={L.localeSuggest.close}
         />
       ) : null}
-      {flags.weatherRecommend ? (
-        <WeatherRecommend
-          hot={L.weatherRecommend.hot}
-          cold={L.weatherRecommend.cold}
-          rainy={L.weatherRecommend.rainy}
-          dismiss={L.weatherRecommend.dismiss}
-        />
-      ) : null}
-
       <div className="fab-stack" aria-label="Page controls">
         {flags.pwaInstall ? <PwaInstall label={L.pwaInstall} /> : null}
         {flags.darkMode ? <ThemeToggle lightLabel={L.theme.toLight} darkLabel={L.theme.toDark} /> : null}

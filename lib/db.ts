@@ -43,6 +43,7 @@ const TEXT_NAMESPACES = {
   contactEmail: "site.contactEmail",
   contactPhone: "site.contactPhone",
   menuHeading: "site.menuHeading",
+  menuBeansNote: "site.menuBeansNote",
   menuNavLabel: "site.menuNavLabel",
   soldOutLabel: "site.soldOutLabel",
   mapsLinkLabel: "site.mapsLinkLabel",
@@ -61,7 +62,8 @@ export type SiteTextField = keyof typeof TEXT_NAMESPACES;
 const SITE_TEXT_DEFAULTS: Record<SiteTextField, string> = {
   brandName: "hygge",
   definitionLabel: "Danish [hyü-ge] noun",
-  definitionBody: "a feeling of cozy contentment.",
+  // Intentionally empty — the hero no longer shows a dictionary definition body.
+  definitionBody: "",
   tagline: "• specialty coffee • pastry • danish lunch",
   inviteLine: "Slow down a little.",
   inviteSub: "A quiet corner is waiting.",
@@ -75,15 +77,18 @@ const SITE_TEXT_DEFAULTS: Record<SiteTextField, string> = {
   instaSub: "daily moments — pastries, light, faces",
   instaCtaLabel: "Follow @hygge.leuven",
   instaEmbedHtml: "",
-  visionHeading: "why hygge",
-  visionBody:
-    "Hygge is the Danish art of cosy contentment — warmth over noise, presence over hurry. We made this corner of Leuven to slow you down: honest specialty coffee, pastry straight from the oven, and a seat that feels like a friend's kitchen. Stay a while.",
+  // Intentionally empty — the "why hygge" pane is retired; Landing hides the
+  // section whenever visionBody resolves to an empty string.
+  visionHeading: "",
+  visionBody: "",
   mapHeading: "come find us",
   mapSub: "Naamsestraat 55, 3000 Leuven",
   contactHeading: "say hello",
   contactEmail: "",
   contactPhone: "",
   menuHeading: "menu",
+  menuBeansNote:
+    "Every cup here has a passport. Our espresso and americano beans move to a new single origin roughly once a month, and our coffees and teas are chosen origin-first — so there is always a new flavour, a new feeling, waiting. Come back soon; the cup changes with the seasons.",
   menuNavLabel: "Menu",
   soldOutLabel: "sold out",
   mapsLinkLabel: "Open in Google Maps",

@@ -7,6 +7,7 @@ import { computeIsOpen, loadStatusTranslations } from "@/lib/hours";
 import { getOrigin } from "@/lib/site";
 import { loadFlags } from "@/lib/flags";
 import { resolveFeatureSettings } from "@/lib/feature-settings";
+import { findCupArtSrc, findCupStickerSrc } from "@/lib/images";
 import { Landing } from "@/app/components/Landing";
 
 const CAFE_TZ = "Europe/Brussels";
@@ -18,7 +19,7 @@ export default async function PreviewPage() {
   const store = await cookies();
   const locale = parseLocale(store.get(LOCALE_COOKIE)?.value);
   const prismaLocale = toPrismaLocale(locale);
-  const [content, instaPosts, hoursRows, statusTranslations, bgPhotos, menu, flags, origin, announcement, featureSettings] =
+  const [content, instaPosts, hoursRows, statusTranslations, bgPhotos, menu, flags, origin, announcement, featureSettings, stickerSrc] =
     await Promise.all([
       getDraftContent(prismaLocale),
       getRecentPostsForRender(9),
@@ -30,7 +31,9 @@ export default async function PreviewPage() {
       getOrigin(),
       getTranslation(ANNOUNCEMENT_NS, prismaLocale, FEATURE_LABELS.announcement.message),
       resolveFeatureSettings(),
+      findCupStickerSrc(),
     ]);
+  const cupSrc = await findCupArtSrc();
 
   const now = new Date();
   const status = computeIsOpen(hoursRows, now, CAFE_TZ);
@@ -57,6 +60,8 @@ export default async function PreviewPage() {
       testimonials={featureSettings.testimonials}
       events={featureSettings.events}
       spotifyPlaylistId={featureSettings.spotifyPlaylistId}
+      cupSrc={cupSrc}
+      stickerSrc={stickerSrc}
     />
   );
 }

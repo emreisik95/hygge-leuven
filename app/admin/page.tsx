@@ -119,6 +119,16 @@ export default async function AdminPage({
         </section>
 
         <section className="section">
+          <h2>Menu</h2>
+          <TextareaField
+            name="menuBeansNote"
+            label="Rotating-origins note (shown under the menu heading)"
+            defaultValue={c.menuBeansNote}
+            rows={3}
+          />
+        </section>
+
+        <section className="section">
           <h2>Map</h2>
           <Field name="mapHeading" label="Map heading" defaultValue={c.mapHeading} />
           <Field name="mapSub" label="Map subtext" defaultValue={c.mapSub} />

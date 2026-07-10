@@ -16,7 +16,7 @@ import type { Flags } from "@/lib/flags";
 import { dietaryTags } from "@/lib/dietary";
 import { FEATURE_LABELS } from "@/lib/feature-labels";
 import { GlobalFeatures } from "./features/GlobalFeatures";
-import { WeatherGreeting } from "./features/WeatherGreeting";
+import { TakeawayCup } from "./features/TakeawayCup";
 import { LiveClock } from "./features/LiveClock";
 import { ShareButton } from "./features/ShareButton";
 import { LoyaltyCard } from "./features/LoyaltyCard";
@@ -32,7 +32,6 @@ import { AboutStory } from "./features/AboutStory";
 import { CoffeeOfWeek } from "./features/CoffeeOfWeek";
 import { DrinkFinder } from "./features/DrinkFinder";
 import { ValuesStrip } from "./features/ValuesStrip";
-import { OpeningTimeline } from "./features/OpeningTimeline";
 import { NeighbourhoodGuide } from "./features/NeighbourhoodGuide";
 import { MenuSearch } from "./features/MenuSearch";
 import { HoursCountdown } from "./features/HoursCountdown";
@@ -79,6 +78,11 @@ export type LandingProps = {
   testimonials?: { quote: string; author: string }[];
   events?: { date: string; title: string; detail: string }[];
   spotifyPlaylistId?: string;
+  // Takeaway-cup artwork, resolved in the page from public/assets: cupSrc is
+  // the full illustrated cup (preferred), stickerSrc the bare sticker worn by
+  // the inline SVG fallback cup. Both null → SVG cup with inline brand sticker.
+  cupSrc?: string | null;
+  stickerSrc?: string | null;
 };
 
 function PinIcon() {
@@ -202,6 +206,8 @@ export function Landing({
   testimonials,
   events,
   spotifyPlaylistId,
+  cupSrc,
+  stickerSrc,
 }: LandingProps) {
   const L = featureCopy ?? FEATURE_LABELS;
   const hasMenu = menu.some((cat) => cat.items.length > 0);
@@ -274,13 +280,20 @@ export function Landing({
 
       <section className="pane pane-landing" id="landing">
         <LocaleSwitcher current={locale} />
+        {/* Direct child of the pane on purpose: the desktop layout positions the
+            cup absolutely against .pane-landing, and .card can't contain it —
+            revealOnScroll leaves a transform on .card, which would hijack the
+            containing block. */}
+        {flags.takeawayCup ? (
+          <TakeawayCup cupSrc={cupSrc} stickerSrc={stickerSrc} label={L.takeawayCup.label} />
+        ) : null}
         <div className="hero">
           <div className="card">
             <h1 className="brand">{c.brandName}</h1>
             {c.showDefinition ? (
               <>
-                <p className="def-label">{c.definitionLabel}</p>
-                <p className="def-body">{c.definitionBody}</p>
+                {c.definitionLabel ? <p className="def-label">{c.definitionLabel}</p> : null}
+                {c.definitionBody ? <p className="def-body">{c.definitionBody}</p> : null}
               </>
             ) : null}
             {c.showTagline ? <p className="tagline">{c.tagline}</p> : null}
@@ -291,7 +304,6 @@ export function Landing({
                 {c.inviteSub ? <p className="invite-sub">{c.inviteSub}</p> : null}
               </div>
             ) : null}
-            {flags.weatherGreeting ? <WeatherGreeting template={L.weatherTemplate} /> : null}
             <a href="#insta" className="scroll-cue" aria-label={c.seeMoreLabel}>
               <ArrowDown />
             </a>
@@ -427,7 +439,6 @@ export function Landing({
       {flags.galleryGrid ? <GalleryGrid heading={L.galleryHeading} backToTopLabel={c.backToTopLabel} skipSectionLabel={c.skipSectionLabel} /> : null}
       {flags.coffeeOfWeek ? <CoffeeOfWeek heading={L.coffeeOfWeekHeading} backToTopLabel={c.backToTopLabel} /> : null}
       {flags.drinkFinder ? <DrinkFinder heading={L.drinkFinderHeading} backToTopLabel={c.backToTopLabel} /> : null}
-      {flags.openingTimeline ? <OpeningTimeline heading={L.openingTimelineHeading} backToTopLabel={c.backToTopLabel} hoursRows={hoursRows} locale={locale} /> : null}
       {flags.pressMentions ? <PressMentions heading={L.pressMentionsHeading} backToTopLabel={c.backToTopLabel} /> : null}
       {flags.neighbourhoodGuide ? <NeighbourhoodGuide heading={L.neighbourhoodGuideHeading} backToTopLabel={c.backToTopLabel} /> : null}
 
@@ -478,6 +489,7 @@ export function Landing({
             <header className="menu-head">
               <h2 className="menu-heading" id="menu-heading">{c.menuHeading}</h2>
               <p className="menu-sub">{c.tagline}</p>
+              {c.menuBeansNote ? <p className="menu-beans-note">{c.menuBeansNote}</p> : null}
               {flags.menuSearch ? (
                 <MenuSearch
                   placeholder={L.menuSearch.placeholder}

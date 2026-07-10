@@ -88,13 +88,6 @@ export const FEATURE_SETTINGS_SPECS: FeatureSettingsSpec[] = [
     fields: [copy("pwaInstall", "Button label")],
   },
   {
-    flag: "weatherGreeting",
-    title: "Weather greeting",
-    fields: [
-      copy("weatherTemplate", "Template", "textarea", "Use {temp} and {sky} as placeholders."),
-    ],
-  },
-  {
     flag: "loyaltyCard",
     title: "Coffee card",
     fields: [

@@ -17,7 +17,6 @@ export const FLAG_KEYS = [
   "backToTop",
   "cookieConsent",
   "pwaInstall",
-  "weatherGreeting",
   "liveClock",
   "loyaltyCard",
   "photoLightbox",
@@ -39,7 +38,6 @@ export const FLAG_KEYS = [
   "localeSuggest",
   "commandPalette",
   "seasonalParticles",
-  "weatherRecommend",
   "whatsappCta",
   "galleryGrid",
   "pressMentions",
@@ -47,7 +45,6 @@ export const FLAG_KEYS = [
   "coffeeOfWeek",
   "drinkFinder",
   "valuesStrip",
-  "openingTimeline",
   "neighbourhoodGuide",
   "hoursCountdown",
   "menuQuickNav",
@@ -57,6 +54,7 @@ export const FLAG_KEYS = [
   "groupBookingCta",
   "takeawayCta",
   "feedbackPrompt",
+  "takeawayCup",
 ] as const;
 
 export type FlagKey = (typeof FLAG_KEYS)[number];
@@ -122,13 +120,6 @@ export const FLAG_REGISTRY: FlagMeta[] = [
     key: "pwaInstall",
     label: "Install app prompt",
     description: "Offers an 'Add to home screen' button on supported devices.",
-    group: "Engagement",
-    default: false,
-  },
-  {
-    key: "weatherGreeting",
-    label: "Weather greeting",
-    description: "Shows the current Leuven weather as a small contextual greeting.",
     group: "Engagement",
     default: false,
   },
@@ -277,14 +268,6 @@ export const FLAG_REGISTRY: FlagMeta[] = [
     default: false,
   },
   {
-    key: "weatherRecommend",
-    label: "Weather drink suggestion",
-    description:
-      "Shows a small dismissible note suggesting an iced, warm, or cosy drink based on the live Leuven weather.",
-    group: "Engagement",
-    default: false,
-  },
-  {
     key: "whatsappCta",
     label: "WhatsApp button",
     description:
@@ -333,14 +316,6 @@ export const FLAG_REGISTRY: FlagMeta[] = [
     label: "What we care about",
     description:
       "A calm strip of small value cards — specialty beans, in-house baking, oat by default and unhurried hours.",
-    group: "Content",
-    default: false,
-  },
-  {
-    key: "openingTimeline",
-    label: "Opening hours timeline",
-    description:
-      "A visual weekly chart of opening hours with a bar per day on a shared time axis, highlighting today.",
     group: "Content",
     default: false,
   },
@@ -414,6 +389,14 @@ export const FLAG_REGISTRY: FlagMeta[] = [
     description:
       "A calm, dismissible 'how was your visit?' card near the foot of the page that opens a feedback email.",
     group: "Engagement",
+    default: false,
+  },
+  {
+    key: "takeawayCup",
+    label: "Takeaway cup badge",
+    description:
+      "An illustrated takeaway cup at the top of the hero wearing the café's cup sticker (drop the artwork in public/assets/sticker.png).",
+    group: "Chrome",
     default: false,
   },
 ];

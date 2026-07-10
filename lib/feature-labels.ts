@@ -28,7 +28,6 @@ export const FEATURE_LABELS = {
     copied: "Link copied",
   },
   lightboxClose: "Close photo",
-  weatherTemplate: "Right now in Leuven: {temp}, {sky}. Perfect weather for a coffee.",
   loyalty: {
     heading: "Coffee card",
     hint: "Tap a cup each visit. Fill the card, treat yourself.",
@@ -58,7 +57,6 @@ export const FEATURE_LABELS = {
   coffeeOfWeekHeading: "this week's bean",
   drinkFinderHeading: "find your drink",
   valuesHeading: "what we care about",
-  openingTimelineHeading: "this week",
   neighbourhoodGuideHeading: "while you're in leuven",
   giftCard: {
     heading: "Gift a little hygge",
@@ -111,12 +109,6 @@ export const FEATURE_LABELS = {
       map: "Find us",
     } as Record<string, string>,
   },
-  weatherRecommend: {
-    hot: "Warm one out there — an iced latte sounds about right. ☕",
-    cold: "Cool and calm in Leuven today — come warm up with a hot cocoa. ☕",
-    rainy: "Rain's tapping the windows — perfect excuse for a cosy cup inside. ☔",
-    dismiss: "Dismiss drink suggestion",
-  },
   whatsapp: { label: "Chat with us on WhatsApp" },
   hoursCountdown: {
     opensIn: "Opens in {t}",
@@ -137,6 +129,7 @@ export const FEATURE_LABELS = {
   printMenu: { label: "Print menu" },
   groupBooking: { label: "Group booking", subject: "Group booking enquiry" },
   takeaway: { label: "Order takeaway", subject: "Takeaway order" },
+  takeawayCup: { label: "Our takeaway cup, wearing its sticker" },
   feedback: {
     heading: "How was your visit?",
     body: "We read every note. Tell us what made your morning — or what we could do better.",
