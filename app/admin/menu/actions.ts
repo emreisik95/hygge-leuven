@@ -8,7 +8,6 @@ import { redirect } from "next/navigation";
 import {
   asString,
   encodeErrors,
-  validatePriceRaw,
   validateImageFile,
   type FieldError,
 } from "@/lib/validation";
@@ -20,6 +19,11 @@ import {
   UPLOAD_URL_BASE,
 } from "@/lib/images";
 import { encodeUndo } from "@/lib/undo";
+import {
+  categoryTranslationNamespace as categoryNamespace,
+  itemTranslationNamespace,
+  itemTranslationNamespaces,
+} from "@/lib/menu-translations";
 
 function redirectErrors(errors: FieldError[], scope: string): never {
   redirect(`/admin/menu?errors=${encodeErrors(errors)}&errScope=${encodeURIComponent(scope)}`);
@@ -35,16 +39,16 @@ function slugify(input: string): string {
     .slice(0, 60);
 }
 
-function categoryNamespace(slug: string) {
-  return `menu.category.${slug}`;
-}
-
 function itemNameNamespace(id: number) {
-  return `menu.item.${id}.name`;
+  return itemTranslationNamespace(id, "name");
 }
 
 function itemDescriptionNamespace(id: number) {
-  return `menu.item.${id}.description`;
+  return itemTranslationNamespace(id, "description");
+}
+
+function itemOriginNamespace(id: number) {
+  return itemTranslationNamespace(id, "origin");
 }
 
 function revalidateMenu() {
@@ -147,16 +151,11 @@ export async function createItem(formData: FormData) {
 
   const nameEn = asString(formData.get("nameEn")).trim();
   const descriptionEn = asString(formData.get("descriptionEn")).trim();
-  const priceRaw = asString(formData.get("price"));
-  const priceParse = validatePriceRaw(priceRaw);
+  const originEn = asString(formData.get("originEn")).trim();
 
   const errors: FieldError[] = [];
   if (!nameEn) errors.push({ field: `newItem-${categoryId}-nameEn`, message: "Required" });
-  if ("error" in priceParse) {
-    errors.push({ field: `newItem-${categoryId}-price`, message: priceParse.error });
-  }
   if (errors.length > 0) redirectErrors(errors, `createItem-${categoryId}`);
-  const priceCents = (priceParse as { cents: number }).cents;
 
   const tail = await prisma.menuItem.findFirst({
     where: { categoryId },
@@ -165,7 +164,9 @@ export async function createItem(formData: FormData) {
   const sortOrder = (tail?.sortOrder ?? -10) + 10;
 
   const item = await prisma.menuItem.create({
-    data: { categoryId, priceCents, sortOrder },
+    // Legacy schema compatibility: price is no longer collected or displayed,
+    // but the existing non-null column remains until a future schema cleanup.
+    data: { categoryId, priceCents: 0, sortOrder },
   });
 
   await prisma.translation.upsert({
@@ -182,11 +183,25 @@ export async function createItem(formData: FormData) {
     });
   }
 
+  if (originEn) {
+    await prisma.translation.upsert({
+      where: { namespace_locale: { namespace: itemOriginNamespace(item.id), locale: "EN" } },
+      create: { namespace: itemOriginNamespace(item.id), locale: "EN", value: originEn },
+      update: { value: originEn },
+    });
+  }
+
   await logAudit({
     action: "menu.item.create",
     entity: "MenuItem",
     entityId: item.id,
-    diff: { categoryId, nameEn, descriptionEn: descriptionEn || null, priceCents, sortOrder },
+    diff: {
+      categoryId,
+      nameEn,
+      descriptionEn: descriptionEn || null,
+      originEn: originEn || null,
+      sortOrder,
+    },
   });
 
   revalidateMenu();
@@ -197,16 +212,7 @@ export async function updateItem(formData: FormData) {
   const id = parseInt(asString(formData.get("id")), 10);
   if (!Number.isFinite(id)) throw new Error("Invalid id");
 
-  const data: { priceCents?: number; available?: boolean; sortOrder?: number } = {};
-
-  const priceRaw = asString(formData.get("price"));
-  if (priceRaw.trim() !== "") {
-    const parsed = validatePriceRaw(priceRaw);
-    if ("error" in parsed) {
-      redirectErrors([{ field: `item-${id}-price`, message: parsed.error }], `updateItem-${id}`);
-    }
-    data.priceCents = parsed.cents;
-  }
+  const data: { available?: boolean; sortOrder?: number } = {};
   // Checkboxes: present-only-when-checked semantics.
   data.available = formData.get("available") === "on";
 
@@ -244,14 +250,30 @@ export async function updateItem(formData: FormData) {
     }
   }
 
+  const originEn = formData.get("originEn");
+  if (typeof originEn === "string") {
+    const v = originEn.trim();
+    if (v) {
+      await prisma.translation.upsert({
+        where: { namespace_locale: { namespace: itemOriginNamespace(id), locale: "EN" } },
+        create: { namespace: itemOriginNamespace(id), locale: "EN", value: v },
+        update: { value: v },
+      });
+    } else {
+      await prisma.translation.deleteMany({
+        where: { namespace: itemOriginNamespace(id) },
+      });
+    }
+  }
+
   const before = await prisma.menuItem.findUnique({ where: { id } });
   const after = await prisma.menuItem.update({ where: { id }, data });
   await logAudit({
     action: "menu.item.update",
     entity: "MenuItem",
     entityId: id,
-    before: before ? { priceCents: before.priceCents, available: before.available, sortOrder: before.sortOrder } : undefined,
-    after: { priceCents: after.priceCents, available: after.available, sortOrder: after.sortOrder },
+    before: before ? { available: before.available, sortOrder: before.sortOrder } : undefined,
+    after: { available: after.available, sortOrder: after.sortOrder },
   });
   revalidateMenu();
 }
@@ -266,12 +288,7 @@ async function deleteItemInternal(id: number) {
     await prisma.photo.delete({ where: { id: item.photoId } }).catch(() => {});
   }
   await prisma.translation.deleteMany({
-    where: {
-      OR: [
-        { namespace: itemNameNamespace(id) },
-        { namespace: itemDescriptionNamespace(id) },
-      ],
-    },
+    where: { namespace: { in: itemTranslationNamespaces(id) } },
   });
   await prisma.menuItem.delete({ where: { id } });
 }
@@ -293,6 +310,11 @@ export async function deleteItem(formData: FormData) {
         where: { namespace_locale: { namespace: itemDescriptionNamespace(id), locale: "EN" } },
       })
     : null;
+  const originRow = item
+    ? await prisma.translation.findUnique({
+        where: { namespace_locale: { namespace: itemOriginNamespace(id), locale: "EN" } },
+      })
+    : null;
 
   await deleteItemInternal(id);
   await logAudit({
@@ -312,6 +334,7 @@ export async function deleteItem(formData: FormData) {
         available: item.available,
         nameEn: nameRow?.value ?? "",
         descriptionEn: descRow?.value ?? "",
+        originEn: originRow?.value ?? "",
       },
     });
     redirect(
@@ -495,6 +518,13 @@ export async function restoreMenuFromUndo(formData: FormData) {
         where: { namespace_locale: { namespace: itemDescriptionNamespace(item.id), locale: "EN" } },
         create: { namespace: itemDescriptionNamespace(item.id), locale: "EN", value: d.descriptionEn },
         update: { value: d.descriptionEn },
+      });
+    }
+    if (d.originEn) {
+      await prisma.translation.upsert({
+        where: { namespace_locale: { namespace: itemOriginNamespace(item.id), locale: "EN" } },
+        create: { namespace: itemOriginNamespace(item.id), locale: "EN", value: d.originEn },
+        update: { value: d.originEn },
       });
     }
     await logAudit({

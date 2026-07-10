@@ -628,7 +628,6 @@
 .admin-shell .menu-item-details[open] summary::after { transform: rotate(90deg); }
 .admin-shell .menu-item-name { font-size: 14px; color: var(--a-text); }
 .admin-shell .menu-item-name .muted { opacity: 0.5; font-style: italic; }
-.admin-shell .menu-item-price { font-size: 13px; color: var(--a-accent); font-variant-numeric: tabular-nums; }
 .admin-shell .menu-item-fields { display: flex; flex-direction: column; gap: var(--a-s3); padding-top: var(--a-s3); }
 .admin-shell .menu-item-fields code {
   font-size: 11px;

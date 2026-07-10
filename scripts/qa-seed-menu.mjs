@@ -16,13 +16,27 @@ const cats = [
 ];
 const items = {
   coffee: [
-    { name: "Flat White", desc: "Double ristretto, silky microfoam.", price: 380 },
-    { name: "Oat Cortado", desc: "Equal parts espresso and oat milk.", price: 360 },
-    { name: "Filter of the day", desc: "Rotating single origin, gluten-free.", price: 340 },
+    { name: "Flat White", desc: "Double ristretto, silky microfoam." },
+    { name: "Oat Cortado", desc: "Equal parts espresso and oat milk." },
+    {
+      name: "Espresso",
+      desc: "Tropical fruit, ripe peach and caramel sweetness.",
+      origin: "Uganda · Rwenzori Mountains · natural process",
+    },
+    {
+      name: "Americano",
+      desc: "The month's expressive single origin, opened up with hot water.",
+      origin: "Uganda · Rwenzori Mountains · natural process",
+    },
+    {
+      name: "Filter of the day",
+      desc: "Ask what is pouring today — the origin moves with the season.",
+      origin: "Uganda · Rwenzori Mountains · natural process",
+    },
   ],
   pastries: [
-    { name: "Cardamom Bun", desc: "Baked in-house each morning.", price: 420 },
-    { name: "Vegan Banana Bread", desc: "Walnuts, no eggs, fully vegan.", price: 390 },
+    { name: "Cardamom Bun", desc: "Baked in-house each morning." },
+    { name: "Vegan Banana Bread", desc: "Walnuts, no eggs, fully vegan." },
   ],
 };
 
@@ -40,6 +54,10 @@ for (const path of ["dev.db", "prisma/dev.db"]) {
     for (const c of cats) {
       const row = db.prepare("SELECT id FROM MenuCategory WHERE slug = ?").get(c.slug);
       if (row) {
+        const oldItems = db.prepare("SELECT id FROM MenuItem WHERE categoryId = ?").all(row.id);
+        for (const item of oldItems) {
+          db.prepare("DELETE FROM Translation WHERE namespace LIKE ?").run(`menu.item.${item.id}.%`);
+        }
         db.prepare("DELETE FROM MenuItem WHERE categoryId = ?").run(row.id);
         db.prepare("DELETE FROM MenuCategory WHERE id = ?").run(row.id);
       }
@@ -55,9 +73,10 @@ for (const path of ["dev.db", "prisma/dev.db"]) {
           .prepare(
             "INSERT INTO MenuItem (categoryId, priceCents, sortOrder, available) VALUES (?, ?, ?, 1)",
           )
-          .run(info.lastInsertRowid, it.price, i++);
+          .run(info.lastInsertRowid, 0, i++);
         upTr.run(`menu.item.${itInfo.lastInsertRowid}.name`, it.name, now);
         upTr.run(`menu.item.${itInfo.lastInsertRowid}.description`, it.desc, now);
+        if (it.origin) upTr.run(`menu.item.${itInfo.lastInsertRowid}.origin`, it.origin, now);
       }
     }
   });

@@ -17,6 +17,7 @@ export type UndoPayload =
         available: boolean;
         nameEn: string;
         descriptionEn: string;
+        originEn: string;
       };
     }
   | {

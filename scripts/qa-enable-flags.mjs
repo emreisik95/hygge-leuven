@@ -8,6 +8,7 @@
 // Usage: node scripts/qa-enable-flags.mjs [on|off]
 import Database from "better-sqlite3";
 import { existsSync } from "node:fs";
+import { KEEP_OFF_KEYS, RETIRED_KEYS } from "./qa-flag-policy.mjs";
 
 const FLAG_KEYS = [
   "announcementBanner", "darkMode", "scrollProgress", "backToTop", "cookieConsent",
@@ -21,14 +22,6 @@ const FLAG_KEYS = [
   "hoursCountdown", "menuQuickNav", "allergenLegend", "menuFavorites", "printMenu",
   "groupBookingCta", "takeawayCta", "feedbackPrompt", "takeawayCup",
 ];
-
-// Flags whose features have been removed from the codebase; rows are deleted so
-// stale keys don't linger in the admin-facing table.
-const RETIRED_KEYS = ["weatherGreeting", "weatherRecommend", "openingTimeline"];
-
-// Owner preference (2026-07-10): no "kind words" sections on the site — keep the
-// testimonials and press-mentions panes off even during QA sweeps.
-const KEEP_OFF_KEYS = ["testimonials", "pressMentions"];
 
 const enabled = (process.argv[2] ?? "on") === "off" ? 0 : 1;
 const now = new Date().toISOString();
