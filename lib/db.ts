@@ -1,5 +1,14 @@
 import { PrismaClient, Locale } from "@prisma/client";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import {
+  buildMenuItemView,
+  categoryTranslationNamespace,
+  itemTranslationNamespaces,
+  pickMenuTranslation,
+  type MenuItemView,
+} from "@/lib/menu-translations";
+
+export type { MenuItemView } from "@/lib/menu-translations";
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
@@ -320,18 +329,6 @@ export async function getMenu() {
   });
 }
 
-export type MenuItemView = {
-  id: number;
-  priceCents: number;
-  available: boolean;
-  sortOrder: number;
-  photoId: number | null;
-  photoPath: string | null;
-  photoAlt: string;
-  name: string;
-  description: string;
-};
-
 export type MenuCategoryView = {
   id: number;
   slug: string;
@@ -339,22 +336,6 @@ export type MenuCategoryView = {
   label: string;
   items: MenuItemView[];
 };
-
-function pickTranslation(
-  rows: { namespace: string; locale: Locale; value: string }[],
-  namespace: string,
-  locale: Locale,
-  fallback: string,
-): string {
-  let primary: string | undefined;
-  let en: string | undefined;
-  for (const r of rows) {
-    if (r.namespace !== namespace) continue;
-    if (r.locale === locale) primary = r.value;
-    else if (r.locale === DEFAULT_LOCALE) en = r.value;
-  }
-  return primary ?? en ?? fallback;
-}
 
 // titleCase: cheap fallback when no EN translation exists for a category slug.
 function titleCase(slug: string): string {
@@ -371,9 +352,9 @@ export async function getMenuForLocale(locale: Locale): Promise<MenuCategoryView
   const namespaces: string[] = [];
   const photoIds: number[] = [];
   for (const c of categories) {
-    namespaces.push(`menu.category.${c.slug}`);
+    namespaces.push(categoryTranslationNamespace(c.slug));
     for (const it of c.items) {
-      namespaces.push(`menu.item.${it.id}.name`, `menu.item.${it.id}.description`);
+      namespaces.push(...itemTranslationNamespaces(it.id));
       if (it.photoId) photoIds.push(it.photoId);
     }
   }
@@ -396,32 +377,12 @@ export async function getMenuForLocale(locale: Locale): Promise<MenuCategoryView
     id: c.id,
     slug: c.slug,
     sortOrder: c.sortOrder,
-    label: pickTranslation(rows, `menu.category.${c.slug}`, locale, titleCase(c.slug)),
+    label: pickMenuTranslation(rows, categoryTranslationNamespace(c.slug), locale, titleCase(c.slug)),
     items: c.items.map((it) => {
       const photo = it.photoId ? photoById.get(it.photoId) ?? null : null;
-      return {
-        id: it.id,
-        priceCents: it.priceCents,
-        available: it.available,
-        sortOrder: it.sortOrder,
-        photoId: it.photoId,
-        photoPath: photo?.path ?? null,
-        photoAlt: photo?.alt ?? "",
-        name: pickTranslation(rows, `menu.item.${it.id}.name`, locale, ""),
-        description: pickTranslation(rows, `menu.item.${it.id}.description`, locale, ""),
-      };
+      return buildMenuItemView({ item: it, photo, rows, locale });
     }),
   }));
-}
-
-export function formatPrice(cents: number, locale: Locale = DEFAULT_LOCALE): string {
-  // Café in Leuven → euros. Use Intl with EU locale for consistent decimal style.
-  const localeTag = locale === "EN" ? "en-IE" : locale === "FR" ? "fr-BE" : "nl-BE";
-  return new Intl.NumberFormat(localeTag, {
-    style: "currency",
-    currency: "EUR",
-    minimumFractionDigits: 2,
-  }).format(cents / 100);
 }
 
 type HoursRow = { dayOfWeek: number; opensAt: string | null; closesAt: string | null };
@@ -460,7 +421,7 @@ export async function getTranslation(
       locale: locale === DEFAULT_LOCALE ? DEFAULT_LOCALE : { in: [locale, DEFAULT_LOCALE] },
     },
   });
-  return pickTranslation(rows, namespace, locale, fallback);
+  return pickMenuTranslation(rows, namespace, locale, fallback);
 }
 
 export async function setTranslation(namespace: string, locale: Locale, value: string) {

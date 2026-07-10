@@ -1,5 +1,4 @@
 import type { SiteContent, MenuCategoryView } from "@/lib/db";
-import { formatPrice } from "@/lib/db";
 import type { Locale } from "@prisma/client";
 import type { LocaleCode } from "@/lib/locale";
 import type { IsOpenResult, OpeningHoursRow, StatusTranslationKey } from "@/lib/hours";
@@ -571,9 +570,7 @@ export function Landing({
                               />
                             ) : null}
                           </span>
-                          <span className="menu-price">
-                            {formatPrice(it.priceCents, prismaLocale)}
-                          </span>
+                          {it.origin ? <p className="menu-item-origin">{it.origin}</p> : null}
                           {it.description ? <p className="menu-item-desc">{it.description}</p> : null}
                         </li>
                       ))}

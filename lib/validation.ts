@@ -101,15 +101,6 @@ export function validateHoursRange(opens: string, closes: string): string | null
   return null;
 }
 
-export function validatePriceRaw(raw: string): { cents: number } | { error: string } {
-  if (!raw.trim()) return { error: "Required" };
-  const cleaned = raw.replace(/[^\d.,-]/g, "").replace(",", ".");
-  if (!cleaned) return { error: "Invalid price" };
-  const n = parseFloat(cleaned);
-  if (!Number.isFinite(n) || n < 0) return { error: "Must be a positive number" };
-  return { cents: Math.round(n * 100) };
-}
-
 const ALLOWED_IMAGE_MIMES = new Set([
   "image/png",
   "image/jpeg",

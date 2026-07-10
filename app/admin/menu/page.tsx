@@ -1,4 +1,4 @@
-import { getMenuForLocale, formatPrice } from "@/lib/db";
+import { getMenuForLocale } from "@/lib/db";
 import {
   createCategory,
   createItem,
@@ -103,9 +103,6 @@ export default async function AdminMenuPage({
                               <span className="menu-item-name">
                                 {it.name || <em className="muted">(no name)</em>}
                               </span>
-                              <span className="menu-item-price">
-                                {formatPrice(it.priceCents)}
-                              </span>
                             </summary>
 
                             <div className="menu-item-fields">
@@ -124,6 +121,20 @@ export default async function AdminMenuPage({
                                 </span>
                               </div>
                               <div className="field">
+                                <label htmlFor={`origin-${it.id}`}>Origin / bean rotation (EN, optional)</label>
+                                <input
+                                  id={`origin-${it.id}`}
+                                  type="text"
+                                  name="originEn"
+                                  defaultValue={it.origin}
+                                  placeholder="Uganda · Rwenzori Mountains · natural process"
+                                />
+                                <span className="hint">
+                                  Use a verified country / region / process. NL/FR translations live under
+                                  {" "}<code>menu.item.{it.id}.origin</code>.
+                                </span>
+                              </div>
+                              <div className="field">
                                 <label htmlFor={`desc-${it.id}`}>Description (EN, optional)</label>
                                 <textarea
                                   id={`desc-${it.id}`}
@@ -132,36 +143,14 @@ export default async function AdminMenuPage({
                                   rows={2}
                                 />
                               </div>
-                              <div className="field-row">
-                                <div className="field">
-                                  <label htmlFor={`price-${it.id}`}>Price (EUR)</label>
-                                  <input
-                                    id={`price-${it.id}`}
-                                    type="text"
-                                    name="price"
-                                    inputMode="decimal"
-                                    defaultValue={(it.priceCents / 100).toFixed(2)}
-                                    aria-describedby={`price-${it.id}-hint`}
-                                    aria-invalid={errors[`item-${it.id}-price`] ? true : undefined}
-                                  />
-                                  <span id={`price-${it.id}-hint`} className="hint">
-                                    Accepts &quot;3.50&quot;, &quot;3,50&quot;, or &quot;€3.50&quot;.
-                                  </span>
-                                  {errors[`item-${it.id}-price`] ? (
-                                    <p className="field-error" role="alert">
-                                      {errors[`item-${it.id}-price`]}
-                                    </p>
-                                  ) : null}
-                                </div>
-                                <div className="field">
-                                  <label htmlFor={`sort-${it.id}`}>Sort order</label>
-                                  <input
-                                    id={`sort-${it.id}`}
-                                    type="number"
-                                    name="sortOrder"
-                                    defaultValue={it.sortOrder}
-                                  />
-                                </div>
+                              <div className="field">
+                                <label htmlFor={`sort-${it.id}`}>Sort order</label>
+                                <input
+                                  id={`sort-${it.id}`}
+                                  type="number"
+                                  name="sortOrder"
+                                  defaultValue={it.sortOrder}
+                                />
                               </div>
                               <div className="checkbox-row">
                                 <input
@@ -210,7 +199,7 @@ export default async function AdminMenuPage({
                 />
               )}
 
-              <details className="add-item-wrap" open={!!errors[`newItem-${cat.id}-nameEn`] || !!errors[`newItem-${cat.id}-price`]}>
+              <details className="add-item-wrap" open={!!errors[`newItem-${cat.id}-nameEn`]}>
                 <summary className="btn-secondary-inline">+ Add item to {cat.label}</summary>
                 <form action={createItem} className="add-item-form">
                   <input type="hidden" name="categoryId" value={cat.id} />
@@ -228,23 +217,17 @@ export default async function AdminMenuPage({
                     ) : null}
                   </div>
                   <div className="field">
-                    <label htmlFor={`new-desc-${cat.id}`}>Description (EN, optional)</label>
-                    <textarea id={`new-desc-${cat.id}`} name="descriptionEn" rows={2} />
+                    <label htmlFor={`new-origin-${cat.id}`}>Origin / bean rotation (EN, optional)</label>
+                    <input
+                      id={`new-origin-${cat.id}`}
+                      type="text"
+                      name="originEn"
+                      placeholder="Uganda · Rwenzori Mountains · natural process"
+                    />
                   </div>
                   <div className="field">
-                    <label htmlFor={`new-price-${cat.id}`}>Price (EUR)</label>
-                    <input
-                      id={`new-price-${cat.id}`}
-                      type="text"
-                      name="price"
-                      inputMode="decimal"
-                      placeholder="3.50"
-                      required
-                      aria-invalid={errors[`newItem-${cat.id}-price`] ? true : undefined}
-                    />
-                    {errors[`newItem-${cat.id}-price`] ? (
-                      <p className="field-error" role="alert">{errors[`newItem-${cat.id}-price`]}</p>
-                    ) : null}
+                    <label htmlFor={`new-desc-${cat.id}`}>Description (EN, optional)</label>
+                    <textarea id={`new-desc-${cat.id}`} name="descriptionEn" rows={2} />
                   </div>
                   <SubmitButton style={{ width: "auto" }} pendingLabel="Adding…">
                     Add item
