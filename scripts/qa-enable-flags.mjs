@@ -20,7 +20,7 @@ const FLAG_KEYS = [
   "whatsappCta", "galleryGrid", "aboutStory",
   "coffeeOfWeek", "drinkFinder", "valuesStrip", "neighbourhoodGuide",
   "hoursCountdown", "menuQuickNav", "allergenLegend", "menuFavorites", "printMenu",
-  "groupBookingCta", "takeawayCta", "feedbackPrompt", "takeawayCup",
+  "groupBookingCta", "takeawayCta", "feedbackPrompt", "takeawayCup", "heroArt",
 ];
 
 const enabled = (process.argv[2] ?? "on") === "off" ? 0 : 1;

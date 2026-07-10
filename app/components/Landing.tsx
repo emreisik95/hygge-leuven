@@ -16,6 +16,7 @@ import { dietaryTags } from "@/lib/dietary";
 import { FEATURE_LABELS } from "@/lib/feature-labels";
 import { GlobalFeatures } from "./features/GlobalFeatures";
 import { TakeawayCup } from "./features/TakeawayCup";
+import { HeroArt } from "./features/HeroArt";
 import { LiveClock } from "./features/LiveClock";
 import { ShareButton } from "./features/ShareButton";
 import { LoyaltyCard } from "./features/LoyaltyCard";
@@ -286,6 +287,7 @@ export function Landing({
         {flags.takeawayCup ? (
           <TakeawayCup cupSrc={cupSrc} stickerSrc={stickerSrc} label={L.takeawayCup.label} />
         ) : null}
+        {flags.heroArt ? <HeroArt label={L.heroArt.label} /> : null}
         <div className="hero">
           <div className="card">
             <h1 className="brand">{c.brandName}</h1>

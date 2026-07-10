@@ -55,6 +55,7 @@ export const FLAG_KEYS = [
   "takeawayCta",
   "feedbackPrompt",
   "takeawayCup",
+  "heroArt",
 ] as const;
 
 export type FlagKey = (typeof FLAG_KEYS)[number];
@@ -396,6 +397,14 @@ export const FLAG_REGISTRY: FlagMeta[] = [
     label: "Takeaway cup badge",
     description:
       "An illustrated takeaway cup at the top of the hero wearing the café's cup sticker (drop the artwork in public/assets/sticker.png).",
+    group: "Chrome",
+    default: false,
+  },
+  {
+    key: "heroArt",
+    label: "Interior illustration",
+    description:
+      "The café-corner illustration from our sticker, shown beside the hero wordmark on wide screens.",
     group: "Chrome",
     default: false,
   },

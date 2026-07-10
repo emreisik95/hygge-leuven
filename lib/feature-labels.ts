@@ -130,6 +130,7 @@ export const FEATURE_LABELS = {
   groupBooking: { label: "Group booking", subject: "Group booking enquiry" },
   takeaway: { label: "Order takeaway", subject: "Takeaway order" },
   takeawayCup: { label: "Our takeaway cup, wearing its sticker" },
+  heroArt: { label: "A cosy corner of the café, illustrated" },
   feedback: {
     heading: "How was your visit?",
     body: "We read every note. Tell us what made your morning — or what we could do better.",

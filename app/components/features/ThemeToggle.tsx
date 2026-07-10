@@ -5,13 +5,13 @@ import { useEffect, useState } from "react";
 const KEY = "hygge-theme";
 type Theme = "dark" | "light";
 
-// Floating dark/light switch. The page is dark by default; choosing "light"
-// adds data-theme="light" on <html>, which globals.css overrides read.
+// Floating dark/light switch. The page is beige/light by default; choosing
+// "dark" adds data-theme="dark" on <html>, which globals.css overrides read.
 export function ThemeToggle({ lightLabel, darkLabel }: { lightLabel: string; darkLabel: string }) {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
-    let initial: Theme = "dark";
+    let initial: Theme = "light";
     try {
       const saved = localStorage.getItem(KEY);
       if (saved === "light" || saved === "dark") initial = saved;
