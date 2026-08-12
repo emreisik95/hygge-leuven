@@ -10,7 +10,9 @@
   --rule: rgba(58, 42, 31, 0.28);
   --rule-strong: rgba(58, 42, 31, 0.48);
   --pill-bg: rgba(58, 42, 31, 0.08);
-  --instagram: #9a3e22;
+  --seasonal-accent: #9a3e22;
+  --instagram: var(--seasonal-accent);
+  --on-accent: #fff8eb;
 }
 :root[data-theme="dark"] {
   --tan: #d7c5ac;
@@ -473,7 +475,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 .btn-primary {
   background: var(--instagram);
-  color: #fff8eb;
+  color: var(--on-accent);
 }
 
 @media (min-width: 720px) {
@@ -2299,7 +2301,7 @@ textarea[aria-invalid="true"] {
   gap: 12px;
   padding: 10px 16px;
   background: var(--instagram);
-  color: #fff;
+  color: var(--on-accent);
   font-size: 13px;
   line-height: 1.4;
 }
@@ -2308,7 +2310,7 @@ textarea[aria-invalid="true"] {
   flex: 0 0 auto;
   width: 32px; height: 32px;
   display: inline-flex; align-items: center; justify-content: center;
-  background: transparent; border: 0; color: #fff;
+  background: transparent; border: 0; color: var(--on-accent);
   font-size: 22px; line-height: 1; cursor: pointer; border-radius: 6px;
 }
 .ann-banner-close:hover { background: rgba(255, 255, 255, 0.18); }
@@ -2356,7 +2358,7 @@ textarea[aria-invalid="true"] {
 .fab-install {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 10px 16px; min-height: 44px;
-  background: var(--instagram); color: #fff;
+  background: var(--instagram); color: var(--on-accent);
   border: 0; border-radius: 24px;
   font-size: 13px; font-weight: 600; cursor: pointer;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
@@ -2751,15 +2753,47 @@ details[open] .faq-q::after { content: "–"; }
   border-radius: 50%;
   transition: left 0.18s ease;
 }
-.a11y-tb-switch.is-on .a11y-tb-knob { left: 21px; }
+.a11y-tb-switch.is-on .a11y-tb-knob {
+  left: 21px;
+  background: var(--on-accent);
+}
 
-/* High-contrast mode: firm up rules and text for visitors who opt in. */
-html[data-contrast="high"] {
-  --rule: rgba(244, 234, 216, 0.7);
-  --rule-strong: rgba(244, 234, 216, 0.92);
-  --tan: #f4ead8;
+/* High-contrast mode: keep the café palette but collapse every foreground,
+   rule and accent onto the theme's strongest ink/background pair. Because
+   these values reference --ink/--bg instead of fixed cream colours, the same
+   rule works in both the beige default and the dark theme. */
+:root[data-contrast="high"] {
+  --tan: var(--ink);
+  --rule: var(--ink);
+  --rule-strong: var(--ink);
+  --instagram: var(--ink);
+  --on-accent: var(--bg);
 }
 html[data-contrast="high"] body { color: var(--ink); }
+
+/* Let Windows/UA forced-colors choose the palette. These targeted system
+   colours only restore visuals whose meaning otherwise depends on a CSS mask,
+   fill or background that the browser removes at paint time. */
+@media (forced-colors: active) {
+  .people { background-color: CanvasText; }
+
+  .btn-primary {
+    border-width: 2px;
+    border-style: solid;
+    border-color: LinkText;
+  }
+
+  .fab-install {
+    border-width: 2px;
+    border-style: solid;
+    border-color: ButtonText;
+  }
+
+  .scroll-progress-bar,
+  .section-dot.is-active .section-dot-mark {
+    background: Highlight;
+  }
+}
 
 /* Visitor-requested reduced motion. Mirrors the site's own
    @media (prefers-reduced-motion: reduce) kills so the toggle genuinely stops
