@@ -54,6 +54,12 @@ export const FEATURE_LABELS = {
   galleryHeading: "a look inside",
   pressMentionsHeading: "kind words from around town",
   aboutStoryHeading: "A little about us",
+  contactSection: {
+    heading: "Contact us",
+    intro: "Questions, collaborations, or just want to say hello? Drop us a line — we’d love to hear from you.",
+    email: "Email us",
+    instagram: "Instagram",
+  },
   coffeeOfWeekHeading: "this week's bean",
   drinkFinderHeading: "find your drink",
   valuesHeading: "what we care about",

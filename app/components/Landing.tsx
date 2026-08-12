@@ -29,6 +29,7 @@ import { EventsList } from "./features/EventsList";
 import { GalleryGrid } from "./features/GalleryGrid";
 import { PressMentions } from "./features/PressMentions";
 import { AboutStory } from "./features/AboutStory";
+import { ContactSection } from "./features/ContactSection";
 import { CoffeeOfWeek } from "./features/CoffeeOfWeek";
 import { DrinkFinder } from "./features/DrinkFinder";
 import { ValuesStrip } from "./features/ValuesStrip";
@@ -612,6 +613,17 @@ export function Landing({
           </div>
         </section>
       ) : null}
+
+      <ContactSection
+        heading={L.contactSection.heading}
+        intro={L.contactSection.intro}
+        emailLabel={L.contactSection.email}
+        instagramLabel={L.contactSection.instagram}
+        email={c.contactEmail}
+        instagramUrl={c.instagramUrl}
+        instagramHandle={c.instagramHandle}
+        newTabLabel={c.newTabLabel}
+      />
 
       <section className="pane pane-map" id="map" aria-labelledby="map-heading">
         <a href="#landing" className="skip-link">{c.skipSectionLabel}</a>
