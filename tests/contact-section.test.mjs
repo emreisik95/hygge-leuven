@@ -83,3 +83,22 @@ test("includes Contact Us in both navigation surfaces", async () => {
     /commandPalette:[\s\S]*?sections:\s*\{[\s\S]*?contact:\s*"Contact us"/,
   );
 });
+
+test("lays out Contact Us responsively without email overflow", async () => {
+  const css = await readFile("app/globals.css", "utf8");
+  const marker = "/* ───── contact pane ───── */";
+  assert.ok(css.includes(marker), "contact CSS marker is missing");
+  const rules = css.slice(css.indexOf(marker), css.indexOf("/* ───── map pane ───── */"));
+
+  assert.match(rules, /\.pane-contact\s*\{[^}]*background:\s*var\(--bg\)/s);
+  assert.match(rules, /\.contact-wrap\s*\{[^}]*grid-template-columns:\s*1fr/s);
+  assert.match(
+    rules,
+    /\.contact-email-address\s*\{[^}]*overflow-wrap:\s*anywhere/s,
+  );
+  assert.match(rules, /min-height:\s*44px/);
+  assert.match(
+    rules,
+    /@media\s*\(min-width:\s*760px\)[\s\S]*?\.contact-wrap\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*0\.9fr\)\s*minmax\(0,\s*1\.1fr\)/s,
+  );
+});

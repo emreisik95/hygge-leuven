@@ -701,6 +701,101 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   text-wrap: balance;
 }
 
+/* ───── contact pane ───── */
+.pane-contact {
+  background: var(--bg);
+  justify-content: center;
+  padding: clamp(64px, 10vw, 120px) 24px;
+  border-block: 1px solid var(--rule);
+  scroll-margin-block-start: var(--ann-h);
+}
+.contact-wrap {
+  width: min(1120px, 92vw);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(36px, 7vw, 88px);
+  align-items: end;
+}
+.contact-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 48ch;
+}
+.contact-heading {
+  margin: 0;
+  font-family: var(--font-serif), "Didot LT Pro", Didot, serif;
+  font-size: clamp(44px, 9vw, 80px);
+  font-weight: 700;
+  line-height: 0.96;
+  letter-spacing: -0.03em;
+  color: var(--tan);
+  text-wrap: balance;
+}
+.contact-intro {
+  margin: 0;
+  font-family: var(--font-editorial), serif;
+  font-size: clamp(18px, 2.8vw, 23px);
+  line-height: 1.55;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.contact-channels {
+  min-width: 0;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule-strong);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+}
+.contact-email {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  color: var(--ink);
+}
+.contact-action-label {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--tan);
+}
+.contact-email-address {
+  font-family: var(--font-serif), "Didot LT Pro", Didot, serif;
+  font-size: clamp(24px, 5.6vw, 48px);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+.contact-email:hover .contact-email-address,
+.contact-email:focus-visible .contact-email-address {
+  color: var(--tan);
+}
+.contact-instagram {
+  width: auto;
+  min-height: 44px;
+}
+@media (min-width: 760px) {
+  .contact-wrap {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+  .contact-channels {
+    padding-top: 0;
+    padding-left: clamp(28px, 5vw, 72px);
+    border-top: 0;
+    border-left: 1px solid var(--rule-strong);
+  }
+}
+
 /* ───── map pane ───── */
 .pane-map {
   position: relative;
