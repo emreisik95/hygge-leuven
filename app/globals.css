@@ -3049,17 +3049,19 @@ html[data-reduce-motion="on"] .loyalty-stamp { transition: none; }
 
 /* ───── about / our-story pane ───── */
 .pane-about {
-  background: linear-gradient(180deg, rgba(26, 20, 16, 0.92) 0%, rgba(58, 42, 31, 0.9) 100%);
+  background: var(--bg);
   align-items: center;
-  justify-content: center;
-  padding: clamp(48px, 9vh, 96px) 24px max(40px, env(safe-area-inset-bottom));
+  justify-content: flex-start;
+  padding: clamp(56px, 9vw, 104px) 24px max(56px, env(safe-area-inset-bottom));
+  border-block: 1px solid var(--rule);
+  scroll-margin-block-start: var(--ann-h);
 }
 .about-wrap {
-  width: min(960px, 92vw);
+  width: min(1120px, 92vw);
   margin: 0 auto;
   display: grid;
-  gap: clamp(24px, 5vw, 48px);
-  align-items: center;
+  gap: clamp(28px, 6vw, 72px);
+  align-items: start;
 }
 .about-figure {
   margin: 0;
@@ -3068,42 +3070,61 @@ html[data-reduce-motion="on"] .loyalty-stamp { transition: none; }
 }
 .about-illu {
   width: 100%;
-  max-width: 340px;
+  max-width: 300px;
   height: auto;
   display: block;
+  opacity: 0.9;
+}
+:root[data-theme="dark"] .about-illu {
+  opacity: 0.96;
 }
 .about-prose {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  max-width: 56ch;
+  gap: clamp(20px, 3vw, 28px);
+  max-width: 62ch;
 }
 .about-heading {
   font-family: var(--font-serif), "Didot LT Pro", Didot, serif;
   font-weight: 700;
-  font-size: clamp(28px, 6vw, 44px);
-  line-height: 1.05;
-  letter-spacing: -0.01em;
+  font-size: clamp(36px, 7vw, 64px);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
   color: var(--tan);
-  margin: 0 0 4px;
+  margin: 0 0 clamp(4px, 1vw, 10px);
+  text-wrap: balance;
 }
 .about-body {
   font-family: var(--font-editorial), serif;
-  font-size: clamp(16px, 4.2vw, 19px);
-  line-height: 1.65;
+  font-size: clamp(16px, 2.2vw, 18px);
+  line-height: 1.72;
   color: var(--ink);
-  opacity: 0.92;
+  opacity: 0.94;
   margin: 0;
   text-wrap: pretty;
 }
+.about-body:first-of-type {
+  font-size: clamp(18px, 2.6vw, 22px);
+  line-height: 1.58;
+  color: var(--tan);
+  opacity: 1;
+}
 .about-prose .back-link {
   align-self: flex-start;
-  margin-top: 8px;
+  margin-top: 4px;
   padding-left: 0;
 }
 @media (min-width: 760px) {
   .about-wrap {
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    grid-template-columns: minmax(260px, 0.82fr) minmax(0, 1.18fr);
+  }
+  .about-figure {
+    position: sticky;
+    top: clamp(56px, 9vw, 104px);
+    justify-content: flex-end;
+  }
+  .about-illu {
+    max-width: 420px;
   }
 }
 /* duplicate-of-required-field placeholder; see cssAppend above */

@@ -7,8 +7,9 @@ test("keeps owner-retired editorial panes off during QA sweeps", () => {
   assert.deepEqual(KEEP_OFF_KEYS, [
     "testimonials",
     "pressMentions",
-    "aboutStory",
     "valuesStrip",
+    "takeawayCup",
+    "heroArt",
   ]);
 });
 

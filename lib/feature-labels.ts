@@ -53,7 +53,7 @@ export const FEATURE_LABELS = {
   spotifyHeading: "our playlist",
   galleryHeading: "a look inside",
   pressMentionsHeading: "kind words from around town",
-  aboutStoryHeading: "our story",
+  aboutStoryHeading: "A little about us",
   coffeeOfWeekHeading: "this week's bean",
   drinkFinderHeading: "find your drink",
   valuesHeading: "what we care about",
@@ -71,6 +71,7 @@ export const FEATURE_LABELS = {
   sectionNav: {
     landing: "Welcome",
     vision: "Our story",
+    about: "About us",
     insta: "Gallery",
     testimonials: "Kind words",
     events: "What's on",
@@ -100,6 +101,7 @@ export const FEATURE_LABELS = {
     sections: {
       landing: "Top of page",
       vision: "Our story",
+      about: "About us",
       insta: "Instagram",
       testimonials: "Kind words",
       events: "What's on",

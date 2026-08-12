@@ -10,6 +10,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 const SECTION_IDS = [
   "landing",
   "vision",
+  "about",
   "insta",
   "testimonials",
   "events",

@@ -322,7 +322,7 @@ export function Landing({
                 {c.inviteSub ? <p className="invite-sub">{c.inviteSub}</p> : null}
               </div>
             ) : null}
-            <a href="#insta" className="scroll-cue" aria-label={c.seeMoreLabel}>
+            <a href={flags.aboutStory ? "#about" : "#insta"} className="scroll-cue" aria-label={c.seeMoreLabel}>
               <ArrowDown />
             </a>
           </div>
@@ -406,6 +406,8 @@ export function Landing({
         </section>
       ) : null}
 
+      {flags.aboutStory ? <AboutStory heading={L.aboutStoryHeading} backToTopLabel={c.backToTopLabel} /> : null}
+
       <section className="pane pane-insta" id="insta" aria-labelledby="insta-heading">
         <div className="insta-wrap">
           <header className="insta-head">
@@ -452,7 +454,6 @@ export function Landing({
       {flags.eventsList ? <EventsList heading={L.eventsHeading} events={events} /> : null}
       {flags.faqSection ? <FaqSection heading={L.faqHeading} items={faq} /> : null}
 
-      {flags.aboutStory ? <AboutStory heading={L.aboutStoryHeading} backToTopLabel={c.backToTopLabel} /> : null}
       {flags.valuesStrip ? <ValuesStrip heading={L.valuesHeading} backToTopLabel={c.backToTopLabel} /> : null}
       {flags.galleryGrid ? <GalleryGrid heading={L.galleryHeading} backToTopLabel={c.backToTopLabel} skipSectionLabel={c.skipSectionLabel} /> : null}
       {flags.coffeeOfWeek ? <CoffeeOfWeek heading={L.coffeeOfWeekHeading} backToTopLabel={c.backToTopLabel} /> : null}
