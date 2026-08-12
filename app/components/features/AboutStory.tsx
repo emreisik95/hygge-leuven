@@ -28,12 +28,13 @@ export function AboutStory({
           <img
             src="/assets/illu-hygge-still-line.png"
             alt="A still life of a steaming cup, a candle and a pastry on a quiet café table."
-            className="about-illu"
+            className="sr-only"
             loading="lazy"
             decoding="async"
             width={520}
             height={520}
           />
+          <span className="about-illu" aria-hidden="true" />
         </figure>
         <div className="about-prose">
           <h2 className="about-heading" id="about-heading">{heading}</h2>

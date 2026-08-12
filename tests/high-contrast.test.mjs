@@ -123,11 +123,51 @@ function forcedColorsDeclarations(selector) {
   return declarations;
 }
 
+function declarationsFor(selector) {
+  const declarations = new Map();
+  stylesheet.walkRules((rule) => {
+    if (!rule.selectors?.includes(selector)) return;
+    rule.walkDecls((declaration) => {
+      declarations.set(declaration.prop, declaration.value);
+    });
+  });
+  return declarations;
+}
+
+test("the About illustration keeps non-text contrast in both themes", () => {
+  const illustration = declarationsFor(".about-illu");
+
+  assert.equal(illustration.get("background-color"), "var(--tan)");
+  assert.match(
+    illustration.get("mask") ?? "",
+    /url\(\/assets\/illu-hygge-still-line\.png\)/,
+    "the transparent illustration must be painted with a theme-aware colour",
+  );
+  assert.equal(
+    illustration.has("opacity"),
+    false,
+    "extra element opacity must not weaken the already anti-aliased line art",
+  );
+
+  for (const theme of ["light", "dark"]) {
+    const palette = paletteFor({ theme, contrast: false });
+    assert.ok(
+      contrastRatio(palette["--tan"], palette["--bg"]) >= 7,
+      `${theme} About line art must exceed 7:1 at its solid strokes`,
+    );
+  }
+});
+
 test("native forced-colors keeps masked art and fill-only controls visible", () => {
   assert.equal(
     forcedColorsDeclarations(".people").get("background-color"),
     "CanvasText",
     "the masked hero illustration must use the visitor's system text colour",
+  );
+  assert.equal(
+    forcedColorsDeclarations(".about-illu").get("background-color"),
+    "CanvasText",
+    "the masked About illustration must use the visitor's system text colour",
   );
   assert.equal(
     forcedColorsDeclarations(".btn-primary").get("border-color"),

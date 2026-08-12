@@ -2775,7 +2775,8 @@ html[data-contrast="high"] body { color: var(--ink); }
    colours only restore visuals whose meaning otherwise depends on a CSS mask,
    fill or background that the browser removes at paint time. */
 @media (forced-colors: active) {
-  .people { background-color: CanvasText; }
+  .people,
+  .about-illu { background-color: CanvasText; }
 
   .btn-primary {
     border-width: 2px;
@@ -3200,12 +3201,12 @@ html[data-reduce-motion="on"] .loyalty-stamp { transition: none; }
 .about-illu {
   width: 100%;
   max-width: 300px;
+  aspect-ratio: 1;
   height: auto;
   display: block;
-  opacity: 0.9;
-}
-:root[data-theme="dark"] .about-illu {
-  opacity: 0.96;
+  background-color: var(--tan);
+  -webkit-mask: url(/assets/illu-hygge-still-line.png) center / contain no-repeat;
+  mask: url(/assets/illu-hygge-still-line.png) center / contain no-repeat;
 }
 .about-prose {
   display: flex;
