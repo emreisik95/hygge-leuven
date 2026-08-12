@@ -84,6 +84,7 @@ export const FEATURE_LABELS = {
     faq: "Good to know",
     more: "More",
     menu: "Menu",
+    contact: "Contact us",
     map: "Find us",
   },
   a11y: {
@@ -114,6 +115,7 @@ export const FEATURE_LABELS = {
       faq: "Good to know",
       more: "More",
       menu: "Menu",
+      contact: "Contact us",
       map: "Find us",
     } as Record<string, string>,
   },

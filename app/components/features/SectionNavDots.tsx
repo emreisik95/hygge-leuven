@@ -21,6 +21,7 @@ const SECTION_IDS = [
   "faq",
   "more",
   "menu",
+  "contact",
   "map",
 ] as const;
 

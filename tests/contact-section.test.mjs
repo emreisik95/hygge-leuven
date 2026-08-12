@@ -66,3 +66,20 @@ test("keeps email and Instagram independently optional", async () => {
   assert.match(component, /\{hasEmail \? \(/);
   assert.match(component, /\{hasInstagram \? \(/);
 });
+
+test("includes Contact Us in both navigation surfaces", async () => {
+  const [dots, palette, labels] = await Promise.all([
+    readFile("app/components/features/SectionNavDots.tsx", "utf8"),
+    readFile("app/components/features/CommandPalette.tsx", "utf8"),
+    readFile("lib/feature-labels.ts", "utf8"),
+  ]);
+
+  const orderedIds = /"menu",\s*"contact",\s*"map"/s;
+  assert.match(dots, orderedIds);
+  assert.match(palette, orderedIds);
+  assert.match(labels, /sectionNav:\s*\{[\s\S]*?contact:\s*"Contact us"/);
+  assert.match(
+    labels,
+    /commandPalette:[\s\S]*?sections:\s*\{[\s\S]*?contact:\s*"Contact us"/,
+  );
+});
