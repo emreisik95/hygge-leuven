@@ -6,6 +6,9 @@ import { SubmitButton } from "../ui/SubmitButton";
 import { Flash } from "../ui/Flash";
 import { FeaturePreview } from "./FeaturePreview";
 import { FeatureSettingsEditor } from "./FeatureSettingsEditor";
+import { AdminActionDock } from "../components/AdminActionDock";
+import { AdminPageIntro } from "../components/AdminPageIntro";
+import { AdminSectionNav } from "../components/AdminSectionNav";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Features — admin — hygge" };
@@ -52,6 +55,15 @@ export default async function FeaturesPage({
 
   return (
     <>
+      <AdminPageIntro
+        ticket="09 / Feature board"
+        title="Features"
+        description="Choose what guests can see, then edit the copy behind each optional experience."
+        icon="/admin/icons/features.png"
+        breadcrumb={{ href: "/admin/more", label: "More" }}
+        status={<span className="admin-ticket-status" data-tone="live">{enabledCount} of {FLAG_REGISTRY.length} enabled</span>}
+      />
+
       {params.saved ? <Flash kind="ok">Features updated.</Flash> : null}
       {params.error === "invalid" ? (
         <Flash kind="err">Some settings were invalid (too long or malformed) — not saved.</Flash>
@@ -60,12 +72,23 @@ export default async function FeaturesPage({
         <Flash kind="err">Could not read the list items — not saved.</Flash>
       ) : null}
 
-      <form action={updateFlags} aria-label="Feature flags">
-        <section className="section">
-          <h2>Features</h2>
+      <AdminSectionNav
+        items={[
+          ...GROUP_ORDER.map((group) => ({ href: `#features-${group.toLowerCase()}`, label: group })),
+          { href: "#feature-preview", label: "Preview" },
+          { href: "#feature-copy", label: "Content & copy" },
+        ]}
+        ariaLabel="Feature workspace"
+      />
+
+      <form action={updateFlags} aria-label="Feature flags" className="features-flag-form">
+        <section className="section features-board-intro">
+          <div>
+            <p className="admin-eyebrow">Visibility board</p>
+            <h2>Live feature switches</h2>
+          </div>
           <p className="hint">
-            Turn optional landing-page features on or off. Changes take effect immediately on
-            the live site once saved. {enabledCount} of {FLAG_REGISTRY.length} enabled.
+            Turn optional landing-page features on or off. Saved changes take effect immediately.
           </p>
         </section>
 
@@ -73,8 +96,11 @@ export default async function FeaturesPage({
           const items = byGroup.get(group);
           if (!items || items.length === 0) return null;
           return (
-            <section className="section" key={group}>
-              <h2>{group}</h2>
+            <section className="section feature-flag-group" id={`features-${group.toLowerCase()}`} key={group}>
+              <div className="feature-group-heading">
+                <h2>{group}</h2>
+                <span className="admin-ticket-status">{items.filter((meta) => flags[meta.key]).length} on</span>
+              </div>
               <p className="hint">{GROUP_BLURB[group]}</p>
               <div className="visibility-grid">
                 {items.map((meta) => (
@@ -92,22 +118,30 @@ export default async function FeaturesPage({
           );
         })}
 
-        <SubmitButton pendingLabel="Saving…">Save features</SubmitButton>
+        <AdminActionDock>
+          <p className="admin-action-dock-copy">Save all visibility switches together.</p>
+          <SubmitButton pendingLabel="Saving…">Save features</SubmitButton>
+        </AdminActionDock>
       </form>
 
-      <FeaturePreview />
+      <div id="feature-preview" className="feature-preview-anchor">
+        <FeaturePreview />
+      </div>
 
-      <h2 className="admin-page-heading" style={{ marginTop: 8 }}>content &amp; copy</h2>
-      <p className="hint" style={{ marginBottom: 16 }}>
-        Edit the text and content for each feature here — no need to leave the page. Saving a
-        feature updates the live site immediately (enable its toggle above to show it).
-      </p>
+      <section id="feature-copy" className="features-copy-intro">
+        <p className="admin-eyebrow">Words behind the switches</p>
+        <h2>Content &amp; copy</h2>
+        <p className="hint">
+          Edit each feature without leaving this page. Saving updates its content immediately;
+          use the switches above to decide whether visitors see it.
+        </p>
+      </section>
 
       {GROUP_ORDER.map((group) => {
         const groups = settingsByGroup.get(group);
         if (!groups || groups.length === 0) return null;
         return (
-          <section className="settings-group" key={`set-${group}`}>
+          <section className="settings-group" id={`feature-copy-${group.toLowerCase()}`} key={`set-${group}`}>
             <h3 className="settings-group-heading">{group}</h3>
             {groups.map((g) => (
               <FeatureSettingsEditor key={g.flag} group={g} />

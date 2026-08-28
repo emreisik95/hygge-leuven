@@ -2,6 +2,7 @@ import { listAdmins } from "@/lib/admin-users";
 import { addAdmin, removeAdmin } from "./actions";
 import { SubmitButton } from "../ui/SubmitButton";
 import { Flash } from "../ui/Flash";
+import { AdminPageIntro } from "../components/AdminPageIntro";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admins — admin — hygge" };
@@ -38,11 +39,14 @@ export default async function UsersPage({
 
   return (
     <>
-      <header className="admin-page-intro">
-        <p className="admin-eyebrow">Access</p>
-        <h1>Admins</h1>
-        <p>Manage the people who can publish changes to the site.</p>
-      </header>
+      <AdminPageIntro
+        ticket="10 / Counter keys"
+        title="Admins"
+        description="Manage the people who can publish changes to the site."
+        icon="/admin/icons/admins.png"
+        breadcrumb={{ href: "/admin/more", label: "More" }}
+        status={<span className="admin-ticket-status">{admins.length + 1} accounts</span>}
+      />
 
       {params.saved && SAVED[params.saved] ? (
         <Flash kind="ok">{SAVED[params.saved]}</Flash>
@@ -51,8 +55,14 @@ export default async function UsersPage({
         <Flash kind="err">{ERRORS[params.error]}</Flash>
       ) : null}
 
-      <section className="section">
-        <h2>Admins</h2>
+      <section className="section admin-member-section">
+        <div className="admin-member-heading">
+          <div>
+            <p className="admin-eyebrow">Current access</p>
+            <h2>Admin accounts</h2>
+          </div>
+          <span className="admin-ticket-status">Full access</span>
+        </div>
         <p className="hint">
           People who can sign in to this panel. Each has full access. The
           bootstrap admin (set via environment) always works and can’t be removed
@@ -60,7 +70,7 @@ export default async function UsersPage({
         </p>
 
         <ul className="admin-user-list" role="list">
-          <li className="admin-user-row admin-user-row-bootstrap">
+          <li className="admin-member-card">
             <div className="admin-user-main">
               <span className="admin-user-email">{BOOTSTRAP_EMAIL}</span>
               <span className="admin-user-name">Bootstrap admin</span>
@@ -69,7 +79,7 @@ export default async function UsersPage({
           </li>
 
           {admins.map((a) => (
-            <li className="admin-user-row" key={a.id}>
+            <li className="admin-member-card" key={a.id}>
               <div className="admin-user-main">
                 <span className="admin-user-email">{a.email}</span>
                 <span className="admin-user-name">
@@ -87,8 +97,9 @@ export default async function UsersPage({
         </ul>
       </section>
 
-      <section className="section">
-        <h3>Add an admin</h3>
+      <section className="section admin-add-member">
+        <p className="admin-eyebrow">New counter key</p>
+        <h2>Add an admin</h2>
         <p className="hint">
           They sign in with this email and password. Share the password with them
           over a secure channel — it’s stored only as a bcrypt hash and can’t be

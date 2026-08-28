@@ -11,6 +11,9 @@ import { decodeErrors } from "@/lib/validation";
 import { CountedTextarea } from "../components/CountedTextarea";
 import { SubmitButton } from "../ui/SubmitButton";
 import { Flash } from "../ui/Flash";
+import { AdminActionDock } from "../components/AdminActionDock";
+import { AdminPageIntro } from "../components/AdminPageIntro";
+import { AdminSectionNav } from "../components/AdminSectionNav";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Translations — hygge" };
@@ -23,6 +26,10 @@ type Group = {
 function humanizeField(field: string): string {
   const spaced = field.replace(/([a-z])([A-Z])/g, "$1 $2");
   return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+}
+
+function groupId(title: string): string {
+  return `translations-${title.toLowerCase().replace(/\s+/g, "-")}`;
 }
 
 async function buildExpectedGroups(): Promise<Group[]> {
@@ -89,19 +96,41 @@ export default async function TranslationsPage({
 
   return (
     <>
-      <header className="admin-page-intro">
-        <p className="admin-eyebrow">Languages</p>
-        <h1>Translations</h1>
-        <p>Edit English, Dutch, and French public copy in one place.</p>
-      </header>
+      <AdminPageIntro
+        ticket="08 / Three languages"
+        title="Translations"
+        description="Edit English, Dutch, and French public copy in one place."
+        icon="/admin/icons/translations.png"
+        breadcrumb={{ href: "/admin/more", label: "More" }}
+        status={<span className="admin-ticket-status">{allNamespaces.length} text fields</span>}
+      />
 
       {saved ? <Flash kind="ok">Saved.</Flash> : null}
       {Object.keys(errors).length > 0 ? (
         <Flash kind="err">Some fields need attention — see the highlighted rows.</Flash>
       ) : null}
 
-      <p className="hint" style={{ marginBottom: 16 }}>
-        Empty NL/FR fields fall back to EN. Clearing built-in English copy restores its original default.
+      <div className="tx-language-legend" aria-label="Translation languages">
+        {LOCALES.map((code) => (
+          <div key={code}>
+            <strong>{LOCALE_LABELS[code]}</strong>
+            <span>{LOCALE_NAMES[code]}</span>
+            <small>{code === "EN" ? "Live fallback" : "Falls back to English when empty"}</small>
+          </div>
+        ))}
+      </div>
+
+      <AdminSectionNav
+        items={groups.map((group) => ({
+          href: `#${groupId(group.title)}`,
+          label: group.title,
+          meta: String(group.namespaces.length),
+        }))}
+        ariaLabel="Translation groups"
+      />
+
+      <p className="hint tx-fallback-note">
+        Empty Dutch or French fields fall back to English. Clearing built-in English copy restores its original default.
       </p>
 
       {groups.map((group) => {
@@ -111,9 +140,16 @@ export default async function TranslationsPage({
             key={group.title}
             action={updateTranslations}
             aria-label={`${group.title} translations`}
-            className="section"
+            className="section tx-section"
+            id={groupId(group.title)}
           >
-            <h2>{group.title}</h2>
+            <div className="tx-section-heading">
+              <div>
+                <p className="admin-eyebrow">{group.namespaces.length} fields</p>
+                <h2>{group.title}</h2>
+              </div>
+              <span className="admin-ticket-status">EN · NL · FR</span>
+            </div>
             <input type="hidden" name="namespaces" value={groupNs} />
 
             <div className="tx-table" role="table" aria-label={`${group.title} table`}>
@@ -164,7 +200,10 @@ export default async function TranslationsPage({
               })}
             </div>
 
-            <SubmitButton pendingLabel="Saving…">Save {group.title}</SubmitButton>
+            <AdminActionDock label={`${group.title} actions`}>
+              <p className="admin-action-dock-copy">Only this translation group will be saved.</p>
+              <SubmitButton pendingLabel="Saving…">Save {group.title}</SubmitButton>
+            </AdminActionDock>
           </form>
         );
       })}

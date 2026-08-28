@@ -25,7 +25,7 @@ test("makes every language field visibly labelled and saveable on mobile", async
     read("app/admin/translations/actions.ts"),
   ]);
 
-  assert.match(page, /className="admin-page-intro"/);
+  assert.match(page, /<AdminPageIntro\b/);
   assert.match(page, /className="tx-locale-label"/);
   assert.match(page, /Save \{group\.title\}/);
   assert.match(css, /\.admin-shell \.tx-locale-label\s*\{/);

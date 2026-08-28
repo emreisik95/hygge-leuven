@@ -79,6 +79,34 @@ test("keeps Instagram setup truthful and progressively disclosed", async () => {
   assert.match(instagram, /account \? "ready" : "missing"/);
 });
 
+test("keeps translations editable while adding language and group wayfinding", async () => {
+  const translations = await read("app/admin/translations/page.tsx");
+  assert.match(translations, /<AdminPageIntro\b/);
+  assert.match(translations, /<AdminSectionNav\b/);
+  assert.match(translations, /className="tx-language-legend"/);
+  assert.match(translations, /<AdminActionDock\b/);
+  assert.match(translations, /Save \{group\.title\}/);
+  assert.match(translations, /code === "EN"/);
+});
+
+test("organises Features around enabled state, categories, preview, and copy", async () => {
+  const features = await read("app/admin/features/page.tsx");
+  assert.match(features, /<AdminPageIntro\b/);
+  assert.match(features, /<AdminSectionNav\b/);
+  assert.match(features, /<AdminActionDock\b/);
+  assert.match(features, /\{enabledCount\} of \{FLAG_REGISTRY\.length\}/);
+  assert.match(features, /id="feature-preview"/);
+  assert.match(features, /id="feature-copy"/);
+});
+
+test("separates current admins from the add-admin task", async () => {
+  const users = await read("app/admin/users/page.tsx");
+  assert.match(users, /<AdminPageIntro\b/);
+  assert.match(users, /className="admin-member-card"/);
+  assert.match(users, /className="section admin-add-member"/);
+  assert.match(users, /\{admins\.length \+ 1\}/);
+});
+
 test("renders audit history as responsive events rather than a desktop table", async () => {
   const audit = await read("app/admin/audit/page.tsx");
   assert.match(audit, /className="audit-event-list"/);
