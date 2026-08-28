@@ -3850,6 +3850,91 @@ html[data-reduce-motion="on"] .loyalty-stamp { transition: none; }
   align-items: center;
   gap: 12px;
 }
+
+/* Seasonal PDF menu — the document itself stays faithful to the café's A4
+   artwork while the surrounding controls remain normal, crawlable HTML. */
+.menu-document-section {
+  background: var(--bg);
+  padding: clamp(48px, 8vw, 88px) 18px max(48px, env(safe-area-inset-bottom));
+}
+.menu-document-wrap {
+  width: min(960px, 100%);
+  margin: 0 auto;
+}
+.menu-document-intro {
+  max-width: 52ch;
+  margin: 12px auto 0;
+  color: var(--ink);
+  line-height: 1.6;
+  text-wrap: balance;
+}
+.menu-document-frame {
+  width: min(760px, 100%);
+  aspect-ratio: 210 / 297;
+  margin: clamp(24px, 5vw, 44px) auto 0;
+  overflow: hidden;
+  border: 1px solid var(--rule-strong);
+  border-radius: 16px;
+  background: #ead0ad;
+  box-shadow: 0 20px 60px rgba(51, 36, 26, 0.18);
+}
+.menu-document-frame object {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.menu-document-fallback {
+  padding: 28px;
+  color: var(--ink);
+  line-height: 1.6;
+}
+.menu-document-fallback a { text-decoration: underline; }
+.menu-document-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+.menu-document-actions .back-link { flex-basis: 100%; text-align: center; }
+@media (max-width: 520px) {
+  .menu-document-frame { border-radius: 10px; }
+  .menu-document-actions .btn { width: 100%; }
+}
+
+/* Compact, visible weekly schedule inside the location card. */
+.weekly-hours {
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+.weekly-hours-heading {
+  margin: 0 0 10px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--tan);
+}
+.weekly-hours-list {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+.weekly-hours-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.weekly-hours-row dt { color: var(--ink); }
+.weekly-hours-row dd {
+  margin: 0;
+  color: var(--tan);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
 .print-menu-btn {
   cursor: pointer;
 }

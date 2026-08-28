@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { getPublishedContent, getOpeningHours, getPhotos, getMenuForLocale, getTranslation } from "@/lib/db";
+import { getPublishedContent, getOpeningHours, getPhotos, getTranslation } from "@/lib/db";
 import { ANNOUNCEMENT_NS, FEATURE_LABELS } from "@/lib/feature-labels";
 import { LOCALE_COOKIE, parseLocale, toPrismaLocale } from "@/lib/locale";
 import { getRecentPostsForRender } from "@/lib/instagram";
@@ -19,13 +19,12 @@ export default async function Home() {
   const store = await cookies();
   const locale = parseLocale(store.get(LOCALE_COOKIE)?.value);
   const prismaLocale = toPrismaLocale(locale);
-  const [content, seedPosts, hoursRows, statusTranslations, bgPhotos, menu, flags, announcement, featureSettings, stickerSrc] = await Promise.all([
+  const [content, seedPosts, hoursRows, statusTranslations, bgPhotos, flags, announcement, featureSettings, stickerSrc] = await Promise.all([
     getPublishedContent(prismaLocale),
     getRecentPostsForRender(9),
     getOpeningHours(),
     loadStatusTranslations(prismaLocale),
     getPhotos("background"),
-    getMenuForLocale(prismaLocale),
     loadFlags(),
     getTranslation(ANNOUNCEMENT_NS, prismaLocale, FEATURE_LABELS.announcement.message),
     resolveFeatureSettings(),
@@ -58,7 +57,7 @@ export default async function Home() {
     instagramUrl: content.instagramUrl,
     findUsUrl: content.findUsUrl,
     hours: hoursRows,
-    hasMenu: menu.some((cat) => cat.items.length > 0),
+    hasMenu: true,
     email: content.contactEmail || undefined,
     phone: content.contactPhone || undefined,
   });
@@ -77,7 +76,6 @@ export default async function Home() {
         now={now}
         statusTranslations={statusTranslations}
         bgPaths={bgPhotos.map((p) => p.path)}
-        menu={menu}
         locale={locale}
         prismaLocale={prismaLocale}
         beholdFeedId={process.env.BEHOLD_FEED_ID ?? ""}

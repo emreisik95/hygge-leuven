@@ -1,4 +1,4 @@
-import type { SiteContent, MenuCategoryView } from "@/lib/db";
+import type { SiteContent } from "@/lib/db";
 import type { Locale } from "@prisma/client";
 import type { LocaleCode } from "@/lib/locale";
 import type { IsOpenResult, OpeningHoursRow, StatusTranslationKey } from "@/lib/hours";
@@ -12,7 +12,6 @@ import { OsmMap } from "./OsmMap";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { BeholdWidget } from "./BeholdWidget";
 import type { Flags } from "@/lib/flags";
-import { dietaryTags } from "@/lib/dietary";
 import { FEATURE_LABELS } from "@/lib/feature-labels";
 import { GlobalFeatures } from "./features/GlobalFeatures";
 import { TakeawayCup } from "./features/TakeawayCup";
@@ -34,17 +33,13 @@ import { CoffeeOfWeek } from "./features/CoffeeOfWeek";
 import { DrinkFinder } from "./features/DrinkFinder";
 import { ValuesStrip } from "./features/ValuesStrip";
 import { NeighbourhoodGuide } from "./features/NeighbourhoodGuide";
-import { MenuSearch } from "./features/MenuSearch";
 import { HoursCountdown } from "./features/HoursCountdown";
-import { MenuQuickNav } from "./features/MenuQuickNav";
-import { AllergenLegend } from "./features/AllergenLegend";
-import { FavoriteStar } from "./features/FavoriteStar";
-import { FavoritesBar } from "./features/FavoritesBar";
-import { PrintMenu } from "./features/PrintMenu";
 import { GroupBookingCta } from "./features/GroupBookingCta";
 import { TakeawayCta } from "./features/TakeawayCta";
 import { FeedbackPrompt } from "./features/FeedbackPrompt";
 import { EndMark } from "./features/EndMark";
+import { MenuDocumentSection } from "./MenuDocumentSection";
+import { WeeklyHours } from "./WeeklyHours";
 
 const CAFE_TZ = "Europe/Brussels";
 
@@ -65,7 +60,6 @@ export type LandingProps = {
   now: Date;
   statusTranslations: StatusT;
   bgPaths: string[];
-  menu: MenuCategoryView[];
   locale: LocaleCode;
   prismaLocale: Locale;
   preview?: boolean;
@@ -195,7 +189,6 @@ export function Landing({
   now,
   statusTranslations: t,
   bgPaths,
-  menu,
   locale,
   prismaLocale,
   preview,
@@ -212,23 +205,9 @@ export function Landing({
   stickerSrc,
 }: LandingProps) {
   const L = featureCopy ?? FEATURE_LABELS;
-  const hasMenu = menu.some((cat) => cat.items.length > 0);
   const hasEngageBlock =
     flags.loyaltyCard || flags.newsletterSignup || flags.giftCardCta || flags.spotifyEmbed;
   const bgLayers = bgPaths.length > 0 ? bgPaths : [c.bgImagePath];
-  // Countries currently "in the cup": the leading segment of each available
-  // item's origin line (e.g. "Uganda · Rwenzori Mountains · natural" → "Uganda"),
-  // deduped. Drives the passportStamp line; empty → the line renders nothing.
-  const cupOrigins = Array.from(
-    new Set(
-      menu.flatMap((cat) =>
-        cat.items
-          .filter((it) => it.available && it.origin)
-          .map((it) => it.origin.split("·")[0].trim())
-          .filter(Boolean),
-      ),
-    ),
-  ).slice(0, 3);
   const bgDuration = Math.max(15, bgLayers.length * 8);
   const statusLabel = status.isOpen ? t["site.statusOpen"] : t["site.statusClosed"];
   const statusSub = formatStatusSub(status, now, t);
@@ -374,11 +353,9 @@ export function Landing({
           ) : null}
 
           <div className="actions">
-            {hasMenu ? (
-              <a href="#menu" className="btn btn-secondary">
-                {c.menuNavLabel} <ArrowRight />
-              </a>
-            ) : null}
+            <a href="#menu" className="btn btn-secondary">
+              {c.menuNavLabel} <ArrowRight />
+            </a>
             <a href="#map" className="btn btn-secondary">
               {c.findUsLabel} <ArrowRight />
             </a>
@@ -502,117 +479,13 @@ export function Landing({
         </section>
       ) : null}
 
-      {hasMenu ? (
-        <section className="pane pane-menu" id="menu" aria-labelledby="menu-heading">
-          <a href="#landing" className="skip-link">{c.skipSectionLabel}</a>
-          <div className="menu-wrap">
-            <header className="menu-head">
-              <h2 className="menu-heading" id="menu-heading">{c.menuHeading}</h2>
-              <p className="menu-sub">{c.tagline}</p>
-              {c.menuBeansNote ? <p className="menu-beans-note">{c.menuBeansNote}</p> : null}
-              {flags.passportStamp && cupOrigins.length > 0 ? (
-                <p className="menu-beans-note menu-passport-stamp">
-                  {tmpl(L.passportStamp.line, { origin: cupOrigins.join(" / ") })}
-                </p>
-              ) : null}
-              {flags.menuSearch ? (
-                <MenuSearch
-                  placeholder={L.menuSearch.placeholder}
-                  noResults={L.menuSearch.noResults}
-                />
-              ) : null}
-              {flags.menuQuickNav ? (
-                <MenuQuickNav
-                  categories={menu
-                    .filter((cat) => cat.items.length > 0)
-                    .map((cat) => ({ id: String(cat.id), label: cat.label }))}
-                  label={L.menuQuickNav.label}
-                />
-              ) : null}
-              {flags.menuFavorites ? (
-                <FavoritesBar
-                  summaryOne={L.menuFavorites.summaryOne}
-                  summaryMany={L.menuFavorites.summaryMany}
-                  clearLabel={L.menuFavorites.clear}
-                />
-              ) : null}
-              {flags.allergenLegend ? (
-                <AllergenLegend heading={L.allergen.heading} note={L.allergen.note} />
-              ) : null}
-            </header>
-
-            <div className="menu-grid">
-              {menu.map((cat) => (
-                <section
-                  key={cat.id}
-                  className="menu-category"
-                  aria-labelledby={`menu-cat-${cat.id}`}
-                >
-                  <h3 className="menu-category-heading" id={`menu-cat-${cat.id}`}>
-                    {cat.label}
-                  </h3>
-                  {cat.items.length === 0 ? (
-                    <p className="menu-empty">—</p>
-                  ) : (
-                    <ul className="menu-items" role="list">
-                      {cat.items.map((it) => (
-                        <li
-                          key={it.id}
-                          className={
-                            it.available ? "menu-item" : "menu-item menu-item-unavailable"
-                          }
-                        >
-                          {it.photoPath ? (
-                            <img
-                              src={it.photoPath}
-                              alt={it.photoAlt}
-                              className="menu-item-photo"
-                              loading="lazy"
-                            />
-                          ) : null}
-                          <span className="menu-item-title">
-                            {it.name || <em>—</em>}
-                            {it.available ? null : (
-                              <span className="menu-item-unavailable-tag">{c.soldOutLabel}</span>
-                            )}
-                            {flags.menuDietaryTags
-                              ? dietaryTags(it.name, it.description).map((tag) => (
-                                  <span
-                                    key={tag.code}
-                                    className="diet-tag"
-                                    title={tag.label}
-                                    aria-label={tag.label}
-                                  >
-                                    {tag.code}
-                                  </span>
-                                ))
-                              : null}
-                            {flags.menuFavorites ? (
-                              <FavoriteStar
-                                id={`${cat.id}:${it.id}`}
-                                name={it.name || "this item"}
-                                addLabel={L.menuFavorites.add}
-                                removeLabel={L.menuFavorites.remove}
-                              />
-                            ) : null}
-                          </span>
-                          {it.origin ? <p className="menu-item-origin">{it.origin}</p> : null}
-                          {it.description ? <p className="menu-item-desc">{it.description}</p> : null}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </section>
-              ))}
-            </div>
-
-            <div className="menu-cta">
-              {flags.printMenu ? <PrintMenu label={L.printMenu.label} /> : null}
-              <a href="#landing" className="back-link">{c.backToTopLabel}</a>
-            </div>
-          </div>
-        </section>
-      ) : null}
+      <MenuDocumentSection
+        locale={locale}
+        heading={c.menuHeading}
+        tagline={c.tagline}
+        skipLabel={c.skipSectionLabel}
+        backToTopLabel={c.backToTopLabel}
+      />
 
       <ContactSection
         heading={L.contactSection.heading}
@@ -662,6 +535,8 @@ export function Landing({
                 ) : null}
               </ul>
             </div>
+
+            <WeeklyHours hours={hoursRows} locale={locale} />
 
             <div className="map-actions">
               <a href={c.findUsUrl} target="_blank" rel="noreferrer" className="btn btn-secondary">
