@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/db";
+import { AdminEmptyState } from "@/app/admin/components/AdminEmptyState";
+import { AdminPageIntro } from "@/app/admin/components/AdminPageIntro";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Audit log — admin — hygge" };
@@ -57,76 +59,82 @@ export default async function AuditPage({
 
   return (
     <>
-      <h1>Audit log</h1>
-      <p className="hint">
-        Last {PAGE_SIZE} entries, newest first. Every successful admin write is logged here.
-      </p>
+      <AdminPageIntro
+        ticket="11 / Change ledger"
+        title="Audit"
+        description={`The latest ${PAGE_SIZE} successful admin changes, kept in newest-first order.`}
+        icon="/admin/icons/audit.png"
+        breadcrumb={{ href: "/admin/more", label: "More" }}
+        status={<span className="admin-ticket-status">{rows.length} entries</span>}
+      />
 
-      <form method="get" className="section" aria-label="Filter audit log" style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "end" }}>
-        <div className="field" style={{ minWidth: 180 }}>
-          <label htmlFor="filter-actor">Actor</label>
-          <select id="filter-actor" name="actor" defaultValue={actor ?? ""}>
-            <option value="">(any)</option>
-            {distinctActors.map((a) => (
-              <option key={a} value={a}>{a}</option>
-            ))}
-          </select>
+      <form method="get" className="section audit-filter-bar" aria-label="Filter audit log">
+        <div className="audit-filter-fields">
+          <div className="field">
+            <label htmlFor="filter-actor">Actor</label>
+            <select id="filter-actor" name="actor" defaultValue={actor ?? ""}>
+              <option value="">Any actor</option>
+              {distinctActors.map((a) => (
+                <option key={a} value={a}>{a}</option>
+              ))}
+            </select>
+          </div>
+          <div className="field">
+            <label htmlFor="filter-entity">Entity</label>
+            <select id="filter-entity" name="entity" defaultValue={entity ?? ""}>
+              <option value="">Any entity</option>
+              {distinctEntities.map((e) => (
+                <option key={e} value={e}>{e}</option>
+              ))}
+            </select>
+          </div>
         </div>
-        <div className="field" style={{ minWidth: 180 }}>
-          <label htmlFor="filter-entity">Entity</label>
-          <select id="filter-entity" name="entity" defaultValue={entity ?? ""}>
-            <option value="">(any)</option>
-            {distinctEntities.map((e) => (
-              <option key={e} value={e}>{e}</option>
-            ))}
-          </select>
+        <div className="audit-filter-actions">
+          <button type="submit" className="btn-save">Apply filters</button>
+          {filterActive ? (
+            <a href="/admin/audit" className="admin-nav-link">Clear</a>
+          ) : null}
         </div>
-        <button type="submit" className="btn-save">Apply</button>
-        {filterActive ? (
-          <a href="/admin/audit" className="admin-nav-link">Clear</a>
-        ) : null}
       </form>
 
       {rows.length === 0 ? (
-        <p>No audit entries yet.</p>
+        <AdminEmptyState
+          title={filterActive ? "No matching changes" : "No audit entries yet"}
+          description={filterActive
+            ? "Try clearing one of the filters to widen the change history."
+            : "Successful admin updates will appear here as they happen."}
+        />
       ) : (
-        <table className="audit-table" style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-          <thead>
-            <tr style={{ textAlign: "left", borderBottom: "1px solid #ddd" }}>
-              <th style={{ padding: "8px 6px", whiteSpace: "nowrap" }}>When</th>
-              <th style={{ padding: "8px 6px" }}>Actor</th>
-              <th style={{ padding: "8px 6px" }}>Action</th>
-              <th style={{ padding: "8px 6px" }}>Entity</th>
-              <th style={{ padding: "8px 6px" }}>ID</th>
-              <th style={{ padding: "8px 6px" }}>Diff</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.id} style={{ borderBottom: "1px solid #eee", verticalAlign: "top" }}>
-                <td style={{ padding: "6px", whiteSpace: "nowrap" }}>
-                  <span title={row.createdAt.toISOString()}>{relativeTime(row.createdAt, now)}</span>
-                </td>
-                <td style={{ padding: "6px" }}>{row.actor}</td>
-                <td style={{ padding: "6px", fontFamily: "monospace" }}>{row.action}</td>
-                <td style={{ padding: "6px", fontFamily: "monospace" }}>{row.entity}</td>
-                <td style={{ padding: "6px" }}>{row.entityId ?? ""}</td>
-                <td style={{ padding: "6px" }}>
-                  {row.diff ? (
-                    <details>
-                      <summary>view</summary>
-                      <pre style={{ background: "rgba(0,0,0,0.25)", color: "var(--ink)", padding: 8, borderRadius: 4, overflowX: "auto", fontSize: 12, whiteSpace: "pre-wrap", wordBreak: "break-word", maxWidth: "100%" }}>
-                        {formatDiff(row.diff)}
-                      </pre>
-                    </details>
-                  ) : (
-                    <span className="hint">—</span>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <ol className="audit-event-list">
+          {rows.map((row) => (
+            <li key={row.id} className="audit-event-card">
+              <div className="audit-event-marker" aria-hidden="true" />
+              <div className="audit-event-body">
+                <header className="audit-event-heading">
+                  <div>
+                    <p className="admin-eyebrow">{row.actor}</p>
+                    <h2>{row.action}</h2>
+                  </div>
+                  <time dateTime={row.createdAt.toISOString()} title={row.createdAt.toISOString()}>
+                    {relativeTime(row.createdAt, now)}
+                  </time>
+                </header>
+                <div className="audit-event-meta">
+                  <span>{row.entity}</span>
+                  {row.entityId ? <code>{row.entityId}</code> : null}
+                </div>
+                {row.diff ? (
+                  <details className="audit-event-diff">
+                    <summary>View recorded changes</summary>
+                    <pre className="audit-diff-code">{formatDiff(row.diff)}</pre>
+                  </details>
+                ) : (
+                  <p className="audit-event-no-diff">No field diff recorded.</p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
       )}
     </>
   );

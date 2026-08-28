@@ -9,6 +9,8 @@ import { loadFlags } from "@/lib/flags";
 import { resolveFeatureSettings } from "@/lib/feature-settings";
 import { findCupArtSrc, findCupStickerSrc } from "@/lib/images";
 import { Landing } from "@/app/components/Landing";
+import { AdminPageIntro } from "@/app/admin/components/AdminPageIntro";
+import { AdminPreviewFrame } from "@/app/admin/components/AdminPreviewFrame";
 
 const CAFE_TZ = "Europe/Brussels";
 
@@ -38,28 +40,48 @@ export default async function PreviewPage() {
   const status = computeIsOpen(hoursRows, now, CAFE_TZ);
 
   return (
-    <Landing
-      content={content}
-      instaPosts={instaPosts}
-      hoursRows={hoursRows}
-      status={status}
-      now={now}
-      statusTranslations={statusTranslations}
-      bgPaths={bgPhotos.map((p) => p.path)}
-      locale={locale}
-      prismaLocale={prismaLocale}
-      preview
-      beholdFeedId={process.env.BEHOLD_FEED_ID ?? ""}
-      flags={flags}
-      origin={origin}
-      announcement={announcement}
-      featureCopy={featureSettings.copy}
-      faq={featureSettings.faq}
-      testimonials={featureSettings.testimonials}
-      events={featureSettings.events}
-      spotifyPlaylistId={featureSettings.spotifyPlaylistId}
-      cupSrc={cupSrc}
-      stickerSrc={stickerSrc}
-    />
+    <>
+      <AdminPageIntro
+        ticket="12 / Review window"
+        title="Preview"
+        description="Check the current admin draft at phone or desktop width before publishing it."
+        icon="/admin/icons/preview.png"
+        breadcrumb={{ href: "/admin/more", label: "More" }}
+        status={<span className="admin-ticket-status" data-tone="draft">Draft view</span>}
+      />
+
+      <div className="admin-preview-notice" role="note">
+        <strong>Current admin draft</strong>
+        <p>
+          This preview shows the current admin draft. The live site keeps its published state until you publish.
+        </p>
+      </div>
+
+      <AdminPreviewFrame>
+        <Landing
+          content={content}
+          instaPosts={instaPosts}
+          hoursRows={hoursRows}
+          status={status}
+          now={now}
+          statusTranslations={statusTranslations}
+          bgPaths={bgPhotos.map((p) => p.path)}
+          locale={locale}
+          prismaLocale={prismaLocale}
+          preview
+          beholdFeedId={process.env.BEHOLD_FEED_ID ?? ""}
+          flags={flags}
+          origin={origin}
+          announcement={announcement}
+          featureCopy={featureSettings.copy}
+          faq={featureSettings.faq}
+          testimonials={featureSettings.testimonials}
+          events={featureSettings.events}
+          spotifyPlaylistId={featureSettings.spotifyPlaylistId}
+          cupSrc={cupSrc}
+          stickerSrc={stickerSrc}
+        />
+      </AdminPreviewFrame>
+    </>
   );
 }

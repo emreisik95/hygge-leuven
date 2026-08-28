@@ -112,12 +112,27 @@ test("renders audit history as responsive events rather than a desktop table", a
   assert.match(audit, /className="audit-event-list"/);
   assert.match(audit, /className="audit-event-card"/);
   assert.doesNotMatch(audit, /<table\b/);
+  assert.match(audit, /const PAGE_SIZE = 200/);
+  assert.match(audit, /name="actor"/);
+  assert.match(audit, /name="entity"/);
+  assert.match(audit, /<details className="audit-event-diff"/);
 });
 
 test("frames Preview as a published-state admin review surface", async () => {
   const preview = await read("app/admin/preview/page.tsx");
   assert.match(preview, /<AdminPreviewFrame\b/);
   assert.match(preview, /published state/i);
+  assert.match(preview, /current admin draft/i);
+});
+
+test("provides phone and desktop controls around the real admin preview", async () => {
+  const frame = await read("app/admin/components/AdminPreviewFrame.tsx");
+  assert.match(frame, /^"use client";/);
+  assert.match(frame, /useState<"phone" \| "desktop">/);
+  assert.match(frame, />\s*Phone\s*</);
+  assert.match(frame, />\s*Desktop\s*</);
+  assert.match(frame, /window\.location\.reload\(\)/);
+  assert.match(frame, /href="\/"/);
 });
 
 test("removes avoidable page-level inline layout styles from secondary tools", async () => {
