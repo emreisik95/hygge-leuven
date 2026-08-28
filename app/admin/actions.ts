@@ -84,7 +84,7 @@ export async function saveContentDraft(formData: FormData) {
     mapZoom: asString(formData.get("mapZoom")),
   });
   if (!parsed.success) {
-    redirect(`/admin?errors=${encodeErrors(zodFieldErrors(parsed.error))}`);
+    redirect(`/admin/content?errors=${encodeErrors(zodFieldErrors(parsed.error))}`);
   }
 
   const existing = await prisma.siteContent.findUnique({ where: { id: 1 } });
@@ -109,8 +109,9 @@ export async function saveContentDraft(formData: FormData) {
   });
 
   revalidatePath("/admin");
+  revalidatePath("/admin/content");
   revalidatePath("/admin/preview");
-  redirect("/admin?saved=1");
+  redirect("/admin/content?saved=1");
 }
 
 // "Publish": atomically apply draftJson to live columns + Translation rows,
@@ -162,7 +163,7 @@ export async function publishContent() {
     });
   } catch (err) {
     console.error("publishContent transaction failed", err);
-    redirect("/admin?error=publish");
+    redirect("/admin/content?error=publish");
   }
 
   await logAudit({
@@ -178,8 +179,9 @@ export async function publishContent() {
 
   revalidatePath("/");
   revalidatePath("/admin");
+  revalidatePath("/admin/content");
   revalidatePath("/admin/preview");
-  redirect("/admin?published=1");
+  redirect("/admin/content?published=1");
 }
 
 export async function discardContentDraft() {
@@ -198,9 +200,10 @@ export async function discardContentDraft() {
     });
 
     revalidatePath("/admin");
+    revalidatePath("/admin/content");
     revalidatePath("/admin/preview");
   }
-  redirect("/admin?discarded=1");
+  redirect("/admin/content?discarded=1");
 }
 
 // Backwards-compat: the existing /admin form posts to `updateContent`. Keep

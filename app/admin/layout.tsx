@@ -5,16 +5,11 @@ import "./admin.css";
 export const dynamic = "force-dynamic";
 
 const NAV_LINKS: AdminNavLink[] = [
-  { label: "Site", href: "/admin" },
-  { label: "Translations", href: "/admin/translations" },
+  { label: "Overview", href: "/admin" },
+  { label: "Content", href: "/admin/content" },
   { label: "Menu", href: "/admin/menu" },
-  { label: "Photos", href: "/admin/photos" },
   { label: "Hours", href: "/admin/hours" },
-  { label: "Instagram", href: "/admin/instagram" },
-  { label: "Features", href: "/admin/features" },
-  { label: "Admins", href: "/admin/users" },
-  { label: "Audit", href: "/admin/audit" },
-  { label: "Preview", href: "/admin/preview" },
+  { label: "More", href: "/admin/more" },
 ];
 
 async function logout() {
@@ -37,8 +32,17 @@ export default async function AdminLayout({
 
   return (
     <div className="admin-shell">
-      <aside className="admin-sidebar">
+      <header className="admin-topbar">
         <div className="admin-brand">
+          <span className="admin-brand-mark">hygge</span>
+          <span className="admin-brand-sub">admin</span>
+        </div>
+        <a href="/" target="_blank" rel="noreferrer" className="admin-view-site">
+          View site
+        </a>
+      </header>
+      <aside className="admin-sidebar">
+        <div className="admin-brand admin-brand-desktop">
           <span className="admin-brand-mark">hygge</span>
           <span className="admin-brand-sub">admin</span>
         </div>
