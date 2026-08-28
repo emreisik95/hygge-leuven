@@ -54,8 +54,8 @@ test("polishes the mobile status rail and gives each primary destination its own
   assert.match(css, /@media\s*\(max-width:\s*639px\)[\s\S]*\.admin-status-rail\s*\{[^}]*grid-template-columns:/);
   assert.match(nav, /className="admin-nav-icon"/);
   for (const icon of ["overview", "content", "menu", "hours", "more"]) {
-    assert.match(css, new RegExp(`/admin/icons/${icon}\\.png`));
-    const iconStat = await stat(new URL(`../public/admin/icons/${icon}.png`, import.meta.url));
+    assert.match(css, new RegExp(`/admin-icons/${icon}\\.png`));
+    const iconStat = await stat(new URL(`../public/admin-icons/${icon}.png`, import.meta.url));
     assert.ok(iconStat.size < 60 * 1024, `${icon} icon should be web-sized`);
   }
   await assert.rejects(access(new URL("../public/admin/hygge-admin-icon-set.png", import.meta.url)));
@@ -69,10 +69,18 @@ test("extends the object icon language to every More destination", async () => {
   ]);
 
   for (const icon of ["photos", "instagram", "translations", "features", "admins", "audit", "preview"]) {
-    assert.match(more, new RegExp(`/admin/icons/${icon}\\.png`));
+    assert.match(more, new RegExp(`/admin-icons/${icon}\\.png`));
   }
   assert.match(css, /\.admin-tool-icon/);
   assert.match(css, /\.admin-page-icon/);
+});
+
+test("keeps illustrated More cards readable in one column on phones", async () => {
+  const css = await read("app/admin/admin.css");
+  assert.match(
+    css,
+    /@media\s*\(max-width:\s*639px\)[\s\S]*\.admin-shell\s+\.admin-tool-grid\s*\{[^}]*grid-template-columns:\s*1fr/s,
+  );
 });
 
 test("keeps the sign-in card centered independently from the authenticated admin grid", async () => {

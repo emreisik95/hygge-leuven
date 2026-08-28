@@ -63,7 +63,7 @@ export default async function AuditPage({
         ticket="11 / Change ledger"
         title="Audit"
         description={`The latest ${PAGE_SIZE} successful admin changes, kept in newest-first order.`}
-        icon="/admin/icons/audit.png"
+        icon="/admin-icons/audit.png"
         breadcrumb={{ href: "/admin/more", label: "More" }}
         status={<span className="admin-ticket-status">{rows.length} entries</span>}
       />

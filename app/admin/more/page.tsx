@@ -10,7 +10,7 @@ export default function MorePage() {
         ticket="05 / Tool shelf"
         title="More"
         description="Publishing, access, and review tools kept together behind the counter."
-        icon="/admin/icons/more.png"
+        icon="/admin-icons/more.png"
       />
 
       <div className="admin-tool-shelf">
@@ -20,10 +20,10 @@ export default function MorePage() {
             <h2 id="tool-group-publish">Publish</h2>
           </div>
           <div className="admin-tool-grid">
-            <AdminToolCard href="/admin/photos" icon="/admin/icons/photos.png" title="Photos" description="Backgrounds, gallery, and image details." />
-            <AdminToolCard href="/admin/instagram" icon="/admin/icons/instagram.png" title="Instagram" description="Connection health and cached café posts." />
-            <AdminToolCard href="/admin/translations" icon="/admin/icons/translations.png" title="Translations" description="Edit English, Dutch, and French site copy." />
-            <AdminToolCard href="/admin/features" icon="/admin/icons/features.png" title="Features" description="Visibility switches and feature content." />
+            <AdminToolCard href="/admin/photos" icon="/admin-icons/photos.png" title="Photos" description="Backgrounds, gallery, and image details." />
+            <AdminToolCard href="/admin/instagram" icon="/admin-icons/instagram.png" title="Instagram" description="Connection health and cached café posts." />
+            <AdminToolCard href="/admin/translations" icon="/admin-icons/translations.png" title="Translations" description="Edit English, Dutch, and French site copy." />
+            <AdminToolCard href="/admin/features" icon="/admin-icons/features.png" title="Features" description="Visibility switches and feature content." />
           </div>
         </section>
 
@@ -33,8 +33,8 @@ export default function MorePage() {
             <h2 id="tool-group-operations">Operations</h2>
           </div>
           <div className="admin-tool-grid">
-            <AdminToolCard href="/admin/users" icon="/admin/icons/admins.png" title="Admins" description="Manage who can work behind the counter." />
-            <AdminToolCard href="/admin/audit" icon="/admin/icons/audit.png" title="Audit" description="Review recent admin changes and actors." />
+            <AdminToolCard href="/admin/users" icon="/admin-icons/admins.png" title="Admins" description="Manage who can work behind the counter." />
+            <AdminToolCard href="/admin/audit" icon="/admin-icons/audit.png" title="Audit" description="Review recent admin changes and actors." />
           </div>
         </section>
 
@@ -44,7 +44,7 @@ export default function MorePage() {
             <h2 id="tool-group-review">Review</h2>
           </div>
           <div className="admin-tool-grid admin-tool-grid-compact">
-            <AdminToolCard href="/admin/preview" icon="/admin/icons/preview.png" title="Preview" description="Review the published café experience." />
+            <AdminToolCard href="/admin/preview" icon="/admin-icons/preview.png" title="Preview" description="Review the published café experience." />
           </div>
         </section>
       </div>

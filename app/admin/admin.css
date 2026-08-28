@@ -985,11 +985,11 @@
   transform: translateX(-50%);
   transition: filter 140ms ease, transform 140ms ease;
 }
-.admin-shell .admin-nav-list > li:nth-child(1) .admin-nav-icon { background-image: url("/admin/icons/overview.png"); }
-.admin-shell .admin-nav-list > li:nth-child(2) .admin-nav-icon { background-image: url("/admin/icons/content.png"); }
-.admin-shell .admin-nav-list > li:nth-child(3) .admin-nav-icon { background-image: url("/admin/icons/menu.png"); }
-.admin-shell .admin-nav-list > li:nth-child(4) .admin-nav-icon { background-image: url("/admin/icons/hours.png"); }
-.admin-shell .admin-nav-list > li:nth-child(5) .admin-nav-icon { background-image: url("/admin/icons/more.png"); }
+.admin-shell .admin-nav-list > li:nth-child(1) .admin-nav-icon { background-image: url("/admin-icons/overview.png"); }
+.admin-shell .admin-nav-list > li:nth-child(2) .admin-nav-icon { background-image: url("/admin-icons/content.png"); }
+.admin-shell .admin-nav-list > li:nth-child(3) .admin-nav-icon { background-image: url("/admin-icons/menu.png"); }
+.admin-shell .admin-nav-list > li:nth-child(4) .admin-nav-icon { background-image: url("/admin-icons/hours.png"); }
+.admin-shell .admin-nav-list > li:nth-child(5) .admin-nav-icon { background-image: url("/admin-icons/more.png"); }
 
 .admin-shell .admin-nav-link[data-active="true"] {
   background: var(--a-warn-bg);
@@ -1627,7 +1627,10 @@
   font-size: 22px;
 }
 .admin-shell .admin-tool-group-heading .admin-eyebrow { order: 2; text-align: right; }
-.admin-shell .admin-tool-grid-compact { max-width: 520px; }
+.admin-shell .admin-tool-grid-compact {
+  width: min(100%, 240px);
+  grid-template-columns: minmax(0, 1fr);
+}
 
 .admin-shell .admin-status-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
 .admin-shell .admin-status-item {
@@ -2068,6 +2071,14 @@
 }
 
 @media (max-width: 639px) {
+  .admin-shell .admin-tool-grid {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+  .admin-shell .admin-tool-grid-compact {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
   .admin-shell .tx-language-legend { grid-template-columns: 1fr; }
   .admin-shell .admin-member-card { grid-template-columns: minmax(0, 1fr); }
   .admin-shell .admin-member-card form { justify-self: start; }

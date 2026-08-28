@@ -214,9 +214,10 @@ export function Landing({
   const hoursTodayLine = formatHoursToday(status, t);
   const hoursWeekendLine = formatHoursWeekend(hoursRows, t, locale);
   const dotAriaLabel = statusLabel;
+  const Root = preview ? "div" : "main";
 
   return (
-    <main className="shell" data-selection={flags.brandSelection ? "" : undefined}>
+    <Root className="shell" data-selection={flags.brandSelection ? "" : undefined}>
       <GlobalFeatures
         flags={flags}
         announcementMessage={announcement}
@@ -592,6 +593,6 @@ export function Landing({
           dismissLabel={L.feedback.dismiss}
         />
       ) : null}
-    </main>
+    </Root>
   );
 }

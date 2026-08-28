@@ -24,7 +24,7 @@ export default async function HoursPage({
         ticket="04 / Schedule"
         title="Hours"
         description="Keep the weekly opening times visitors see up to date."
-        icon="/admin/icons/hours.png"
+        icon="/admin-icons/hours.png"
         status={<span className="admin-ticket-status" data-tone="live">Publishes instantly</span>}
       />
 

@@ -43,7 +43,7 @@ export default async function UsersPage({
         ticket="10 / Counter keys"
         title="Admins"
         description="Manage the people who can publish changes to the site."
-        icon="/admin/icons/admins.png"
+        icon="/admin-icons/admins.png"
         breadcrumb={{ href: "/admin/more", label: "More" }}
         status={<span className="admin-ticket-status">{admins.length + 1} accounts</span>}
       />

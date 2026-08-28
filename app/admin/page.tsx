@@ -52,7 +52,7 @@ export default async function AdminOverviewPage() {
         ticket={`01 / ${greeting(now)}`}
         title="Overview"
         description="Everything needed for today at a glance."
-        icon="/admin/icons/overview.png"
+        icon="/admin-icons/overview.png"
       />
 
       <AdminStatusRail

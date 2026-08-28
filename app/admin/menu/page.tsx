@@ -38,7 +38,7 @@ export default async function AdminMenuPage({
         ticket="03 / Seasonal document"
         title="Menu"
         description="One PDF controls the menu shown on the public site."
-        icon="/admin/icons/menu.png"
+        icon="/admin-icons/menu.png"
         status={<span className="admin-ticket-status" data-tone="live">Live menu</span>}
       />
 

@@ -46,7 +46,7 @@ export default async function AdminPage({
         ticket="02 / Publishing"
         title="Content"
         description="Edit the public story, contact details, and search presentation."
-        icon="/admin/icons/content.png"
+        icon="/admin-icons/content.png"
         status={<span className="admin-ticket-status" data-tone={dirty ? "draft" : "live"}>{dirty ? "Draft waiting" : "Live"}</span>}
       />
 

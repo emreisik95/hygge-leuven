@@ -30,7 +30,7 @@ export default async function InstagramAdminPage({
         ticket="07 / Social feed"
         title="Instagram"
         description="See what is connected, refresh café posts, and finish setup when something is missing."
-        icon="/admin/icons/instagram.png"
+        icon="/admin-icons/instagram.png"
         breadcrumb={{ href: "/admin/more", label: "More" }}
         status={<span className="admin-ticket-status" data-tone={account ? "live" : "draft"}>{account ? "Connected" : "Setup needed"}</span>}
       />

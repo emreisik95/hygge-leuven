@@ -56,12 +56,20 @@ test("makes the long Content editor locally navigable with one page action dock"
 test("installs a web-sized illustrated icon for every secondary tool", async () => {
   const more = await read("app/admin/more/page.tsx");
   for (const icon of ["photos", "instagram", "translations", "features", "admins", "audit", "preview"]) {
-    const path = new URL(`../public/admin/icons/${icon}.png`, import.meta.url);
+    const path = new URL(`../public/admin-icons/${icon}.png`, import.meta.url);
     const iconStat = await stat(path);
     assert.ok(iconStat.size > 0, `${icon} icon must not be empty`);
     assert.ok(iconStat.size < 60 * 1024, `${icon} icon should stay web-sized`);
-    assert.match(more, new RegExp(`/admin/icons/${icon}\\.png`));
+    assert.match(more, new RegExp(`/admin-icons/${icon}\\.png`));
   }
+});
+
+test("keeps admin artwork outside the authenticated route namespace", async () => {
+  const sources = await Promise.all([
+    ...AUTHENTICATED_ROUTES.map((route) => read(route)),
+    read("app/admin/admin.css"),
+  ]);
+  assert.doesNotMatch(sources.join("\n"), /\/admin\/icons\//);
 });
 
 test("turns Photos into a navigable workspace without a nested main landmark", async () => {
@@ -133,6 +141,13 @@ test("provides phone and desktop controls around the real admin preview", async 
   assert.match(frame, />\s*Desktop\s*</);
   assert.match(frame, /window\.location\.reload\(\)/);
   assert.match(frame, /href="\/"/);
+});
+
+test("keeps the embedded site preview from nesting main landmarks", async () => {
+  const landing = await read("app/components/Landing.tsx");
+  assert.match(landing, /const Root = preview \? "div" : "main"/);
+  assert.match(landing, /<Root className="shell"/);
+  assert.match(landing, /<\/Root>/);
 });
 
 test("removes avoidable page-level inline layout styles from secondary tools", async () => {

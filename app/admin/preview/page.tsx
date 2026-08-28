@@ -45,7 +45,7 @@ export default async function PreviewPage() {
         ticket="12 / Review window"
         title="Preview"
         description="Check the current admin draft at phone or desktop width before publishing it."
-        icon="/admin/icons/preview.png"
+        icon="/admin-icons/preview.png"
         breadcrumb={{ href: "/admin/more", label: "More" }}
         status={<span className="admin-ticket-status" data-tone="draft">Draft view</span>}
       />
