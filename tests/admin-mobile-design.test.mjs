@@ -62,6 +62,19 @@ test("polishes the mobile status rail and gives each primary destination its own
   assert.match(css, /@media\s*\(min-width:\s*960px\)[\s\S]*\.admin-nav-icon\s*\{[^}]*left:/s);
 });
 
+test("extends the object icon language to every More destination", async () => {
+  const [css, more] = await Promise.all([
+    read("app/admin/admin.css"),
+    read("app/admin/more/page.tsx"),
+  ]);
+
+  for (const icon of ["photos", "instagram", "translations", "features", "admins", "audit", "preview"]) {
+    assert.match(more, new RegExp(`/admin/icons/${icon}\\.png`));
+  }
+  assert.match(css, /\.admin-tool-icon/);
+  assert.match(css, /\.admin-page-icon/);
+});
+
 test("keeps the sign-in card centered independently from the authenticated admin grid", async () => {
   const css = await read("app/admin/admin.css");
 

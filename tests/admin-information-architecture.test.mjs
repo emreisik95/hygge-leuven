@@ -67,14 +67,23 @@ test("content editor resolves shared admin actions and UI after its route move",
   assert.match(content, /from "\.\.\/ui\/Flash"/);
 });
 
-test("main editing screens use the same polished page introduction", async () => {
-  const [content, hours, users] = await Promise.all([
-    read("app/admin/content/page.tsx"),
-    read("app/admin/hours/page.tsx"),
-    read("app/admin/users/page.tsx"),
-  ]);
-  for (const page of [content, hours, users]) {
-    assert.match(page, /className="admin-page-intro/);
-    assert.match(page, /className="admin-eyebrow"/);
+test("all authenticated screens use the same service-ticket page introduction", async () => {
+  const routes = [
+    "app/admin/page.tsx",
+    "app/admin/content/page.tsx",
+    "app/admin/menu/page.tsx",
+    "app/admin/hours/page.tsx",
+    "app/admin/more/page.tsx",
+    "app/admin/photos/page.tsx",
+    "app/admin/instagram/page.tsx",
+    "app/admin/translations/page.tsx",
+    "app/admin/features/page.tsx",
+    "app/admin/users/page.tsx",
+    "app/admin/audit/page.tsx",
+    "app/admin/preview/page.tsx",
+  ];
+
+  for (const route of routes) {
+    assert.match(await read(route), /<AdminPageIntro\b/, `${route} must use AdminPageIntro`);
   }
 });
