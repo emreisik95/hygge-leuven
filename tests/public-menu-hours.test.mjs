@@ -7,6 +7,7 @@ const files = {
   menu: new URL("../app/components/MenuDocumentSection.tsx", import.meta.url),
   hours: new URL("../app/components/WeeklyHours.tsx", import.meta.url),
   page: new URL("../app/page.tsx", import.meta.url),
+  preview: new URL("../app/admin/preview/page.tsx", import.meta.url),
   css: new URL("../app/globals.css", import.meta.url),
 };
 
@@ -48,4 +49,10 @@ test("keeps the PDF viewer responsive with explicit fallback controls", async ()
   assert.match(css, /aspect-ratio:\s*210\s*\/\s*297/);
   assert.match(css, /\.menu-document-actions\s*\{/);
   assert.match(css, /\.weekly-hours-list\s*\{/);
+});
+
+test("admin preview uses the same PDF-first menu contract as the live page", async () => {
+  const preview = await readFile(files.preview, "utf8");
+  assert.doesNotMatch(preview, /getMenuForLocale/);
+  assert.doesNotMatch(preview, /menu=\{menu\}/);
 });

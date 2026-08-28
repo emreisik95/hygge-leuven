@@ -58,3 +58,11 @@ test("returns content draft actions to the Content screen", async () => {
   assert.match(actions, /redirect\("\/admin\/content\?discarded=1"\)/);
   assert.match(actions, /revalidatePath\("\/admin\/content"\)/);
 });
+
+test("content editor resolves shared admin actions and UI after its route move", async () => {
+  const content = await read("app/admin/content/page.tsx");
+  assert.match(content, /from "\.\.\/actions"/);
+  assert.match(content, /from "\.\.\/ui\/fields"/);
+  assert.match(content, /from "\.\.\/ui\/SubmitButton"/);
+  assert.match(content, /from "\.\.\/ui\/Flash"/);
+});

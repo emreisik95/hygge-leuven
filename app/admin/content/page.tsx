@@ -8,11 +8,11 @@ import {
   updateContent,
   publishContent,
   discardContentDraft,
-} from "./actions";
+} from "../actions";
 import { decodeErrors } from "@/lib/validation";
-import { Field, TextareaField, FieldRow, Toggle } from "./ui/fields";
-import { SubmitButton } from "./ui/SubmitButton";
-import { Flash } from "./ui/Flash";
+import { Field, TextareaField, FieldRow, Toggle } from "../ui/fields";
+import { SubmitButton } from "../ui/SubmitButton";
+import { Flash } from "../ui/Flash";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Content — admin — hygge" };

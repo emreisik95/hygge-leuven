@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { getDraftContent, getOpeningHours, getPhotos, getMenuForLocale, getTranslation } from "@/lib/db";
+import { getDraftContent, getOpeningHours, getPhotos, getTranslation } from "@/lib/db";
 import { ANNOUNCEMENT_NS, FEATURE_LABELS } from "@/lib/feature-labels";
 import { LOCALE_COOKIE, parseLocale, toPrismaLocale } from "@/lib/locale";
 import { getRecentPostsForRender } from "@/lib/instagram";
@@ -19,14 +19,13 @@ export default async function PreviewPage() {
   const store = await cookies();
   const locale = parseLocale(store.get(LOCALE_COOKIE)?.value);
   const prismaLocale = toPrismaLocale(locale);
-  const [content, instaPosts, hoursRows, statusTranslations, bgPhotos, menu, flags, origin, announcement, featureSettings, stickerSrc] =
+  const [content, instaPosts, hoursRows, statusTranslations, bgPhotos, flags, origin, announcement, featureSettings, stickerSrc] =
     await Promise.all([
       getDraftContent(prismaLocale),
       getRecentPostsForRender(9),
       getOpeningHours(),
       loadStatusTranslations(prismaLocale),
       getPhotos("background"),
-      getMenuForLocale(prismaLocale),
       loadFlags(),
       getOrigin(),
       getTranslation(ANNOUNCEMENT_NS, prismaLocale, FEATURE_LABELS.announcement.message),
@@ -47,7 +46,6 @@ export default async function PreviewPage() {
       now={now}
       statusTranslations={statusTranslations}
       bgPaths={bgPhotos.map((p) => p.path)}
-      menu={menu}
       locale={locale}
       prismaLocale={prismaLocale}
       preview
