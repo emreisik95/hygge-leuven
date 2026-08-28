@@ -68,7 +68,7 @@ const TEXT_NAMESPACES = {
 
 export type SiteTextField = keyof typeof TEXT_NAMESPACES;
 
-const SITE_TEXT_DEFAULTS: Record<SiteTextField, string> = {
+export const SITE_TEXT_DEFAULTS: Record<SiteTextField, string> = {
   brandName: "hygge",
   definitionLabel: "Danish [hyü-ge] noun",
   // Intentionally empty — the hero no longer shows a dictionary definition body.

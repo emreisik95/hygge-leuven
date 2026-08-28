@@ -1,34 +1,38 @@
 import type { LocaleCode } from "@/lib/locale";
-import { MENU_PUBLIC_URL } from "@/lib/menu-document";
+import {
+  MENU_IMAGE_URL,
+  MENU_PUBLIC_URL,
+  readCurrentMenuTranscript,
+} from "@/lib/menu-document";
 
 const COPY: Record<
   LocaleCode,
-  { intro: string; open: string; download: string; fallback: string; viewer: string }
+  { intro: string; open: string; download: string; viewer: string; text: string }
 > = {
   EN: {
     intro: "Coffee, tea, seasonal iced drinks, Danish smørrebrød, and sweets from the bar.",
-    open: "Open full menu",
+    open: "Open PDF",
     download: "Download PDF",
-    fallback: "Your browser cannot display the menu here.",
-    viewer: "Hygge seasonal menu PDF",
+    viewer: "Hygge seasonal menu",
+    text: "Read menu as text",
   },
   NL: {
     intro: "Koffie, thee, seizoensdranken, Deense smørrebrød en zoetigheden van de bar.",
-    open: "Volledig menu openen",
+    open: "PDF openen",
     download: "PDF downloaden",
-    fallback: "Je browser kan het menu hier niet weergeven.",
-    viewer: "Hygge seizoensmenu als PDF",
+    viewer: "Hygge seizoensmenu",
+    text: "Menu als tekst lezen",
   },
   FR: {
     intro: "Café, thé, boissons glacées de saison, smørrebrød danois et douceurs du comptoir.",
-    open: "Ouvrir le menu complet",
+    open: "Ouvrir le PDF",
     download: "Télécharger le PDF",
-    fallback: "Votre navigateur ne peut pas afficher le menu ici.",
-    viewer: "Menu saisonnier Hygge en PDF",
+    viewer: "Menu saisonnier Hygge",
+    text: "Lire le menu en texte",
   },
 };
 
-export function MenuDocumentSection({
+export async function MenuDocumentSection({
   locale,
   heading,
   tagline,
@@ -42,6 +46,7 @@ export function MenuDocumentSection({
   backToTopLabel: string;
 }) {
   const copy = COPY[locale];
+  const transcript = await readCurrentMenuTranscript();
 
   return (
     <section className="pane pane-menu menu-document-section" id="menu" aria-labelledby="menu-heading">
@@ -54,13 +59,22 @@ export function MenuDocumentSection({
         </header>
 
         <div className="menu-document-frame">
-          <object data={MENU_PUBLIC_URL} type="application/pdf" aria-label={copy.viewer}>
-            <p className="menu-document-fallback">
-              {copy.fallback}{" "}
-              <a href={MENU_PUBLIC_URL} target="_blank" rel="noreferrer">{copy.open}</a>
-            </p>
-          </object>
+          <img
+            src={MENU_IMAGE_URL}
+            alt={copy.viewer}
+            width={1489}
+            height={2106}
+            loading="lazy"
+            decoding="async"
+          />
         </div>
+
+        <details className="menu-text-alternative" id="menu-text-alternative">
+          <summary>{copy.text}</summary>
+          <div className="menu-text-transcript">
+            <pre>{transcript}</pre>
+          </div>
+        </details>
 
         <div className="menu-document-actions">
           <a href={MENU_PUBLIC_URL} target="_blank" rel="noreferrer" className="btn btn-primary">

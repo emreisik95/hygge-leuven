@@ -38,6 +38,12 @@ export default async function UsersPage({
 
   return (
     <>
+      <header className="admin-page-intro">
+        <p className="admin-eyebrow">Access</p>
+        <h1>Admins</h1>
+        <p>Manage the people who can publish changes to the site.</p>
+      </header>
+
       {params.saved && SAVED[params.saved] ? (
         <Flash kind="ok">{SAVED[params.saved]}</Flash>
       ) : null}

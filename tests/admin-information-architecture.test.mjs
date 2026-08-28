@@ -66,3 +66,15 @@ test("content editor resolves shared admin actions and UI after its route move",
   assert.match(content, /from "\.\.\/ui\/SubmitButton"/);
   assert.match(content, /from "\.\.\/ui\/Flash"/);
 });
+
+test("main editing screens use the same polished page introduction", async () => {
+  const [content, hours, users] = await Promise.all([
+    read("app/admin/content/page.tsx"),
+    read("app/admin/hours/page.tsx"),
+    read("app/admin/users/page.tsx"),
+  ]);
+  for (const page of [content, hours, users]) {
+    assert.match(page, /className="admin-page-intro/);
+    assert.match(page, /className="admin-eyebrow"/);
+  }
+});

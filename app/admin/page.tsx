@@ -98,6 +98,7 @@ export default async function AdminOverviewPage() {
           <Link href="/admin/content">Edit content</Link>
           <Link href="/admin/menu">Update menu</Link>
           <Link href="/admin/hours">Change hours</Link>
+          <Link href="/admin/translations">Edit translations</Link>
           <Link href="/admin/preview">Preview site</Link>
         </div>
       </section>

@@ -18,6 +18,12 @@ export default async function HoursPage({
 
   return (
     <>
+      <header className="admin-page-intro">
+        <p className="admin-eyebrow">Schedule</p>
+        <h1>Hours</h1>
+        <p>Keep the weekly opening times visitors see up to date.</p>
+      </header>
+
       {params.savedHours ? <Flash kind="ok">Hours saved.</Flash> : null}
       {Object.keys(errors).length > 0 ? <Flash kind="err">Please fix the errors below.</Flash> : null}
 

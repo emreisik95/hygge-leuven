@@ -37,6 +37,7 @@ export function AdminNav({ links }: { links: AdminNavLink[] }) {
                 aria-current={active ? "page" : undefined}
                 data-active={active ? "true" : undefined}
               >
+                <span className="admin-nav-icon" aria-hidden="true" />
                 {link.label}
               </Link>
             </li>

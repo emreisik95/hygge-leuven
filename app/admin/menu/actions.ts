@@ -53,6 +53,7 @@ export async function replaceMenuDocument(formData: FormData) {
 
   revalidatePath("/");
   revalidatePath("/menu.pdf");
+  revalidatePath("/menu-image");
   revalidatePath("/admin");
   revalidatePath("/admin/menu");
   redirect("/admin/menu?saved=1");

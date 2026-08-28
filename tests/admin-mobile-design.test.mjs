@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { access, readFile, stat } from "node:fs/promises";
 import test from "node:test";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
@@ -43,4 +43,28 @@ test("styles the new overview, menu PDF, hours, and more surfaces", async () => 
   ]) {
     assert.match(css, new RegExp(selector.replace(".", "\\.")));
   }
+});
+
+test("polishes the mobile status rail and gives each primary destination its own icon", async () => {
+  const [css, nav] = await Promise.all([
+    read("app/admin/admin.css"),
+    read("app/admin/components/admin-nav.tsx"),
+  ]);
+
+  assert.match(css, /@media\s*\(max-width:\s*639px\)[\s\S]*\.admin-status-rail\s*\{[^}]*grid-template-columns:/);
+  assert.match(nav, /className="admin-nav-icon"/);
+  for (const icon of ["overview", "content", "menu", "hours", "more"]) {
+    assert.match(css, new RegExp(`/admin/icons/${icon}\\.png`));
+    const iconStat = await stat(new URL(`../public/admin/icons/${icon}.png`, import.meta.url));
+    assert.ok(iconStat.size < 60 * 1024, `${icon} icon should be web-sized`);
+  }
+  await assert.rejects(access(new URL("../public/admin/hygge-admin-icon-set.png", import.meta.url)));
+  assert.match(css, /@media\s*\(min-width:\s*960px\)[\s\S]*\.admin-nav-icon\s*\{[^}]*left:/s);
+});
+
+test("keeps the sign-in card centered independently from the authenticated admin grid", async () => {
+  const css = await read("app/admin/admin.css");
+
+  assert.match(css, /\.admin-shell\.login-shell\s*\{[^}]*display:\s*flex[^}]*align-items:\s*center[^}]*justify-content:\s*center/s);
+  assert.match(css, /\.admin-shell\.login-shell\s*\{[^}]*min-height:\s*100dvh/s);
 });

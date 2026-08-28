@@ -1,15 +1,15 @@
 import {
-  MENU_FILENAME,
-  readCurrentMenuPdf,
+  MENU_IMAGE_FILENAME,
+  readCurrentMenuImage,
 } from "@/lib/menu-document";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const buffer = await readCurrentMenuPdf();
+  const buffer = await readCurrentMenuImage();
   const headers = new Headers([
-    ["Content-Type", "application/pdf"],
-    ["Content-Disposition", `inline; filename="${MENU_FILENAME}"`],
+    ["Content-Type", "image/jpeg"],
+    ["Content-Disposition", `inline; filename="${MENU_IMAGE_FILENAME}"`],
     ["Content-Length", String(buffer.length)],
     ["Cache-Control", "no-store"],
     ["X-Content-Type-Options", "nosniff"],

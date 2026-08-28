@@ -1,4 +1,9 @@
-import { prisma, siteTextNamespace, SITE_TEXT_FIELDS } from "@/lib/db";
+import {
+  prisma,
+  siteTextNamespace,
+  SITE_TEXT_DEFAULTS,
+  SITE_TEXT_FIELDS,
+} from "@/lib/db";
 import { ANNOUNCEMENT_NS, FEATURE_LABELS } from "@/lib/feature-labels";
 import { LOCALES, LOCALE_LABELS, LOCALE_NAMES, type LocaleCode } from "@/lib/locale";
 import { updateTranslations } from "./actions";
@@ -12,15 +17,21 @@ export const metadata = { title: "Translations — hygge" };
 
 type Group = {
   title: string;
-  namespaces: { namespace: string; label: string }[];
+  namespaces: { namespace: string; label: string; defaultEn?: string }[];
 };
+
+function humanizeField(field: string): string {
+  const spaced = field.replace(/([a-z])([A-Z])/g, "$1 $2");
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+}
 
 async function buildExpectedGroups(): Promise<Group[]> {
   const siteGroup: Group = {
     title: "Site copy",
     namespaces: SITE_TEXT_FIELDS.map((field) => ({
       namespace: siteTextNamespace(field),
-      label: field,
+      label: humanizeField(field),
+      defaultEn: SITE_TEXT_DEFAULTS[field],
     })),
   };
 
@@ -38,7 +49,11 @@ async function buildExpectedGroups(): Promise<Group[]> {
 
   const featuresGroup: Group = {
     title: "Features",
-    namespaces: [{ namespace: ANNOUNCEMENT_NS, label: "Announcement banner" }],
+    namespaces: [{
+      namespace: ANNOUNCEMENT_NS,
+      label: "Announcement banner",
+      defaultEn: FEATURE_LABELS.announcement.message,
+    }],
   };
 
   const groups = [siteGroup, featuresGroup];
@@ -72,24 +87,21 @@ export default async function TranslationsPage({
   const allNamespaces = groups.flatMap((g) => g.namespaces.map((n) => n.namespace));
   const valuesByNs = await loadTranslationMap(allNamespaces);
 
-  // Seed the announcement EN field with its default copy when no row exists yet,
-  // so the editor shows the live text and a first save doesn't trip the
-  // EN-required rule on an untouched field.
-  const annSlot = valuesByNs.get(ANNOUNCEMENT_NS) ?? {};
-  if (!annSlot.EN) {
-    annSlot.EN = FEATURE_LABELS.announcement.message;
-    valuesByNs.set(ANNOUNCEMENT_NS, annSlot);
-  }
-
   return (
     <>
+      <header className="admin-page-intro">
+        <p className="admin-eyebrow">Languages</p>
+        <h1>Translations</h1>
+        <p>Edit English, Dutch, and French public copy in one place.</p>
+      </header>
+
       {saved ? <Flash kind="ok">Saved.</Flash> : null}
       {Object.keys(errors).length > 0 ? (
         <Flash kind="err">Some fields need attention — see the highlighted rows.</Flash>
       ) : null}
 
       <p className="hint" style={{ marginBottom: 16 }}>
-        Empty NL/FR fields fall back to EN at render time. Clear a field to remove the override.
+        Empty NL/FR fields fall back to EN. Clearing built-in English copy restores its original default.
       </p>
 
       {groups.map((group) => {
@@ -114,7 +126,7 @@ export default async function TranslationsPage({
                 ))}
               </div>
 
-              {group.namespaces.map(({ namespace, label }) => {
+              {group.namespaces.map(({ namespace, label, defaultEn }) => {
                 const values = valuesByNs.get(namespace) ?? {};
                 return (
                   <div key={namespace} className="tx-row" role="row">
@@ -125,10 +137,13 @@ export default async function TranslationsPage({
                     {LOCALES.map((code) => {
                       const fieldId = `tx-${namespace.replace(/\W+/g, "-")}-${code}`;
                       const fieldName = `tx::${namespace}::${code}`;
-                      const value = values[code] ?? "";
+                      const value = values[code] ?? (code === "EN" ? defaultEn ?? "" : "");
                       const rowsAttr = Math.max(2, Math.min(8, Math.ceil((value.length || 1) / 48)));
                       return (
                         <div key={code} className="tx-cell" role="cell">
+                          <span className="tx-locale-label">
+                            {LOCALE_LABELS[code]} · {LOCALE_NAMES[code]}
+                          </span>
                           <label htmlFor={fieldId} className="sr-only">
                             {label} — {LOCALE_NAMES[code]}
                           </label>

@@ -48,39 +48,39 @@ export default async function LoginPage({
   return (
     <div className="admin-shell login-shell">
       <div className="login-card">
-          <h1>admin</h1>
-          {error ? (
-            <div id="login-error" className="flash err" role="alert" aria-live="assertive">
-              Invalid credentials
-            </div>
-          ) : null}
-          <form action={login}>
-            <input type="hidden" name="callbackUrl" value={target} />
-            <div className="field">
-              <label htmlFor="email">Email</label>
-              <input
-                id="email"
-                type="email"
-                name="email"
-                required
-                autoComplete="email"
-                aria-describedby={error ? "login-error" : undefined}
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="password">Password</label>
-              <input
-                id="password"
-                type="password"
-                name="password"
-                required
-                autoComplete="current-password"
-                aria-describedby={error ? "login-error" : undefined}
-              />
-            </div>
-            <button type="submit" className="btn-save">Sign in</button>
-          </form>
-        </div>
+        <h1>admin</h1>
+        {error ? (
+          <div id="login-error" className="flash err" role="alert" aria-live="assertive">
+            Invalid credentials
+          </div>
+        ) : null}
+        <form action={login}>
+          <input type="hidden" name="callbackUrl" value={target} />
+          <div className="field">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              required
+              autoComplete="email"
+              aria-describedby={error ? "login-error" : undefined}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              required
+              autoComplete="current-password"
+              aria-describedby={error ? "login-error" : undefined}
+            />
+          </div>
+          <button type="submit" className="btn-save">Sign in</button>
+        </form>
+      </div>
     </div>
   );
 }

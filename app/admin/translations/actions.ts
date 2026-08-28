@@ -1,12 +1,18 @@
 "use server";
 
 import { requireAdmin } from "@/lib/admin-auth";
-import { prisma } from "@/lib/db";
+import { prisma, SITE_TEXT_FIELDS, siteTextNamespace } from "@/lib/db";
 import { logAudit } from "@/lib/audit";
+import { ANNOUNCEMENT_NS } from "@/lib/feature-labels";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { LOCALES, toPrismaLocale } from "@/lib/locale";
 import { MAX_TRANSLATION_CHARS, encodeErrors, type FieldError } from "@/lib/validation";
+
+const EN_FALLBACK_NAMESPACES = new Set([
+  ...SITE_TEXT_FIELDS.map(siteTextNamespace),
+  ANNOUNCEMENT_NS,
+]);
 
 // formData layout for a translation row:
 //   key:   `tx::<namespace>::<LOCALE>`
@@ -44,10 +50,10 @@ export async function updateTranslations(formData: FormData) {
         continue;
       }
       if (value === "") {
-        // EN is the fallback locale: clearing it would leave the namespace with
-        // no row at all, silently dropping the public site back to hardcoded
-        // defaults. NL/FR may be cleared freely (they fall back to EN).
-        if (code === "EN") {
+        // Site and feature copy has a built-in English default, so clearing EN
+        // safely restores it. Menu item names have no built-in copy and must
+        // retain their English fallback.
+        if (code === "EN" && !EN_FALLBACK_NAMESPACES.has(ns)) {
           errors.push({ field: fieldName, message: "English is required — it's the fallback." });
           continue;
         }

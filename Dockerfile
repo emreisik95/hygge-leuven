@@ -30,7 +30,7 @@ ENV DATABASE_URL="file:/data/db.sqlite"
 ENV UPLOAD_DIR="/data/uploads"
 
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
-RUN apk add --no-cache su-exec
+RUN apk add --no-cache su-exec poppler-utils
 
 # standalone output
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./

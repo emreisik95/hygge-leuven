@@ -39,6 +39,12 @@ export default async function AdminPage({
 
   return (
     <>
+      <header className="admin-page-intro">
+        <p className="admin-eyebrow">Publishing</p>
+        <h1>Content</h1>
+        <p>Edit the public story, contact details, and search presentation.</p>
+      </header>
+
       {saved ? <Flash kind="ok">Draft saved.</Flash> : null}
       {published ? <Flash kind="ok">Published.</Flash> : null}
       {discarded ? <Flash kind="ok">Draft discarded.</Flash> : null}
