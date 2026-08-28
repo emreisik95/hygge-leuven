@@ -1,34 +1,30 @@
 import type { LocaleCode } from "@/lib/locale";
-import {
-  MENU_IMAGE_URL,
-  MENU_PUBLIC_URL,
-  readCurrentMenuTranscript,
-} from "@/lib/menu-document";
+import { MENU_IMAGE_URL, MENU_PUBLIC_URL } from "@/lib/menu-document";
 
 const COPY: Record<
   LocaleCode,
-  { intro: string; open: string; download: string; viewer: string; text: string }
+  { intro: string; open: string; download: string; viewer: string; zoom: string }
 > = {
   EN: {
     intro: "Coffee, tea, seasonal iced drinks, Danish smørrebrød, and sweets from the bar.",
     open: "Open PDF",
     download: "Download PDF",
     viewer: "Hygge seasonal menu",
-    text: "Read menu as text",
+    zoom: "Tap the menu to enlarge",
   },
   NL: {
     intro: "Koffie, thee, seizoensdranken, Deense smørrebrød en zoetigheden van de bar.",
     open: "PDF openen",
     download: "PDF downloaden",
     viewer: "Hygge seizoensmenu",
-    text: "Menu als tekst lezen",
+    zoom: "Tik op het menu om te vergroten",
   },
   FR: {
     intro: "Café, thé, boissons glacées de saison, smørrebrød danois et douceurs du comptoir.",
     open: "Ouvrir le PDF",
     download: "Télécharger le PDF",
     viewer: "Menu saisonnier Hygge",
-    text: "Lire le menu en texte",
+    zoom: "Touchez le menu pour l’agrandir",
   },
 };
 
@@ -46,7 +42,6 @@ export async function MenuDocumentSection({
   backToTopLabel: string;
 }) {
   const copy = COPY[locale];
-  const transcript = await readCurrentMenuTranscript();
 
   return (
     <section className="pane pane-menu menu-document-section" id="menu" aria-labelledby="menu-heading">
@@ -58,23 +53,25 @@ export async function MenuDocumentSection({
           <p className="menu-document-intro">{copy.intro}</p>
         </header>
 
-        <div className="menu-document-frame">
-          <img
-            src={MENU_IMAGE_URL}
-            alt={copy.viewer}
-            width={1489}
-            height={2106}
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
-
-        <details className="menu-text-alternative" id="menu-text-alternative">
-          <summary>{copy.text}</summary>
-          <div className="menu-text-transcript">
-            <pre>{transcript}</pre>
+        <a
+          href={MENU_IMAGE_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="menu-document-image-link"
+          aria-label={`${copy.zoom}: ${copy.viewer}`}
+        >
+          <div className="menu-document-frame">
+            <img
+              src={MENU_IMAGE_URL}
+              alt={copy.viewer}
+              width={1489}
+              height={2106}
+              loading="lazy"
+              decoding="async"
+            />
           </div>
-        </details>
+          <span className="menu-document-zoom-hint">{copy.zoom}</span>
+        </a>
 
         <div className="menu-document-actions">
           <a href={MENU_PUBLIC_URL} target="_blank" rel="noreferrer" className="btn btn-primary">

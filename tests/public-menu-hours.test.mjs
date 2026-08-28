@@ -28,8 +28,10 @@ test("publishes the seasonal menu as a direct accessible image with PDF actions"
   assert.doesNotMatch(menu, /<object/);
   assert.match(menu, /Open PDF/);
   assert.match(menu, /Download PDF/);
-  assert.match(menu, /menu-text-alternative/);
-  assert.match(menu, /readCurrentMenuTranscript/);
+  assert.doesNotMatch(menu, /menu-text-alternative/);
+  assert.doesNotMatch(menu, /readCurrentMenuTranscript/);
+  assert.match(menu, /href=\{MENU_IMAGE_URL\}/);
+  assert.match(menu, /menu-document-zoom-hint/);
   assert.doesNotMatch(menu, /MENU_TEXT_GROUPS/);
   const transcript = await readFile(new URL("../public/menu/hygge-seasonal-menu.txt", import.meta.url), "utf8");
   assert.match(transcript, /allergen information/i);
@@ -56,6 +58,10 @@ test("keeps the direct menu artwork responsive with explicit PDF controls", asyn
   assert.match(css, /aspect-ratio:\s*210\s*\/\s*297/);
   assert.match(css, /\.menu-document-frame img\s*\{/);
   assert.match(css, /\.menu-document-actions\s*\{/);
+  assert.match(css, /\.menu-document-image-link\s*\{/);
+  assert.match(css, /\.menu-document-zoom-hint\s*\{/);
+  assert.match(css, /@media \(max-width:\s*520px\)[\s\S]*\.menu-document-section[\s\S]*padding:/);
+  assert.doesNotMatch(css, /\.menu-text-alternative/);
   assert.match(css, /\.weekly-hours-list\s*\{/);
 });
 
