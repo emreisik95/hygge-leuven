@@ -3,11 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createAdmin, deleteAdmin } from "@/lib/admin-users";
+import { requireAdmin } from "@/lib/admin-auth";
 import { logAudit } from "@/lib/audit";
 
 // Add a new DB-backed admin. Email/password validation lives in createAdmin;
 // errors flash back via the ?error query param.
 export async function addAdmin(formData: FormData) {
+  await requireAdmin();
+
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
   const name = String(formData.get("name") ?? "");
@@ -25,6 +28,8 @@ export async function addAdmin(formData: FormData) {
 // Remove a DB-backed admin by id. The env bootstrap admin is not in this table
 // and so can never be removed here.
 export async function removeAdmin(formData: FormData) {
+  await requireAdmin();
+
   const id = Number(formData.get("id"));
   if (!Number.isInteger(id) || id <= 0) {
     redirect("/admin/users?error=bad_id");
