@@ -1,7 +1,7 @@
 # Hygge Admin Service Counter — Approved Design
 
-**Date:** 2026-08-28  
-**Status:** Approved  
+**Date:** 2026-08-28
+**Status:** Approved
 **Scope:** Every authenticated admin route, shared admin navigation, and supporting visual assets
 
 ## Outcome
@@ -192,4 +192,3 @@ Wrap the public landing preview in an admin review frame with the shared intro, 
 - Existing admin tests pass; new structural tests cover the shared primitives, icon inventory, responsive audit cards, progressive Instagram setup, and removal of route-level inline styling where avoidable.
 - `npm test` and `npm run build` pass.
 - The merged commit is pushed, deployed through the existing Coolify application, and verified on `https://hyggeleuven.be/admin` with fresh production evidence.
-
