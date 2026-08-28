@@ -69,7 +69,7 @@ test("extends the object icon language to every More destination", async () => {
   ]);
 
   for (const icon of ["photos", "instagram", "translations", "features", "admins", "audit", "preview"]) {
-    assert.match(more, new RegExp(`/admin-icons/${icon}\\.png`));
+    assert.match(more, new RegExp(`/admin-icons/${icon}-service-counter-2\\.png`));
   }
   assert.match(css, /\.admin-tool-icon/);
   assert.match(css, /\.admin-page-icon/);
