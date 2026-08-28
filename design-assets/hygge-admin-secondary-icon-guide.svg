@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <rect width="1400" height="900" fill="#FBFAF6"/>
+  <text x="700" y="62" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#30251F">Hygge admin secondary icon set</text>
+  <text x="700" y="98" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#54705D">seven isolated warm café illustrations · transparent-ready · no logos</text>
+
+  <g fill="#FFFDF8" stroke="#E9DDC9" stroke-width="4">
+    <rect x="55" y="135" width="300" height="310" rx="28"/>
+    <rect x="385" y="135" width="300" height="310" rx="28"/>
+    <rect x="715" y="135" width="300" height="310" rx="28"/>
+    <rect x="1045" y="135" width="300" height="310" rx="28"/>
+    <rect x="220" y="485" width="300" height="310" rx="28"/>
+    <rect x="550" y="485" width="300" height="310" rx="28"/>
+    <rect x="880" y="485" width="300" height="310" rx="28"/>
+  </g>
+
+  <!-- Photos: instant camera with a framed café photo -->
+  <g stroke="#30251F" stroke-width="11" stroke-linejoin="round" stroke-linecap="round">
+    <rect x="112" y="205" width="185" height="135" rx="25" fill="#F1CF72"/>
+    <path d="M148 205l17-28h78l19 28" fill="#E9DDC9"/>
+    <circle cx="205" cy="270" r="39" fill="#FBFAF6"/>
+    <circle cx="205" cy="270" r="21" fill="#54705D"/>
+    <circle cx="268" cy="229" r="9" fill="#A33B43"/>
+    <path d="M158 340v62h102v-62" fill="#FBFAF6"/>
+    <path d="M176 384l23-22 17 15 18-25 16 32" fill="none" stroke="#54705D" stroke-width="8"/>
+  </g>
+  <text x="205" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#30251F">PHOTOS</text>
+
+  <!-- Instagram: phone with photo tiles, deliberately no logo -->
+  <g stroke="#30251F" stroke-width="10" stroke-linejoin="round">
+    <rect x="468" y="177" width="136" height="220" rx="25" fill="#FBFAF6"/>
+    <path d="M516 195h40" fill="none" stroke-linecap="round"/>
+    <rect x="490" y="226" width="43" height="45" rx="8" fill="#F1CF72"/>
+    <rect x="540" y="226" width="43" height="45" rx="8" fill="#54705D"/>
+    <rect x="490" y="279" width="43" height="45" rx="8" fill="#A33B43"/>
+    <rect x="540" y="279" width="43" height="45" rx="8" fill="#E9DDC9"/>
+    <circle cx="536" cy="366" r="8" fill="#30251F"/>
+  </g>
+  <text x="535" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#30251F">INSTAGRAM</text>
+
+  <!-- Translations: overlapping multilingual menu cards -->
+  <g stroke="#30251F" stroke-width="9" stroke-linejoin="round">
+    <rect x="760" y="206" width="105" height="142" rx="12" fill="#E9DDC9" transform="rotate(-10 812 277)"/>
+    <rect x="864" y="206" width="105" height="142" rx="12" fill="#F1CF72" transform="rotate(10 916 277)"/>
+    <rect x="804" y="178" width="118" height="172" rx="14" fill="#FBFAF6"/>
+    <path d="M826 235h73M826 264h73M826 293h53" fill="none" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <text x="774" y="237" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#54705D">NL</text>
+  <text x="930" y="237" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#A33B43">FR</text>
+  <text x="863" y="214" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#30251F">EN</text>
+  <text x="865" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#30251F">TRANSLATIONS</text>
+
+  <!-- Features: brass and sage toggle board -->
+  <g stroke="#30251F" stroke-width="10" stroke-linejoin="round">
+    <rect x="1100" y="181" width="192" height="188" rx="24" fill="#E9DDC9"/>
+    <rect x="1130" y="218" width="92" height="42" rx="21" fill="#54705D"/>
+    <circle cx="1200" cy="239" r="15" fill="#FBFAF6" stroke-width="6"/>
+    <rect x="1130" y="278" width="92" height="42" rx="21" fill="#F1CF72"/>
+    <circle cx="1152" cy="299" r="15" fill="#FBFAF6" stroke-width="6"/>
+    <path d="M1248 230h17M1248 248h17M1248 290h17M1248 308h17" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <text x="1195" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#30251F">FEATURES</text>
+
+  <!-- Admins: paired café keys and name tags -->
+  <g stroke="#30251F" stroke-width="10" stroke-linejoin="round" stroke-linecap="round">
+    <rect x="274" y="548" width="105" height="88" rx="15" fill="#F1CF72"/>
+    <rect x="361" y="581" width="105" height="88" rx="15" fill="#54705D"/>
+    <path d="M305 580h43M392 613h43" stroke="#FBFAF6" stroke-width="8"/>
+    <circle cx="314" cy="702" r="25" fill="#E9DDC9"/>
+    <circle cx="314" cy="702" r="8" fill="#FBFAF6" stroke-width="6"/>
+    <path d="M335 686l78-63 28 35-16 13-12-14-15 13 12 14-22 18" fill="none"/>
+  </g>
+  <text x="370" y="762" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#30251F">ADMINS</text>
+
+  <!-- Audit: bound ledger with checked entry -->
+  <g stroke="#30251F" stroke-width="10" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M619 548h147v178H619c-22 0-34-12-34-31V579c0-19 12-31 34-31z" fill="#A33B43"/>
+    <path d="M622 548v178"/>
+    <path d="M648 589h89M648 631h89M648 673h57" stroke="#FBFAF6" stroke-width="8"/>
+    <path d="M706 670l18 18 39-48" fill="none" stroke="#F1CF72" stroke-width="12"/>
+  </g>
+  <text x="700" y="762" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#30251F">AUDIT</text>
+
+  <!-- Preview: tiny café window/storefront -->
+  <g stroke="#30251F" stroke-width="10" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M937 593h186v140H937z" fill="#E9DDC9"/>
+    <path d="M925 593h210l-21-48H947z" fill="#F1CF72"/>
+    <path d="M947 545v48M988 545v48M1030 545v48M1072 545v48M1114 545v48"/>
+    <rect x="962" y="620" width="62" height="88" rx="4" fill="#54705D"/>
+    <rect x="1045" y="620" width="52" height="55" rx="4" fill="#FBFAF6"/>
+    <path d="M1056 656h30" stroke="#A33B43"/>
+  </g>
+  <text x="1030" y="762" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#30251F">PREVIEW</text>
+</svg>

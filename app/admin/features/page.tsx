@@ -59,7 +59,7 @@ export default async function FeaturesPage({
         ticket="09 / Feature board"
         title="Features"
         description="Choose what guests can see, then edit the copy behind each optional experience."
-        icon="/admin-icons/features.png"
+        icon="/admin-icons/features-service-counter-2.png"
         breadcrumb={{ href: "/admin/more", label: "More" }}
         status={<span className="admin-ticket-status" data-tone="live">{enabledCount} of {FLAG_REGISTRY.length} enabled</span>}
       />

@@ -100,7 +100,7 @@ export default async function TranslationsPage({
         ticket="08 / Three languages"
         title="Translations"
         description="Edit English, Dutch, and French public copy in one place."
-        icon="/admin-icons/translations.png"
+        icon="/admin-icons/translations-service-counter-2.png"
         breadcrumb={{ href: "/admin/more", label: "More" }}
         status={<span className="admin-ticket-status">{allNamespaces.length} text fields</span>}
       />

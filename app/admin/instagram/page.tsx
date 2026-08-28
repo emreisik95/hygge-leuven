@@ -23,6 +23,9 @@ export default async function InstagramAdminPage({
   const envOk = hasInstagramEnv();
   const cronOk = !!process.env.CRON_SECRET;
   const postCount = await prisma.instagramPost.count();
+  const now = new Date();
+  const tokenExpired = !!account?.tokenExpires && account.tokenExpires.getTime() <= now.getTime();
+  const integrationReady = envOk && !!account && !tokenExpired;
 
   return (
     <>
@@ -30,9 +33,13 @@ export default async function InstagramAdminPage({
         ticket="07 / Social feed"
         title="Instagram"
         description="See what is connected, refresh café posts, and finish setup when something is missing."
-        icon="/admin-icons/instagram.png"
+        icon="/admin-icons/instagram-service-counter-2.png"
         breadcrumb={{ href: "/admin/more", label: "More" }}
-        status={<span className="admin-ticket-status" data-tone={account ? "live" : "draft"}>{account ? "Connected" : "Setup needed"}</span>}
+        status={
+          <span className="admin-ticket-status" data-tone={integrationReady ? "live" : "draft"}>
+            {integrationReady ? "Connected" : tokenExpired ? "Reconnect needed" : "Setup needed"}
+          </span>
+        }
       />
 
       {ok === "connected" ? <Flash kind="ok">Account connected.</Flash> : null}
@@ -63,9 +70,21 @@ export default async function InstagramAdminPage({
             },
             {
               label: "Access token",
-              value: account?.tokenExpires ? `${daysUntil(account.tokenExpires)} days` : "Not available",
-              detail: account?.tokenExpires ? `Expires ${account.tokenExpires.toISOString().slice(0, 10)}` : undefined,
-              tone: account?.tokenExpires ? (daysUntil(account.tokenExpires) < 14 ? "warning" : "ready") : "neutral",
+              value: tokenExpired
+                ? "Expired"
+                : account?.tokenExpires
+                  ? `${daysUntil(account.tokenExpires, now)} days`
+                  : "Not available",
+              detail: tokenExpired
+                ? `Expired ${account?.tokenExpires?.toISOString().slice(0, 10)}`
+                : account?.tokenExpires
+                  ? `Expires ${account.tokenExpires.toISOString().slice(0, 10)}`
+                  : undefined,
+              tone: tokenExpired
+                ? "missing"
+                : account?.tokenExpires
+                  ? (daysUntil(account.tokenExpires, now) < 14 ? "warning" : "ready")
+                  : "neutral",
             },
             {
               label: "Cached posts",
@@ -162,6 +181,6 @@ function describeError(code: string): string {
   }
 }
 
-function daysUntil(date: Date): number {
-  return Math.max(0, Math.round((date.getTime() - Date.now()) / (24 * 60 * 60 * 1000)));
+function daysUntil(date: Date, now = new Date()): number {
+  return Math.max(0, Math.ceil((date.getTime() - now.getTime()) / (24 * 60 * 60 * 1000)));
 }

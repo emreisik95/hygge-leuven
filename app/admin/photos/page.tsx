@@ -58,7 +58,7 @@ export default async function PhotosPage({
         ticket="06 / Image library"
         title="Photos"
         description="Keep the café imagery organised, described, and ready for the public site."
-        icon="/admin-icons/photos.png"
+        icon="/admin-icons/photos-service-counter-2.png"
         breadcrumb={{ href: "/admin/more", label: "More" }}
         status={<span className="admin-ticket-status">{all.length} {all.length === 1 ? "image" : "images"}</span>}
       />

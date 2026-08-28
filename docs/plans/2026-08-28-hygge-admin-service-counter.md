@@ -346,4 +346,3 @@ In authenticated Chrome state, freshly load every admin route on `https://hyggel
 **Step 6: Close the goal**
 
 Only after fresh production evidence for every requirement, mark the explicit goal complete and report the generated master asset, tests/build, deployed commit, and live URL.
-

@@ -1,0 +1,13 @@
+{
+  "generator": "gpt-image-2",
+  "source": "design-assets/hygge-admin-secondary-icons.png",
+  "icons": {
+    "photos": "instant camera with a framed café photo",
+    "instagram": "phone with photo tiles, without a social logo",
+    "translations": "overlapping English, Dutch, and French menu cards",
+    "features": "brass-and-sage toggle board",
+    "admins": "admin profile with café messages and settings",
+    "audit": "bound ledger with a checked entry",
+    "preview": "tiny café window and storefront"
+  }
+}

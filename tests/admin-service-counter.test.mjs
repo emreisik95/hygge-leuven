@@ -56,12 +56,26 @@ test("makes the long Content editor locally navigable with one page action dock"
 test("installs a web-sized illustrated icon for every secondary tool", async () => {
   const more = await read("app/admin/more/page.tsx");
   for (const icon of ["photos", "instagram", "translations", "features", "admins", "audit", "preview"]) {
-    const path = new URL(`../public/admin-icons/${icon}.png`, import.meta.url);
+    const path = new URL(`../public/admin-icons/${icon}-service-counter-2.png`, import.meta.url);
     const iconStat = await stat(path);
     assert.ok(iconStat.size > 0, `${icon} icon must not be empty`);
     assert.ok(iconStat.size < 60 * 1024, `${icon} icon should stay web-sized`);
-    assert.match(more, new RegExp(`/admin-icons/${icon}\\.png`));
+    assert.match(more, new RegExp(`/admin-icons/${icon}-service-counter-2\\.png`));
   }
+});
+
+test("locks the approved secondary icon vocabulary to its generated artwork", async () => {
+  const manifest = JSON.parse(await read("public/admin-icons/manifest.json"));
+  assert.equal(manifest.source, "design-assets/hygge-admin-secondary-icons.png");
+  assert.deepEqual(manifest.icons, {
+    photos: "instant camera with a framed café photo",
+    instagram: "phone with photo tiles, without a social logo",
+    translations: "overlapping English, Dutch, and French menu cards",
+    features: "brass-and-sage toggle board",
+    admins: "admin profile with café messages and settings",
+    audit: "bound ledger with a checked entry",
+    preview: "tiny café window and storefront",
+  });
 });
 
 test("keeps admin artwork outside the authenticated route namespace", async () => {
@@ -85,6 +99,11 @@ test("keeps Instagram setup truthful and progressively disclosed", async () => {
   assert.ok((instagram.match(/<details\b/g) ?? []).length >= 2);
   assert.match(instagram, /envOk \? "ready" : "missing"/);
   assert.match(instagram, /account \? "ready" : "missing"/);
+  assert.match(instagram, /const tokenExpired =/);
+  assert.match(instagram, /const integrationReady = envOk && !!account && !tokenExpired/);
+  assert.match(instagram, /integrationReady \? "Connected"/);
+  assert.match(instagram, /tokenExpired\s*\?\s*"Expired"/);
+  assert.match(instagram, /tokenExpired \? "Reconnect needed"/);
 });
 
 test("keeps translations editable while adding language and group wayfinding", async () => {
@@ -124,22 +143,40 @@ test("renders audit history as responsive events rather than a desktop table", a
   assert.match(audit, /name="actor"/);
   assert.match(audit, /name="entity"/);
   assert.match(audit, /<details className="audit-event-diff"/);
+  assert.match(audit, /const ACTION_LABELS/);
+  assert.match(audit, /actionLabel\(row\.action\)/);
+  assert.match(audit, /<code>\{row\.action\}<\/code>/);
+});
+
+test("describes Preview as the current draft on the More shelf", async () => {
+  const more = await read("app/admin/more/page.tsx");
+  assert.match(more, /title="Preview" description="Review the current admin draft\."/);
 });
 
 test("frames Preview as a published-state admin review surface", async () => {
-  const preview = await read("app/admin/preview/page.tsx");
+  const [preview, css] = await Promise.all([
+    read("app/admin/preview/page.tsx"),
+    read("app/admin/admin.css"),
+  ]);
   assert.match(preview, /<AdminPreviewFrame\b/);
+  assert.match(preview, /src="\/admin\/preview\?embed=1"/);
+  assert.match(preview, /if \(embed === "1"\)/);
+  assert.match(preview, /className="admin-preview-embed"/);
   assert.match(preview, /published state/i);
   assert.match(preview, /current admin draft/i);
+  assert.match(css, /:has\(\.admin-preview-embed\)[\s\S]*\.admin-topbar/);
 });
 
 test("provides phone and desktop controls around the real admin preview", async () => {
   const frame = await read("app/admin/components/AdminPreviewFrame.tsx");
   assert.match(frame, /^"use client";/);
   assert.match(frame, /useState<"phone" \| "desktop">/);
+  assert.match(frame, /useRef<HTMLIFrameElement>/);
   assert.match(frame, />\s*Phone\s*</);
   assert.match(frame, />\s*Desktop\s*</);
-  assert.match(frame, /window\.location\.reload\(\)/);
+  assert.match(frame, /<iframe\b/);
+  assert.match(frame, /src=\{src\}/);
+  assert.match(frame, /contentWindow\?\.location\.reload\(\)/);
   assert.match(frame, /href="\/"/);
 });
 

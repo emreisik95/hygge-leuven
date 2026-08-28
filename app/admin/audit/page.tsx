@@ -7,6 +7,28 @@ export const metadata = { title: "Audit log — admin — hygge" };
 
 const PAGE_SIZE = 200;
 
+const ACTION_LABELS: Record<string, string> = {
+  "admin.create": "Added an admin",
+  "admin.delete": "Removed an admin",
+  "feature.settings.update": "Updated feature content",
+  "flags.update": "Updated feature visibility",
+  "hours.update": "Updated opening hours",
+  "instagram.connect.initiate": "Started Instagram connection",
+  "instagram.disconnect": "Disconnected Instagram",
+  "instagram.refresh": "Refreshed Instagram posts",
+  "menu.document.replace": "Replaced the café menu",
+  "photo.delete": "Deleted a photo",
+  "photo.move": "Moved a photo",
+  "photo.reorder": "Reordered photos",
+  "photo.restore": "Restored a photo",
+  "photo.update": "Updated a photo",
+  "photo.upload": "Uploaded a photo",
+  "site.draft.discard": "Discarded the site draft",
+  "site.draft.save": "Saved the site draft",
+  "site.publish": "Published the site",
+  "translations.update": "Updated translations",
+};
+
 type Search = { actor?: string; entity?: string };
 
 function relativeTime(then: Date, now: Date): string {
@@ -30,6 +52,14 @@ function formatDiff(diff: string | null): string {
   } catch {
     return diff;
   }
+}
+
+function actionLabel(action: string): string {
+  return ACTION_LABELS[action] ?? action
+    .split(/[._-]+/)
+    .filter(Boolean)
+    .map((word) => word[0]?.toUpperCase() + word.slice(1))
+    .join(" ");
 }
 
 export default async function AuditPage({
@@ -63,7 +93,7 @@ export default async function AuditPage({
         ticket="11 / Change ledger"
         title="Audit"
         description={`The latest ${PAGE_SIZE} successful admin changes, kept in newest-first order.`}
-        icon="/admin-icons/audit.png"
+        icon="/admin-icons/audit-service-counter-2.png"
         breadcrumb={{ href: "/admin/more", label: "More" }}
         status={<span className="admin-ticket-status">{rows.length} entries</span>}
       />
@@ -113,7 +143,7 @@ export default async function AuditPage({
                 <header className="audit-event-heading">
                   <div>
                     <p className="admin-eyebrow">{row.actor}</p>
-                    <h2>{row.action}</h2>
+                    <h2>{actionLabel(row.action)}</h2>
                   </div>
                   <time dateTime={row.createdAt.toISOString()} title={row.createdAt.toISOString()}>
                     {relativeTime(row.createdAt, now)}
@@ -121,6 +151,7 @@ export default async function AuditPage({
                 </header>
                 <div className="audit-event-meta">
                   <span>{row.entity}</span>
+                  <code>{row.action}</code>
                   {row.entityId ? <code>{row.entityId}</code> : null}
                 </div>
                 {row.diff ? (

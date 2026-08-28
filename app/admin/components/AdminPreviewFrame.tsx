@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useRef, useState } from "react";
 
-export function AdminPreviewFrame({ children }: { children: ReactNode }) {
+export function AdminPreviewFrame({ src }: { src: string }) {
   const [device, setDevice] = useState<"phone" | "desktop">("phone");
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   return (
     <section className="admin-preview-frame" aria-label="Site preview">
@@ -27,7 +28,7 @@ export function AdminPreviewFrame({ children }: { children: ReactNode }) {
           </button>
         </div>
         <div className="admin-preview-actions">
-          <button type="button" onClick={() => window.location.reload()}>
+          <button type="button" onClick={() => iframeRef.current?.contentWindow?.location.reload()}>
             Refresh
           </button>
           <a href="/" target="_blank" rel="noreferrer">
@@ -37,7 +38,12 @@ export function AdminPreviewFrame({ children }: { children: ReactNode }) {
       </div>
       <div className="admin-preview-stage">
         <div className="admin-preview-canvas" data-device={device}>
-          {children}
+          <iframe
+            ref={iframeRef}
+            src={src}
+            title="Current admin draft"
+            loading="eager"
+          />
         </div>
       </div>
     </section>
