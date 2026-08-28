@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import { resolvePublicOrigin } from "@/lib/public-origin";
 
 export { CAFE, buildCafeJsonLd, jsonLdScript } from "@/lib/cafe-jsonld";
 
@@ -9,11 +10,12 @@ export { CAFE, buildCafeJsonLd, jsonLdScript } from "@/lib/cafe-jsonld";
 // that strip forwarded headers.
 
 export async function getOrigin(): Promise<string> {
-  const override = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "");
-  if (override) return override;
   const h = await headers();
-  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
-  const proto =
-    h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  return `${proto}://${host}`;
+  return resolvePublicOrigin({
+    nodeEnv: process.env.NODE_ENV,
+    override: process.env.NEXT_PUBLIC_SITE_URL,
+    forwardedHost: h.get("x-forwarded-host"),
+    host: h.get("host"),
+    forwardedProto: h.get("x-forwarded-proto"),
+  });
 }
