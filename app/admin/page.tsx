@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { AdminStatusRail } from "./components/AdminStatusRail";
+import { AdminPageIntro } from "./components/AdminPageIntro";
 import {
   getDraftContent,
   getOpeningHours,
@@ -47,11 +48,12 @@ export default async function AdminOverviewPage() {
 
   return (
     <>
-      <header className="admin-page-intro">
-        <p className="admin-eyebrow">{greeting(now)}</p>
-        <h1>Overview</h1>
-        <p>Everything needed for today at a glance.</p>
-      </header>
+      <AdminPageIntro
+        ticket={`01 / ${greeting(now)}`}
+        title="Overview"
+        description="Everything needed for today at a glance."
+        icon="/admin/icons/overview.png"
+      />
 
       <AdminStatusRail
         hasDraft={hasDraft}

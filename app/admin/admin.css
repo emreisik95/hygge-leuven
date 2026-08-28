@@ -1550,6 +1550,30 @@
   gap: var(--a-s2);
   flex-wrap: wrap;
 }
+.admin-shell .admin-ticket-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 11px;
+  border: 1px solid var(--a-line-strong);
+  border-radius: var(--a-r-pill);
+  background: var(--a-bg);
+  color: var(--a-text-dim);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.admin-shell .admin-ticket-status[data-tone="live"] {
+  border-color: var(--a-ok-line);
+  background: var(--a-ok-bg);
+  color: var(--a-ok);
+}
+.admin-shell .admin-ticket-status[data-tone="draft"] {
+  border-color: var(--a-warn-line);
+  background: var(--a-warn-bg);
+  color: var(--a-warn);
+}
 
 .admin-shell .admin-tool-card {
   display: grid;
@@ -1671,6 +1695,13 @@
   box-shadow: var(--a-shadow-2);
 }
 .admin-shell .admin-action-dock > * { flex: 1 1 140px; }
+.admin-shell .admin-action-dock-copy {
+  margin: 0;
+  color: var(--a-text-dim);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.admin-shell .section[id] { scroll-margin-top: 20px; }
 .admin-shell .admin-empty-state {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);

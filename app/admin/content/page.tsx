@@ -13,6 +13,9 @@ import { decodeErrors } from "@/lib/validation";
 import { Field, TextareaField, FieldRow, Toggle } from "../ui/fields";
 import { SubmitButton } from "../ui/SubmitButton";
 import { Flash } from "../ui/Flash";
+import { AdminActionDock } from "../components/AdminActionDock";
+import { AdminPageIntro } from "../components/AdminPageIntro";
+import { AdminSectionNav } from "../components/AdminSectionNav";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Content — admin — hygge" };
@@ -39,11 +42,13 @@ export default async function AdminPage({
 
   return (
     <>
-      <header className="admin-page-intro">
-        <p className="admin-eyebrow">Publishing</p>
-        <h1>Content</h1>
-        <p>Edit the public story, contact details, and search presentation.</p>
-      </header>
+      <AdminPageIntro
+        ticket="02 / Publishing"
+        title="Content"
+        description="Edit the public story, contact details, and search presentation."
+        icon="/admin/icons/content.png"
+        status={<span className="admin-ticket-status" data-tone={dirty ? "draft" : "live"}>{dirty ? "Draft waiting" : "Live"}</span>}
+      />
 
       {saved ? <Flash kind="ok">Draft saved.</Flash> : null}
       {published ? <Flash kind="ok">Published.</Flash> : null}
@@ -63,10 +68,23 @@ export default async function AdminPage({
         />
       ) : null}
 
+      <AdminSectionNav
+        items={[
+          { href: "#visibility", label: "Visibility" },
+          { href: "#hero", label: "Hero" },
+          { href: "#address", label: "Address" },
+          { href: "#buttons", label: "Buttons" },
+          { href: "#instagram-pane", label: "Instagram" },
+          { href: "#menu-note", label: "Menu note" },
+          { href: "#map", label: "Map" },
+          { href: "#seo", label: "SEO" },
+        ]}
+      />
+
       <form action={updateContent} aria-label="Site content editor">
         <input type="hidden" name="_visibilityForm" value="1" />
 
-        <section className="section">
+        <section className="section" id="visibility">
           <h2>Visibility</h2>
           <p className="hint">
             Hide individual landing-page sections without deleting their content. Toggles take
@@ -82,7 +100,7 @@ export default async function AdminPage({
           </div>
         </section>
 
-        <section className="section">
+        <section className="section" id="hero">
           <h2>Hero</h2>
           <Field name="brandName" label="Brand name" defaultValue={c.brandName} />
           <Field name="definitionLabel" label="Dictionary label" defaultValue={c.definitionLabel} />
@@ -94,7 +112,7 @@ export default async function AdminPage({
           </FieldRow>
         </section>
 
-        <section className="section">
+        <section className="section" id="address">
           <h2>Address</h2>
           <FieldRow>
             <Field name="addressLine1" label="Address line 1" defaultValue={c.addressLine1} />
@@ -102,7 +120,7 @@ export default async function AdminPage({
           </FieldRow>
         </section>
 
-        <section className="section">
+        <section className="section" id="buttons">
           <h2>Buttons</h2>
           <FieldRow>
             <Field name="findUsLabel" label="Find Us label" defaultValue={c.findUsLabel} />
@@ -114,7 +132,7 @@ export default async function AdminPage({
           </FieldRow>
         </section>
 
-        <section className="section">
+        <section className="section" id="instagram-pane">
           <h2>Instagram pane</h2>
           <Field name="instaHeading" label="Heading" defaultValue={c.instaHeading} />
           <Field name="instaSub" label="Subheading" defaultValue={c.instaSub} />
@@ -124,7 +142,7 @@ export default async function AdminPage({
           </p>
         </section>
 
-        <section className="section">
+        <section className="section" id="menu-note">
           <h2>Menu</h2>
           <TextareaField
             name="menuBeansNote"
@@ -134,7 +152,7 @@ export default async function AdminPage({
           />
         </section>
 
-        <section className="section">
+        <section className="section" id="map">
           <h2>Map</h2>
           <Field name="mapHeading" label="Map heading" defaultValue={c.mapHeading} />
           <Field name="mapSub" label="Map subtext" defaultValue={c.mapSub} />
@@ -145,20 +163,19 @@ export default async function AdminPage({
           <Field name="mapZoom" label="Zoom (1-22)" inputMode="numeric" defaultValue={String(c.mapZoom)} error={errors.mapZoom} />
         </section>
 
-        <section className="section">
+        <section className="section" id="seo">
           <h2>SEO</h2>
           <Field name="metaTitle" label="Meta title" defaultValue={c.metaTitle} />
           <TextareaField name="metaDescription" label="Meta description" defaultValue={c.metaDescription} />
         </section>
 
-        <p className="hint">
-          Saving stores changes as a <strong>draft</strong>. Use{" "}
-          <Link href="/admin/preview" className="admin-nav-link">Preview</Link> to verify, then
-          publish from the banner above. Opening hours are edited at{" "}
-          <Link href="/admin/hours" className="admin-nav-link">Hours</Link>; menu, photos and
-          translations publish immediately when saved.
-        </p>
-        <SubmitButton pendingLabel="Saving…">Save draft</SubmitButton>
+        <AdminActionDock>
+          <p className="admin-action-dock-copy">
+            Saving creates a draft. Preview it before publishing.
+          </p>
+          <Link href="/admin/preview" className="btn-secondary-inline">Preview</Link>
+          <SubmitButton pendingLabel="Saving…">Save draft</SubmitButton>
+        </AdminActionDock>
       </form>
     </>
   );

@@ -42,6 +42,17 @@ test("provides the complete shared service-counter primitive set", async () => {
   }
 });
 
+test("makes the long Content editor locally navigable with one page action dock", async () => {
+  const content = await read("app/admin/content/page.tsx");
+  assert.match(content, /<AdminSectionNav\b/);
+  assert.match(content, /<AdminActionDock\b/);
+  for (const id of ["visibility", "hero", "address", "buttons", "instagram-pane", "menu-note", "map", "seo"]) {
+    assert.match(content, new RegExp(`id=["']${id}["']`));
+    assert.match(content, new RegExp(`href:\\s*["']#${id}["']`));
+  }
+  assert.match(content, /<SubmitButton pendingLabel="Saving…">Save draft<\/SubmitButton>/);
+});
+
 test("installs a web-sized illustrated icon for every secondary tool", async () => {
   const more = await read("app/admin/more/page.tsx");
   for (const icon of ["photos", "instagram", "translations", "features", "admins", "audit", "preview"]) {
@@ -92,4 +103,3 @@ test("removes avoidable page-level inline layout styles from secondary tools", a
     assert.doesNotMatch(await read(route), /style=\{\{/, `${route} should use shared classes`);
   }
 });
-

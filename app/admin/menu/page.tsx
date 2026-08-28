@@ -5,6 +5,7 @@ import {
 import { replaceMenuDocument } from "./actions";
 import { Flash } from "../ui/Flash";
 import { SubmitButton } from "../ui/SubmitButton";
+import { AdminPageIntro } from "../components/AdminPageIntro";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Menu — admin — hygge" };
@@ -33,11 +34,13 @@ export default async function AdminMenuPage({
 
   return (
     <>
-      <header className="admin-page-intro">
-        <p className="admin-eyebrow">Seasonal document</p>
-        <h1>Menu</h1>
-        <p>One PDF controls the menu shown on the public site.</p>
-      </header>
+      <AdminPageIntro
+        ticket="03 / Seasonal document"
+        title="Menu"
+        description="One PDF controls the menu shown on the public site."
+        icon="/admin/icons/menu.png"
+        status={<span className="admin-ticket-status" data-tone="live">Live menu</span>}
+      />
 
       {params.saved ? <Flash kind="ok">Menu PDF published.</Flash> : null}
       {params.error ? (
