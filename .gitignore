@@ -44,6 +44,9 @@ next-env.d.ts
 /prisma/dev.db
 /prisma/dev.db-journal
 
+# isolated feature worktrees
+/.worktrees/
+
 # uploads (kept in volume on prod)
 /public/uploads/*
 !/public/uploads/.gitkeep
