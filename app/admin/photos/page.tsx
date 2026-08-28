@@ -13,6 +13,9 @@ import { DragReorderList } from "../components/DragReorderList";
 import { UndoFlash } from "../components/UndoFlash";
 import { SubmitButton } from "../ui/SubmitButton";
 import { Flash } from "../ui/Flash";
+import { AdminEmptyState } from "../components/AdminEmptyState";
+import { AdminPageIntro } from "../components/AdminPageIntro";
+import { AdminSectionNav } from "../components/AdminSectionNav";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Photos — admin" };
@@ -50,108 +53,136 @@ export default async function PhotosPage({
   }
 
   return (
-    <main>
+    <>
+      <AdminPageIntro
+        ticket="06 / Image library"
+        title="Photos"
+        description="Keep the café imagery organised, described, and ready for the public site."
+        icon="/admin/icons/photos.png"
+        breadcrumb={{ href: "/admin/more", label: "More" }}
+        status={<span className="admin-ticket-status">{all.length} {all.length === 1 ? "image" : "images"}</span>}
+      />
+
       {params.undo && params.undoMsg ? (
         <UndoFlash payload={params.undo} message={params.undoMsg} action={restorePhotoFromUndo} />
       ) : null}
       {Object.keys(errors).length > 0 ? (
         <Flash kind="err">Please fix the errors below.</Flash>
       ) : null}
-          {ROLES.map((r) => {
-            const photos = grouped.get(r.key) ?? [];
-            return (
-              <section className="section" key={r.key}>
-                <h2>{r.label}</h2>
-                <p className="hint" style={{ marginBottom: 12 }}>{r.description}</p>
 
-                {photos.length === 0 ? (
-                  <p className="hint" style={{ marginBottom: 12 }}>
-                    No {r.label.toLowerCase()} photos yet — upload your first below.
-                  </p>
-                ) : r.readOnly ? (
-                  <ul className="photo-grid">
-                    {photos.map((p) => (
-                      <li key={p.id} className="photo-row">
+      <AdminSectionNav
+        items={ROLES.map((role) => ({
+          href: `#photos-${role.key}`,
+          label: role.label,
+          meta: String((grouped.get(role.key) ?? []).length),
+        }))}
+        ariaLabel="Photo groups"
+      />
+
+      <div className="photo-role-list">
+        {ROLES.map((r) => {
+          const photos = grouped.get(r.key) ?? [];
+          return (
+            <section className="section photo-role-section" id={`photos-${r.key}`} key={r.key}>
+              <div className="photo-role-heading">
+                <div>
+                  <p className="admin-eyebrow">{photos.length} {photos.length === 1 ? "image" : "images"}</p>
+                  <h2>{r.label}</h2>
+                </div>
+                {r.readOnly ? <span className="admin-ticket-status">Read only</span> : null}
+              </div>
+              <p className="hint photo-role-description">{r.description}</p>
+
+              {photos.length === 0 ? (
+                <AdminEmptyState
+                  title={`No ${r.label.toLowerCase()} yet`}
+                  description={r.readOnly ? "Menu item images are added from the Menu workflow." : `Choose an image below to add the first ${r.label.toLowerCase()} photo.`}
+                />
+              ) : r.readOnly ? (
+                <ul className="photo-grid">
+                  {photos.map((p) => (
+                    <li key={p.id} className="photo-row">
+                      <PhotoCard photo={p} role={r} errors={errors} />
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <DragReorderList
+                  className="photo-grid"
+                  itemClassName="photo-row"
+                  ariaLabel={`${r.label} photos`}
+                  action={reorderPhotos}
+                  items={photos.map((p, i) => ({
+                    id: p.id,
+                    node: (
+                      <>
                         <PhotoCard photo={p} role={r} errors={errors} />
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <DragReorderList
-                    className="photo-grid"
-                    itemClassName="photo-row"
-                    ariaLabel={`${r.label} photos`}
-                    action={reorderPhotos}
-                    items={photos.map((p, i) => ({
-                      id: p.id,
-                      node: (
-                        <>
-                          <PhotoCard photo={p} role={r} errors={errors} />
-                          <div className="photo-actions">
-                            <form action={movePhoto}>
-                              <input type="hidden" name="id" value={p.id} />
-                              <input type="hidden" name="direction" value="up" />
-                              <SubmitButton className="btn-inline" disabled={i === 0} ariaLabel="Move up">↑</SubmitButton>
-                            </form>
-                            <form action={movePhoto}>
-                              <input type="hidden" name="id" value={p.id} />
-                              <input type="hidden" name="direction" value="down" />
-                              <SubmitButton className="btn-inline" disabled={i === photos.length - 1} ariaLabel="Move down">↓</SubmitButton>
-                            </form>
-                            <form action={deletePhoto}>
-                              <input type="hidden" name="id" value={p.id} />
-                              <SubmitButton className="btn-inline btn-danger" ariaLabel="Delete" pendingLabel="…">
-                                Delete
-                              </SubmitButton>
-                            </form>
-                          </div>
-                        </>
-                      ),
-                    }))}
-                  />
-                )}
+                        <div className="photo-actions">
+                          <form action={movePhoto}>
+                            <input type="hidden" name="id" value={p.id} />
+                            <input type="hidden" name="direction" value="up" />
+                            <SubmitButton className="btn-inline" disabled={i === 0} ariaLabel="Move up">↑</SubmitButton>
+                          </form>
+                          <form action={movePhoto}>
+                            <input type="hidden" name="id" value={p.id} />
+                            <input type="hidden" name="direction" value="down" />
+                            <SubmitButton className="btn-inline" disabled={i === photos.length - 1} ariaLabel="Move down">↓</SubmitButton>
+                          </form>
+                          <form action={deletePhoto}>
+                            <input type="hidden" name="id" value={p.id} />
+                            <SubmitButton className="btn-inline btn-danger" ariaLabel="Delete" pendingLabel="…">
+                              Delete
+                            </SubmitButton>
+                          </form>
+                        </div>
+                      </>
+                    ),
+                  }))}
+                />
+              )}
 
-                {!r.readOnly && (
-                  <form action={uploadPhoto} encType="multipart/form-data" className="upload-zone">
-                    <input type="hidden" name="role" value={r.key} />
-                    <div className="field">
-                      <label htmlFor={`alt-new-${r.key}`}>
-                        Alt text {ALT_REQUIRED_ROLES.has(r.key) ? "(required)" : "(optional)"}
-                      </label>
-                      <input
-                        id={`alt-new-${r.key}`}
-                        type="text"
-                        name="alt"
-                        defaultValue=""
-                        required={ALT_REQUIRED_ROLES.has(r.key)}
-                        aria-invalid={errors[`upload-${r.key}-alt`] ? true : undefined}
-                      />
-                      {errors[`upload-${r.key}-alt`] ? (
-                        <p className="field-error" role="alert">{errors[`upload-${r.key}-alt`]}</p>
-                      ) : null}
-                    </div>
-                    <div className="field">
-                      <label htmlFor={`file-${r.key}`}>Upload {r.label.toLowerCase()} photo</label>
-                      <ImagePreview
-                        inputId={`file-${r.key}`}
-                        name="file"
-                        accept="image/*"
-                        required
-                      />
-                      <span className="hint">
-                        Converted to WebP, resized to 1600px wide. Max 8 MB.
-                      </span>
-                      {errors[`upload-${r.key}-file`] ? (
-                        <p className="field-error" role="alert">{errors[`upload-${r.key}-file`]}</p>
-                      ) : null}
-                    </div>
-                    <SubmitButton pendingLabel="Uploading…">Upload</SubmitButton>
-                  </form>
-                )}
-              </section>
-            );
-          })}
-    </main>
+              {!r.readOnly && (
+                <form action={uploadPhoto} encType="multipart/form-data" className="upload-zone photo-upload-zone">
+                  <input type="hidden" name="role" value={r.key} />
+                  <div className="field">
+                    <label htmlFor={`alt-new-${r.key}`}>
+                      Alt text {ALT_REQUIRED_ROLES.has(r.key) ? "(required)" : "(optional)"}
+                    </label>
+                    <input
+                      id={`alt-new-${r.key}`}
+                      type="text"
+                      name="alt"
+                      defaultValue=""
+                      required={ALT_REQUIRED_ROLES.has(r.key)}
+                      aria-invalid={errors[`upload-${r.key}-alt`] ? true : undefined}
+                    />
+                    {errors[`upload-${r.key}-alt`] ? (
+                      <p className="field-error" role="alert">{errors[`upload-${r.key}-alt`]}</p>
+                    ) : null}
+                  </div>
+                  <div className="field">
+                    <label htmlFor={`file-${r.key}`}>Upload {r.label.toLowerCase()} photo</label>
+                    <ImagePreview
+                      inputId={`file-${r.key}`}
+                      name="file"
+                      accept="image/*"
+                      required
+                    />
+                    <span className="hint">
+                      Converted to WebP, resized to 1600px wide. Max 8 MB.
+                    </span>
+                    {errors[`upload-${r.key}-file`] ? (
+                      <p className="field-error" role="alert">{errors[`upload-${r.key}-file`]}</p>
+                    ) : null}
+                  </div>
+                  <SubmitButton pendingLabel="Uploading…">Upload photo</SubmitButton>
+                </form>
+              )}
+            </section>
+          );
+        })}
+      </div>
+    </>
   );
 }
 
