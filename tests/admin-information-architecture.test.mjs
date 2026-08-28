@@ -47,7 +47,7 @@ test("makes overview operational and moves editing to Content", async () => {
 test("groups secondary tools under More", async () => {
   const more = await read("app/admin/more/page.tsx");
   for (const label of ["Photos", "Instagram", "Translations", "Features", "Admins", "Audit"]) {
-    assert.match(more, new RegExp(`>${label}<`));
+    assert.match(more, new RegExp(`(?:title=["']${label}["']|>${label}<)`));
   }
 });
 

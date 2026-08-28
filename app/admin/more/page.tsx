@@ -1,24 +1,53 @@
-import Link from "next/link";
+import { AdminPageIntro } from "../components/AdminPageIntro";
+import { AdminToolCard } from "../components/AdminToolCard";
 
 export const metadata = { title: "More — admin — hygge" };
 
 export default function MorePage() {
   return (
     <>
-      <header className="admin-page-intro">
-        <p className="admin-eyebrow">Configuration</p>
-        <h1>More</h1>
-        <p>Less frequent publishing and account tools.</p>
-      </header>
-      <nav className="admin-tool-grid" aria-label="Additional admin tools">
-        <Link href="/admin/photos">Photos</Link>
-        <Link href="/admin/instagram">Instagram</Link>
-        <Link href="/admin/translations">Translations</Link>
-        <Link href="/admin/features">Features</Link>
-        <Link href="/admin/users">Admins</Link>
-        <Link href="/admin/audit">Audit</Link>
-        <Link href="/admin/preview">Preview</Link>
-      </nav>
+      <AdminPageIntro
+        ticket="05 / Tool shelf"
+        title="More"
+        description="Publishing, access, and review tools kept together behind the counter."
+        icon="/admin/icons/more.png"
+      />
+
+      <div className="admin-tool-shelf">
+        <section className="admin-tool-group" aria-labelledby="tool-group-publish">
+          <div className="admin-tool-group-heading">
+            <p className="admin-eyebrow">Keep the site fresh</p>
+            <h2 id="tool-group-publish">Publish</h2>
+          </div>
+          <div className="admin-tool-grid">
+            <AdminToolCard href="/admin/photos" icon="/admin/icons/photos.png" title="Photos" description="Backgrounds, gallery, and image details." />
+            <AdminToolCard href="/admin/instagram" icon="/admin/icons/instagram.png" title="Instagram" description="Connection health and cached café posts." />
+            <AdminToolCard href="/admin/translations" icon="/admin/icons/translations.png" title="Translations" description="Edit English, Dutch, and French site copy." />
+            <AdminToolCard href="/admin/features" icon="/admin/icons/features.png" title="Features" description="Visibility switches and feature content." />
+          </div>
+        </section>
+
+        <section className="admin-tool-group" aria-labelledby="tool-group-operations">
+          <div className="admin-tool-group-heading">
+            <p className="admin-eyebrow">People &amp; history</p>
+            <h2 id="tool-group-operations">Operations</h2>
+          </div>
+          <div className="admin-tool-grid">
+            <AdminToolCard href="/admin/users" icon="/admin/icons/admins.png" title="Admins" description="Manage who can work behind the counter." />
+            <AdminToolCard href="/admin/audit" icon="/admin/icons/audit.png" title="Audit" description="Review recent admin changes and actors." />
+          </div>
+        </section>
+
+        <section className="admin-tool-group" aria-labelledby="tool-group-review">
+          <div className="admin-tool-group-heading">
+            <p className="admin-eyebrow">Before guests see it</p>
+            <h2 id="tool-group-review">Review</h2>
+          </div>
+          <div className="admin-tool-grid admin-tool-grid-compact">
+            <AdminToolCard href="/admin/preview" icon="/admin/icons/preview.png" title="Preview" description="Review the published café experience." />
+          </div>
+        </section>
+      </div>
     </>
   );
 }
