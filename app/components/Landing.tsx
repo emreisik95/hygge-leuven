@@ -215,6 +215,18 @@ export function Landing({
   const hoursWeekendLine = formatHoursWeekend(hoursRows, t, locale);
   const dotAriaLabel = statusLabel;
   const Root = preview ? "div" : "main";
+  const aboutStoryParagraphs = [
+    c.aboutStoryParagraph1,
+    c.aboutStoryParagraph2,
+    c.aboutStoryParagraph3,
+    c.aboutStoryParagraph4,
+  ];
+  const hasAboutStory =
+    flags.aboutStory &&
+    Boolean(
+      c.aboutStoryHeading.trim() &&
+        aboutStoryParagraphs.some((paragraph) => paragraph.trim()),
+    );
 
   return (
     <Root className="shell" data-selection={flags.brandSelection ? "" : undefined}>
@@ -303,7 +315,7 @@ export function Landing({
                 {c.inviteSub ? <p className="invite-sub">{c.inviteSub}</p> : null}
               </div>
             ) : null}
-            <a href={flags.aboutStory ? "#about" : "#insta"} className="scroll-cue" aria-label={c.seeMoreLabel}>
+            <a href={hasAboutStory ? "#about" : "#insta"} className="scroll-cue" aria-label={c.seeMoreLabel}>
               <ArrowDown />
             </a>
           </div>
@@ -385,15 +397,10 @@ export function Landing({
         </section>
       ) : null}
 
-      {flags.aboutStory ? (
+      {hasAboutStory ? (
         <AboutStory
           heading={c.aboutStoryHeading}
-          paragraphs={[
-            c.aboutStoryParagraph1,
-            c.aboutStoryParagraph2,
-            c.aboutStoryParagraph3,
-            c.aboutStoryParagraph4,
-          ]}
+          paragraphs={aboutStoryParagraphs}
           backToTopLabel={c.backToTopLabel}
         />
       ) : null}

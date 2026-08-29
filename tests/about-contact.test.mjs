@@ -90,6 +90,19 @@ test("renders the admin-managed about story in order and omits blank paragraphs"
   }
 });
 
+test("routes the hero scroll cue only to an about story that can render", async () => {
+  const landing = await readFile("app/components/Landing.tsx", "utf8");
+
+  assert.match(landing, /const aboutStoryParagraphs = \[/);
+  assert.match(
+    landing,
+    /const hasAboutStory =\s*flags\.aboutStory\s*&&\s*Boolean\(\s*c\.aboutStoryHeading\.trim\(\)/s,
+  );
+  assert.match(landing, /aboutStoryParagraphs\.some\(\(paragraph\) => paragraph\.trim\(\)\)/);
+  assert.match(landing, /href=\{hasAboutStory \? "#about" : "#insta"\}/);
+  assert.match(landing, /\{hasAboutStory \? \(/);
+});
+
 test("keeps the public email affordance guarded until its recipient is configured", async () => {
   const [landing, defaults] = await Promise.all([
     readFile("app/components/Landing.tsx", "utf8"),
@@ -109,10 +122,10 @@ test("includes the about story in both site navigation surfaces", async () => {
     readFile("lib/feature-labels.ts", "utf8"),
   ]);
 
-  const aboutPosition = landing.indexOf("flags.aboutStory ? (");
+  const aboutPosition = landing.indexOf("hasAboutStory ? (");
   const photosPosition = landing.indexOf('<section className="pane pane-insta"');
   assert.ok(aboutPosition >= 0 && aboutPosition < photosPosition, "about story must render before photos");
-  assert.match(landing, /href=\{flags\.aboutStory \? "#about" : "#insta"\} className="scroll-cue"/);
+  assert.match(landing, /href=\{hasAboutStory \? "#about" : "#insta"\} className="scroll-cue"/);
 
   const orderedIds = /"vision",\s*"about",\s*"insta"/s;
   assert.match(dots, orderedIds);
