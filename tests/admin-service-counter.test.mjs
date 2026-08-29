@@ -46,9 +46,13 @@ test("makes the long Content editor locally navigable with one page action dock"
   const content = await read("app/admin/content/page.tsx");
   assert.match(content, /<AdminSectionNav\b/);
   assert.match(content, /<AdminActionDock\b/);
-  for (const id of ["visibility", "hero", "address", "buttons", "instagram-pane", "menu-note", "map", "seo"]) {
+  for (const id of ["visibility", "hero", "about-us", "address", "buttons", "instagram-pane", "menu-note", "map", "seo"]) {
     assert.match(content, new RegExp(`id=["']${id}["']`));
     assert.match(content, new RegExp(`href:\\s*["']#${id}["']`));
+  }
+  assert.match(content, /name="aboutStoryHeading"/);
+  for (let index = 1; index <= 4; index += 1) {
+    assert.match(content, new RegExp(`name=["']aboutStoryParagraph${index}["']`));
   }
   assert.match(content, /<SubmitButton pendingLabel="Saving…">Save draft<\/SubmitButton>/);
 });

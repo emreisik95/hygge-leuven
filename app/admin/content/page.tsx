@@ -72,6 +72,7 @@ export default async function AdminPage({
         items={[
           { href: "#visibility", label: "Visibility" },
           { href: "#hero", label: "Hero" },
+          { href: "#about-us", label: "About us" },
           { href: "#address", label: "Address" },
           { href: "#buttons", label: "Buttons" },
           { href: "#instagram-pane", label: "Instagram" },
@@ -110,6 +111,42 @@ export default async function AdminPage({
             <Field name="inviteLine" label="Invite line" defaultValue={c.inviteLine} />
             <Field name="inviteSub" label="Invite sub" defaultValue={c.inviteSub} />
           </FieldRow>
+        </section>
+
+        <section className="section" id="about-us">
+          <h2>About us</h2>
+          <p className="hint">
+            Edit the story shown beside the café illustration. Empty paragraphs are hidden after publish.
+          </p>
+          <Field
+            name="aboutStoryHeading"
+            label="Heading"
+            defaultValue={c.aboutStoryHeading}
+          />
+          <TextareaField
+            name="aboutStoryParagraph1"
+            label="Paragraph 1"
+            defaultValue={c.aboutStoryParagraph1}
+            rows={6}
+          />
+          <TextareaField
+            name="aboutStoryParagraph2"
+            label="Paragraph 2"
+            defaultValue={c.aboutStoryParagraph2}
+            rows={7}
+          />
+          <TextareaField
+            name="aboutStoryParagraph3"
+            label="Paragraph 3"
+            defaultValue={c.aboutStoryParagraph3}
+            rows={7}
+          />
+          <TextareaField
+            name="aboutStoryParagraph4"
+            label="Paragraph 4"
+            defaultValue={c.aboutStoryParagraph4}
+            rows={5}
+          />
         </section>
 
         <section className="section" id="address">

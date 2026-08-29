@@ -3,8 +3,8 @@ import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-test("renders the complete owner-approved about story in order", async () => {
-  const source = await readFile("app/components/features/AboutStory.tsx", "utf8");
+test("registers the complete owner-approved about story as editable site copy", async () => {
+  const source = await readFile("lib/db.ts", "utf8");
   const paragraphs = [
     "We’re a café with a big soft spot for good things. Good coffee. Good tea. Good food. Slow mornings. Long conversations. Cozy corners when you need one. We’re quite simple about what we serve: if we don’t like it ourselves, we won’t put it on your table. Everything we choose has to be something we genuinely enjoy — not just something that looks good on a menu.",
     "For our coffee, we proudly work with Caffenation, an Antwerp-born specialty coffee roaster that shares our love for quality, curiosity and doing things with care. Your espresso and Americano won’t taste exactly the same every few months — and that’s intentional. We change these beans roughly every month, choosing new coffees with different origins, characters and flavours so there’s always something new to discover. For our milk-based coffees, however, we keep our house beans consistent, so your favourite cappuccino tastes just the way you remember it.",
@@ -17,6 +17,12 @@ test("renders the complete owner-approved about story in order", async () => {
     const position = source.indexOf(paragraph);
     assert.ok(position > cursor, `missing or out-of-order paragraph: ${paragraph.slice(0, 48)}…`);
     cursor = position;
+  }
+
+  assert.match(source, /aboutStoryHeading:\s*"site\.aboutStoryHeading"/);
+  assert.match(source, /aboutStoryHeading:\s*"A little about us"/);
+  for (let index = 1; index <= 4; index += 1) {
+    assert.match(source, new RegExp(`aboutStoryParagraph${index}:\\s*"site\\.aboutStoryParagraph${index}"`));
   }
 });
 
@@ -65,6 +71,25 @@ test("uses the regenerated transparent line illustration for the about story", a
   );
 });
 
+test("renders the admin-managed about story in order and omits blank paragraphs", async () => {
+  const [about, landing] = await Promise.all([
+    readFile("app/components/features/AboutStory.tsx", "utf8"),
+    readFile("app/components/Landing.tsx", "utf8"),
+  ]);
+
+  assert.doesNotMatch(about, /const STORY_PARAGRAPHS/);
+  assert.match(about, /paragraphs:\s*string\[\]/);
+  assert.match(about, /const visibleParagraphs = paragraphs/);
+  assert.match(about, /\.map\(\(paragraph\) => paragraph\.trim\(\)\)/);
+  assert.match(about, /\.filter\(Boolean\)/);
+  assert.match(about, /visibleParagraphs\.map/);
+
+  assert.match(landing, /heading=\{c\.aboutStoryHeading\}/);
+  for (let index = 1; index <= 4; index += 1) {
+    assert.match(landing, new RegExp(`c\\.aboutStoryParagraph${index}`));
+  }
+});
+
 test("keeps the public email affordance guarded until its recipient is configured", async () => {
   const [landing, defaults] = await Promise.all([
     readFile("app/components/Landing.tsx", "utf8"),
@@ -84,7 +109,7 @@ test("includes the about story in both site navigation surfaces", async () => {
     readFile("lib/feature-labels.ts", "utf8"),
   ]);
 
-  const aboutPosition = landing.indexOf("flags.aboutStory ? <AboutStory");
+  const aboutPosition = landing.indexOf("flags.aboutStory ? (");
   const photosPosition = landing.indexOf('<section className="pane pane-insta"');
   assert.ok(aboutPosition >= 0 && aboutPosition < photosPosition, "about story must render before photos");
   assert.match(landing, /href=\{flags\.aboutStory \? "#about" : "#insta"\} className="scroll-cue"/);

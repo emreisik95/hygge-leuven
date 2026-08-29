@@ -59,6 +59,11 @@ const TEXT_NAMESPACES = {
   backToTopLabel: "site.backToTopLabel",
   instaEmptyLine: "site.instaEmptyLine",
   instaEmptySub: "site.instaEmptySub",
+  aboutStoryHeading: "site.aboutStoryHeading",
+  aboutStoryParagraph1: "site.aboutStoryParagraph1",
+  aboutStoryParagraph2: "site.aboutStoryParagraph2",
+  aboutStoryParagraph3: "site.aboutStoryParagraph3",
+  aboutStoryParagraph4: "site.aboutStoryParagraph4",
   seeMoreLabel: "site.seeMoreLabel",
   skipSectionLabel: "site.skipSectionLabel",
   newTabLabel: "site.newTabLabel",
@@ -104,6 +109,15 @@ export const SITE_TEXT_DEFAULTS: Record<SiteTextField, string> = {
   backToTopLabel: "↑ back to top",
   instaEmptyLine: "A live feed will appear here soon.",
   instaEmptySub: "See us on Instagram →",
+  aboutStoryHeading: "A little about us",
+  aboutStoryParagraph1:
+    "We’re a café with a big soft spot for good things. Good coffee. Good tea. Good food. Slow mornings. Long conversations. Cozy corners when you need one. We’re quite simple about what we serve: if we don’t like it ourselves, we won’t put it on your table. Everything we choose has to be something we genuinely enjoy — not just something that looks good on a menu.",
+  aboutStoryParagraph2:
+    "For our coffee, we proudly work with Caffenation, an Antwerp-born specialty coffee roaster that shares our love for quality, curiosity and doing things with care. Your espresso and Americano won’t taste exactly the same every few months — and that’s intentional. We change these beans roughly every month, choosing new coffees with different origins, characters and flavours so there’s always something new to discover. For our milk-based coffees, however, we keep our house beans consistent, so your favourite cappuccino tastes just the way you remember it.",
+  aboutStoryParagraph3:
+    "For tea, we chose A.C. Perch’s — Scandinavia’s oldest tea shop, with a tradition dating back to 1835. They have been serving the Danish Royal Household for generations and were officially appointed Royal Purveyor to the Danish Court in 2002. We like that kind of history, but even more, we like what’s in the cup: carefully selected teas made with the same respect for quality that we try to bring to everything we do.",
+  aboutStoryParagraph4:
+    "We care about the little things. The ingredients, the preparation, the atmosphere, the people sitting around the table. We love what we do, and we hope that somewhere between your first sip and your last bite, you can feel that too.",
   seeMoreLabel: "See more",
   skipSectionLabel: "Skip section",
   newTabLabel: "(opens in new tab)",

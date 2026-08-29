@@ -385,7 +385,18 @@ export function Landing({
         </section>
       ) : null}
 
-      {flags.aboutStory ? <AboutStory heading={L.aboutStoryHeading} backToTopLabel={c.backToTopLabel} /> : null}
+      {flags.aboutStory ? (
+        <AboutStory
+          heading={c.aboutStoryHeading}
+          paragraphs={[
+            c.aboutStoryParagraph1,
+            c.aboutStoryParagraph2,
+            c.aboutStoryParagraph3,
+            c.aboutStoryParagraph4,
+          ]}
+          backToTopLabel={c.backToTopLabel}
+        />
+      ) : null}
 
       <section className="pane pane-insta" id="insta" aria-labelledby="insta-heading">
         <div className="insta-wrap">
