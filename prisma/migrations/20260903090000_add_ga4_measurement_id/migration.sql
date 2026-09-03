@@ -1,0 +1,1 @@
+ALTER TABLE "SiteContent" ADD COLUMN "gaMeasurementId" TEXT NOT NULL DEFAULT '';

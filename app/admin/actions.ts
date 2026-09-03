@@ -82,6 +82,7 @@ export async function saveContentDraft(formData: FormData) {
     mapLat: asString(formData.get("mapLat")),
     mapLng: asString(formData.get("mapLng")),
     mapZoom: asString(formData.get("mapZoom")),
+    gaMeasurementId: asString(formData.get("gaMeasurementId")),
   });
   if (!parsed.success) {
     redirect(`/admin/content?errors=${encodeErrors(zodFieldErrors(parsed.error))}`);
@@ -90,7 +91,11 @@ export async function saveContentDraft(formData: FormData) {
   const existing = await prisma.siteContent.findUnique({ where: { id: 1 } });
   const prior = parseDraft(existing?.draftJson ?? null) ?? {};
   const draft: SiteDraft = {
-    scalars: { ...(prior.scalars ?? {}), ...pickScalars(formData) },
+    scalars: {
+      ...(prior.scalars ?? {}),
+      ...pickScalars(formData),
+      gaMeasurementId: parsed.data.gaMeasurementId,
+    },
     texts: { ...(prior.texts ?? {}), ...pickTexts(formData) },
     savedAt: new Date().toISOString(),
   };

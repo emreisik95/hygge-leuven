@@ -177,6 +177,7 @@ export type SiteDraft = {
     | "mapLat"
     | "mapLng"
     | "mapZoom"
+    | "gaMeasurementId"
     | "showDefinition"
     | "showTagline"
     | "showInvite"
@@ -223,6 +224,7 @@ export async function getContentForLocale(
     mapLat: row.mapLat,
     mapLng: row.mapLng,
     mapZoom: row.mapZoom,
+    gaMeasurementId: row.gaMeasurementId,
     showDefinition: row.showDefinition,
     showTagline: row.showTagline,
     showInvite: row.showInvite,

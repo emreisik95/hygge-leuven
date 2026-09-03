@@ -87,6 +87,7 @@ export default async function Home() {
         testimonials={featureSettings.testimonials}
         events={featureSettings.events}
         spotifyPlaylistId={featureSettings.spotifyPlaylistId}
+        gaMeasurementId={content.gaMeasurementId}
         cupSrc={cupSrc}
         stickerSrc={stickerSrc}
       />

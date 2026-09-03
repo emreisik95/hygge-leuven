@@ -7,6 +7,7 @@ import { AnnouncementBanner } from "./AnnouncementBanner";
 import { ScrollProgress } from "./ScrollProgress";
 import { BackToTop } from "./BackToTop";
 import { CookieConsent } from "./CookieConsent";
+import { GoogleAnalyticsConsent } from "./GoogleAnalyticsConsent";
 import { ThemeToggle } from "./ThemeToggle";
 import { PwaInstall } from "./PwaInstall";
 import { SeasonalAccent } from "./SeasonalAccent";
@@ -28,6 +29,7 @@ export function GlobalFeatures({
   copy,
   locale,
   phone,
+  gaMeasurementId,
 }: {
   flags: Flags;
   // Resolved from translations (EN-fallback) server-side; defaults to the seed.
@@ -38,6 +40,9 @@ export function GlobalFeatures({
   locale: LocaleCode;
   // Café contact number for the WhatsApp button; empty string hides it.
   phone?: string;
+  // Published GA4 ID. When present, consent is mandatory and replaces the
+  // informational no-tracking notice.
+  gaMeasurementId?: string;
 }) {
   const L = copy ?? FEATURE_LABELS;
   return (
@@ -84,7 +89,9 @@ export function GlobalFeatures({
         {flags.backToTop ? <BackToTop label={L.backToTop} /> : null}
       </div>
 
-      {flags.cookieConsent ? (
+      {gaMeasurementId ? (
+        <GoogleAnalyticsConsent measurementId={gaMeasurementId} />
+      ) : flags.cookieConsent ? (
         <CookieConsent message={L.cookie.message} acceptLabel={L.cookie.accept} />
       ) : null}
     </>

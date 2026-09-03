@@ -204,6 +204,15 @@ export default async function AdminPage({
           <h2>SEO</h2>
           <Field name="metaTitle" label="Meta title" defaultValue={c.metaTitle} />
           <TextareaField name="metaDescription" label="Meta description" defaultValue={c.metaDescription} />
+          <TextareaField
+            name="gaMeasurementId"
+            label="Google Analytics (GA4)"
+            defaultValue={c.gaMeasurementId}
+            error={errors.gaMeasurementId}
+            hint="Paste a G- measurement ID or the full Google tag code. Only the measurement ID is saved; tracking starts after publish and visitor consent. Leave empty to disable it."
+            rows={5}
+            maxLength={5000}
+          />
         </section>
 
         <AdminActionDock>

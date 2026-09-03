@@ -74,6 +74,7 @@ export type LandingProps = {
   testimonials?: { quote: string; author: string }[];
   events?: { date: string; title: string; detail: string }[];
   spotifyPlaylistId?: string;
+  gaMeasurementId?: string;
   // Takeaway-cup artwork, resolved in the page from public/assets: cupSrc is
   // the full illustrated cup (preferred), stickerSrc the bare sticker worn by
   // the inline SVG fallback cup. Both null → SVG cup with inline brand sticker.
@@ -201,6 +202,7 @@ export function Landing({
   testimonials,
   events,
   spotifyPlaylistId,
+  gaMeasurementId,
   cupSrc,
   stickerSrc,
 }: LandingProps) {
@@ -236,6 +238,7 @@ export function Landing({
         copy={L}
         locale={locale}
         phone={c.contactPhone}
+        gaMeasurementId={preview ? undefined : gaMeasurementId}
       />
 
       {preview ? (

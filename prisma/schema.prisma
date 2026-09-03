@@ -22,6 +22,7 @@ model SiteContent {
   mapLat          Float    @default(50.876568)
   mapLng          Float    @default(4.700649)
   mapZoom         Int      @default(16)
+  gaMeasurementId String   @default("")
   showDefinition  Boolean  @default(true)
   showTagline     Boolean  @default(true)
   showInvite      Boolean  @default(true)

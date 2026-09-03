@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { GoogleAnalyticsInputSchema } from "@/lib/analytics";
 
 // Validates the constrained fields of the site-content editor. Free-form text
 // fields (hero copy, headings, …) carry no constraints and are persisted as-is,
@@ -35,6 +36,7 @@ export const SiteContentSchema = z.object({
   mapLat: optionalNumber(-90, 90, "Must be between -90 and 90"),
   mapLng: optionalNumber(-180, 180, "Must be between -180 and 180"),
   mapZoom: optionalNumber(1, 22, "Must be between 1 and 22", true),
+  gaMeasurementId: GoogleAnalyticsInputSchema,
 });
 
 export type SiteContentInput = z.infer<typeof SiteContentSchema>;
